@@ -1,5 +1,8 @@
 package main;
 
+import entidades.Jugador;
+import java.awt.Graphics;
+
 /**
  *
  * @author Gabriel
@@ -9,26 +12,52 @@ public class Juego implements Runnable {
     private VentanaJuego ventana;
     private PanelJuego panel;
     private Thread hiloJuego;
+    private Jugador jugador;
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
 
     public Juego() {
-        panel = new PanelJuego();
+        iniciarClases();
+        panel = new PanelJuego(this);
         ventana = new VentanaJuego(panel);
         panel.requestFocus();
-        iniciarJuego();
-    }
-
-    private void iniciarJuego() {
+        // Iniciar ciclo de juego
         hiloJuego = new Thread(this);
         hiloJuego.start();
     }
-    
+
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    /**
+     * Inicializa las clases involucradas en el juego
+     */
+    private void iniciarClases() {
+        jugador = new Jugador(200, 200);
+    }
+
     /**
      * Gestiona actualizaciones de objetos (personajes, paneles, etc)
      */
     public void actualizar() {
         panel.actualizarJuego();
+    }
+
+    /**
+     * Gestiona la accion de dibujar objetos del juego en pantalla
+     *
+     * @param g
+     */
+    public void render(Graphics g) {
+        jugador.render(g);
+    }
+
+    /**
+     * Detiene el juego cuando se pierde el enfoque de la ventana
+     */
+    public void ventanaPerdida() {
+        jugador.resetearEstado();
     }
 
     /**
@@ -56,6 +85,7 @@ public class Juego implements Runnable {
             }
             if (deltaFrames >= 1) {
                 panel.repaint();
+                deltaFrames--;
             }
         }
     }
