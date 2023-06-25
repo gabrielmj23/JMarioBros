@@ -43,15 +43,19 @@ public class Teclado implements KeyListener {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
+                panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setArriba(false);
                 break;
             case KeyEvent.VK_A:
+                panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setIzquierda(false);
                 break;
             case KeyEvent.VK_S:
+                panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setAbajo(false);
                 break;
             case KeyEvent.VK_D:
+                panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setDerecha(false);
                 break;
         }

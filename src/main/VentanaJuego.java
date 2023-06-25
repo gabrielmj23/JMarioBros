@@ -14,10 +14,11 @@ public class VentanaJuego {
 
     public VentanaJuego(PanelJuego panel) {
         frame = new JFrame();
-        frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
+        frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         frame.setVisible(true);
         frame.addWindowFocusListener(new WindowFocusListener() {
             @Override

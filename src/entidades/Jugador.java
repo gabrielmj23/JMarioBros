@@ -1,6 +1,11 @@
 package entidades;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import utils.UtilsJugador.*;
 
 /**
  *
@@ -13,10 +18,37 @@ public class Jugador extends Entidad {
     private boolean arriba;
     private boolean abajo;
     private float velocidad;
+    private EstadoJugador estado;
+    private PoderJugador poder;
+    private int deltaAnimacion;
+    private int indiceAnimacion;
+    private BufferedImage img;
+    private BufferedImage[][] animacionesCorrer;
+    private BufferedImage[] animacionActual;
+
+    private static final int velocidadAnimacion = 17;
 
     public Jugador(float x, float y) {
         super(x, y);
-        velocidad = 2f;
+        velocidad = 1.7f;
+        estado = EstadoJugador.IDLE;
+        poder = PoderJugador.NINGUNO;
+        deltaAnimacion = 0;
+        indiceAnimacion = 0;
+        // Cargar spritesheet y animacionesCorrer
+        try {
+            animacionesCorrer = new BufferedImage[3][3];
+            img = ImageIO.read(new File("media/sprites/MarioSprites.png"));
+            // Cargar animacionesCorrer de caminar
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    animacionesCorrer[i][j] = img.getSubimage(j * 32 + 32, i * 64, 32, 64);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error leyendo sprite de jugador");
+            System.out.println(e.getMessage());
+        }
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -35,11 +67,19 @@ public class Jugador extends Entidad {
         this.abajo = abajo;
     }
 
+    public void setEstado(EstadoJugador estado) {
+        this.estado = estado;
+    }
+
+    public void setIndiceAnimacion(int indiceAnimacion) {
+        this.indiceAnimacion = indiceAnimacion;
+    }
+
     /**
      * Modifica la posición del jugador dependiendo de la dirección en que se
      * mueve
      */
-    public void actualizarPosicion() {
+    private void actualizarPosicion() {
         if (izquierda && !derecha) {
             x -= velocidad;
         } else if (derecha && !izquierda) {
@@ -51,12 +91,72 @@ public class Jugador extends Entidad {
         } else if (abajo && !arriba) {
             y += velocidad;
         }
+
+        // Actualizar estado de movimiento para evitar errores
+        if ((izquierda ^ derecha) || (arriba ^ abajo)) {
+            estado = EstadoJugador.CORRIENDO;
+        } else {
+            estado = EstadoJugador.IDLE;
+        }
+    }
+
+    /**
+     * Actualiza el frame de animación al correr según pasa el tiempo
+     */
+    private void actualizarFrameAnimacion() {
+        deltaAnimacion++;
+        if (deltaAnimacion >= velocidadAnimacion) {
+            deltaAnimacion = 0;
+            indiceAnimacion++;
+            if (indiceAnimacion >= animacionActual.length) {
+                indiceAnimacion = 0;
+            }
+        }
+    }
+
+    /**
+     * Guarda en animacionActual el arreglo que contenga la animación del
+     * personaje, según su estado y poder
+     */
+    private void obtenerAnimacion() {
+        int y = 0;
+        switch (poder) {
+            case NINGUNO:
+                y = 0;
+                break;
+            case SUPER:
+                y = 1;
+                break;
+            case FUEGO:
+                y = 2;
+        }
+        switch (estado) {
+            case IDLE:
+                animacionActual = new BufferedImage[]{img.getSubimage(0, y * 64, 32, 64)};
+                break;
+            case CORRIENDO:
+                animacionActual = animacionesCorrer[y];
+                break;
+            case SALTANDO:
+                animacionActual = new BufferedImage[]{img.getSubimage(4 * 32, y * 64, 32, 64)};
+                break;
+            case MURIENDO:
+                animacionActual = new BufferedImage[]{img.getSubimage(5 * 32, 0, 32, 64)};
+                break;
+            case ATACANDO:
+                animacionActual = new BufferedImage[]{img.getSubimage(5 * 32, 2 * 64, 32, 64)};
+                break;
+        }
     }
 
     /**
      * Actualiza valores correspondientes al jugador
      */
     public void actualizar() {
+        if (estado == EstadoJugador.CORRIENDO) {
+            actualizarFrameAnimacion();
+        }
+        obtenerAnimacion();
         actualizarPosicion();
     }
 
@@ -66,7 +166,15 @@ public class Jugador extends Entidad {
      * @param g
      */
     public void render(Graphics g) {
-        g.fillRect((int) x, (int) y, 100, 100);
+        if (indiceAnimacion >= animacionActual.length) {
+            indiceAnimacion = 0;
+        }
+        if (izquierda && !derecha) {
+            g.drawImage(animacionActual[indiceAnimacion], (int) x + 48, (int) y, -48, 96, null);
+        }
+        else {
+            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, 48, 96, null);
+        }
     }
 
     /**
