@@ -25,4 +25,12 @@ public class UtilsJugador {
         SUPER,
         FUEGO
     }
+    
+    /**
+     * Indices que representan los sprites segun el personaje
+     */
+    public static final int MARIO_INDEX = 0;
+    public static final int LUIGI_INDEX = 1;
+    public static final int TOAD_INDEX = 2;
+    public static final int TOADETTE_INDEX = 3;
 }

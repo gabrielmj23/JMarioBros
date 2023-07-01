@@ -2,6 +2,10 @@ package main;
 
 import entidades.Jugador;
 import java.awt.Graphics;
+import static utils.UtilsJugador.MARIO_INDEX;
+import static utils.UtilsJugador.LUIGI_INDEX;
+import static utils.UtilsJugador.TOAD_INDEX;
+import static utils.UtilsJugador.TOADETTE_INDEX;
 
 /**
  *
@@ -34,7 +38,7 @@ public class Juego implements Runnable {
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        jugador = new Jugador(200, 200);
+        jugador = new Jugador(200, 200, MARIO_INDEX);
     }
 
     /**

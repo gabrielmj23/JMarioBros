@@ -18,6 +18,7 @@ public class Jugador extends Entidad {
     private boolean arriba;
     private boolean abajo;
     private float velocidad;
+    private int tipo;
     private EstadoJugador estado;
     private PoderJugador poder;
     private int deltaAnimacion;
@@ -26,10 +27,12 @@ public class Jugador extends Entidad {
     private BufferedImage[][] animacionesCorrer;
     private BufferedImage[] animacionActual;
 
-    private static final int velocidadAnimacion = 17;
+    private static final int VELOCIDAD_ANIMACION = 17;
+    private static final String[] SPRITE_PATHS = { "MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png" };
 
-    public Jugador(float x, float y) {
+    public Jugador(float x, float y, int tipo) {
         super(x, y);
+        this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
         poder = PoderJugador.NINGUNO;
@@ -38,7 +41,7 @@ public class Jugador extends Entidad {
         // Cargar spritesheet y animacionesCorrer
         try {
             animacionesCorrer = new BufferedImage[3][3];
-            img = ImageIO.read(new File("media/sprites/MarioSprites.png"));
+            img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS[tipo]));
             // Cargar animacionesCorrer de caminar
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -105,7 +108,7 @@ public class Jugador extends Entidad {
      */
     private void actualizarFrameAnimacion() {
         deltaAnimacion++;
-        if (deltaAnimacion >= velocidadAnimacion) {
+        if (deltaAnimacion >= VELOCIDAD_ANIMACION) {
             deltaAnimacion = 0;
             indiceAnimacion++;
             if (indiceAnimacion >= animacionActual.length) {
@@ -119,26 +122,26 @@ public class Jugador extends Entidad {
      * personaje, según su estado y poder
      */
     private void obtenerAnimacion() {
-        int y = 0;
+        int yAnimacion = 0;
         switch (poder) {
             case NINGUNO:
-                y = 0;
+                yAnimacion = 0;
                 break;
             case SUPER:
-                y = 1;
+                yAnimacion = 1;
                 break;
             case FUEGO:
-                y = 2;
+                yAnimacion = 2;
         }
         switch (estado) {
             case IDLE:
-                animacionActual = new BufferedImage[]{img.getSubimage(0, y * 64, 32, 64)};
+                animacionActual = new BufferedImage[]{img.getSubimage(0, yAnimacion * 64, 32, 64)};
                 break;
             case CORRIENDO:
-                animacionActual = animacionesCorrer[y];
+                animacionActual = animacionesCorrer[yAnimacion];
                 break;
             case SALTANDO:
-                animacionActual = new BufferedImage[]{img.getSubimage(4 * 32, y * 64, 32, 64)};
+                animacionActual = new BufferedImage[]{img.getSubimage(4 * 32, yAnimacion * 64, 32, 64)};
                 break;
             case MURIENDO:
                 animacionActual = new BufferedImage[]{img.getSubimage(5 * 32, 0, 32, 64)};
@@ -166,7 +169,7 @@ public class Jugador extends Entidad {
      * @param g
      */
     public void render(Graphics g) {
-        if (indiceAnimacion >= animacionActual.length) {
+        if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
         if (izquierda && !derecha) {
