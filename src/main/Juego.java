@@ -2,6 +2,7 @@ package main;
 
 import entidades.Jugador;
 import java.awt.Graphics;
+import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
 import static utils.UtilsJugador.TOAD_INDEX;
@@ -17,8 +18,17 @@ public class Juego implements Runnable {
     private PanelJuego panel;
     private Thread hiloJuego;
     private Jugador jugador;
+    private NivelConfig nivelconfig;
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
+    
+    public final static int TAMAÑO_GENERAL_CASILLAS = 32;
+    public final static float ESCALA = 1.0f;
+    public final static int CASILLAS_HORIZONTAL = 26;
+    public final static int CASILLAS_VERTICAL = 14;
+    public final static int TAMAÑO_REAL_CASILLAS = (int) (TAMAÑO_GENERAL_CASILLAS * ESCALA); 
+    public final static int JUEGO_ANCHO = TAMAÑO_REAL_CASILLAS * CASILLAS_HORIZONTAL;
+    public final static int JUEGO_ALTO = TAMAÑO_REAL_CASILLAS * CASILLAS_VERTICAL;
 
     public Juego() {
         iniciarClases();
@@ -38,7 +48,8 @@ public class Juego implements Runnable {
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        jugador = new Jugador(200, 200, MARIO_INDEX);
+        jugador = new Jugador(200, 200, MARIO_INDEX, (int)ESCALA);
+        nivelconfig = new NivelConfig(this);
     }
 
     /**
@@ -46,6 +57,7 @@ public class Juego implements Runnable {
      */
     public void actualizar() {
         panel.actualizarJuego();
+        nivelconfig.update();
     }
 
     /**
@@ -54,6 +66,7 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
+        nivelconfig.draw(g);
         jugador.render(g);
     }
 

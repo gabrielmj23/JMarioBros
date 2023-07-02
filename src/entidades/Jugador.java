@@ -30,8 +30,8 @@ public class Jugador extends Entidad {
     private static final int VELOCIDAD_ANIMACION = 17;
     private static final String[] SPRITE_PATHS = { "MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png" };
 
-    public Jugador(float x, float y, int tipo) {
-        super(x, y);
+    public Jugador(float x, float y, int tipo, int escala) {
+        super(x, y, escala);
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
@@ -173,10 +173,10 @@ public class Jugador extends Entidad {
             indiceAnimacion = 0;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x + 48, (int) y, -48, 96, null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) x + 32*escala, (int) y, -32 *escala, 64*escala, null);
         }
         else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, 48, 96, null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, 32*escala, 64*escala, null);
         }
     }
 

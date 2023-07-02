@@ -4,6 +4,8 @@ import inputs.Teclado;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
+import static main.Juego.JUEGO_ALTO;
+import static main.Juego.JUEGO_ANCHO;
 
 /**
  *
@@ -17,7 +19,7 @@ public class PanelJuego extends JPanel {
         this.juego = juego;
         addKeyListener(new Teclado(this));
         // Dar tamaño al panel
-        Dimension dimension = new Dimension(1280, 720);
+        Dimension dimension = new Dimension(JUEGO_ANCHO, JUEGO_ALTO);
         setMinimumSize(dimension);
         setMaximumSize(dimension);
         setPreferredSize(dimension);
