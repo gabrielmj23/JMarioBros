@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import main.Juego;
 import static main.Juego.CASILLAS_HORIZONTAL;
 import static main.Juego.CASILLAS_VERTICAL;
+import static main.Juego.ESCALA;
 import static main.Juego.TAMAÑO_REAL_CASILLAS;
 import utils.LoadSave;
 
@@ -38,7 +39,7 @@ public class NivelConfig {
             for (int j = 0; j < 4; j++) {
                 for (int i = 0; i < 10; i++) {
                     int index = j * 10 + i;
-                    levelSprite[index] = img.getSubimage(i * 32, j * 32, 32, 32);
+                    levelSprite[index] = img.getSubimage(i * 32, j * 32, 32, 32); //Obtener los 40 sprites
                 }
             }
 
@@ -49,11 +50,12 @@ public class NivelConfig {
 
     }
 
+        //Dibujar nivel
     public void draw(Graphics g) {
         for(int j = 0; j < CASILLAS_VERTICAL; j++)
             for(int i=0; i < CASILLAS_HORIZONTAL; i++){
                 int index = nivelUno.obtenerIndiceSprite(i, j);
-                g.drawImage(levelSprite[index], TAMAÑO_REAL_CASILLAS*i, TAMAÑO_REAL_CASILLAS*j, TAMAÑO_REAL_CASILLAS,TAMAÑO_REAL_CASILLAS, null);
+                g.drawImage(levelSprite[index], TAMAÑO_REAL_CASILLAS*i, TAMAÑO_REAL_CASILLAS*j, TAMAÑO_REAL_CASILLAS, TAMAÑO_REAL_CASILLAS, null);
             }
         
     }
@@ -62,7 +64,8 @@ public class NivelConfig {
 
     }
 
-    public static int[][] obtenerDatos() {
+    //Obtener los datos de que debe ir en cada casilla
+    public static int[][] obtenerDatos() {   
         int[][] nivelDatos = new int[CASILLAS_VERTICAL][CASILLAS_HORIZONTAL];
         try {
             BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
