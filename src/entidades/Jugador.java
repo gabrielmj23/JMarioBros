@@ -6,10 +6,12 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
+import static main.Juego.ESCALA;
 
 /**
  *
  * @author Gabriel
+ * @author rober
  */
 public class Jugador extends Entidad {
 
@@ -28,10 +30,10 @@ public class Jugador extends Entidad {
     private BufferedImage[] animacionActual;
 
     private static final int VELOCIDAD_ANIMACION = 17;
-    private static final String[] SPRITE_PATHS = { "MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png" };
+    private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
-    public Jugador(float x, float y, int tipo, int escala) {
-        super(x, y, escala);
+    public Jugador(float x, float y, int tipo) {
+        super(x, y);
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
@@ -173,10 +175,9 @@ public class Jugador extends Entidad {
             indiceAnimacion = 0;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x + 32*escala, (int) y, -32 *escala, 64*escala, null);
-        }
-        else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, 32*escala, 64*escala, null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+        } else {
+            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
         }
     }
 

@@ -4,8 +4,8 @@ import inputs.Teclado;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-import static main.Juego.JUEGO_ALTO;
 import static main.Juego.JUEGO_ANCHO;
+import static main.Juego.JUEGO_ALTO;
 
 /**
  *
@@ -34,6 +34,7 @@ public class PanelJuego extends JPanel {
      */
     public void actualizarJuego() {
         juego.getJugador().actualizar();
+        juego.getNivelConfig().actualizar();
     }
 
     /**
