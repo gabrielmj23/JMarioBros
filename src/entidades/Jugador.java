@@ -39,11 +39,11 @@ public class Jugador extends Entidad {
     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Jugador(float x, float y, int tipo) {
-        super(x, y, 32, 64);
+        super(x, y, 30, 62);
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.SUPER;
+        poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox();
@@ -111,8 +111,9 @@ public class Jugador extends Entidad {
         } else if (abajo && !arriba) {
             yVelocidad = velocidad;
         }
+       
         
-        if(PuedeMoverse(x+xVelocidad, y+yVelocidad, ancho, largo, nivelDatos)){
+        if(PuedeMoverse(hitbox.x+xVelocidad, hitbox.y+yVelocidad, ancho, largo, nivelDatos)){
             this.x += xVelocidad;
             this.y += yVelocidad;
         }
@@ -213,7 +214,7 @@ public class Jugador extends Entidad {
     public void iniHitbox() {
         if (poder == NINGUNO) //Acomodar la hitbox a mario chikito
         {
-            hitbox = new Rectangle((int) x, (int) y, ancho - 2, largo - 26);
+            hitbox = new Rectangle((int) x, (int) y+32, ancho - 2, largo - 26);
         } else {
             hitbox = new Rectangle((int) x, (int) y, ancho, largo);
         }
