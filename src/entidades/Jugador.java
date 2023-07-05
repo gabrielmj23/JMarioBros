@@ -112,11 +112,13 @@ public class Jugador extends Entidad {
             yVelocidad = velocidad;
         }
        
-        
+        if(poder==NINGUNO)
+            largo=30;
         if(PuedeMoverse(hitbox.x+xVelocidad, hitbox.y+yVelocidad, ancho, largo, nivelDatos)){
             this.x += xVelocidad;
             this.y += yVelocidad;
         }
+
 
         // Actualizar estado de movimiento para evitar errores
         if ((izquierda ^ derecha) || (arriba ^ abajo)) {
@@ -201,20 +203,24 @@ public class Jugador extends Entidad {
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
+        if(poder==NINGUNO)
+            y-=2;
         if (izquierda && !derecha) {
             g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
-            g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
+            //g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
         } else {
             g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-            g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
+            //g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
         }
+        if(poder==NINGUNO)
+            y+=2;
     }
 
     @Override
     public void iniHitbox() {
         if (poder == NINGUNO) //Acomodar la hitbox a mario chikito
         {
-            hitbox = new Rectangle((int) x, (int) y+32, ancho - 2, largo - 26);
+            hitbox = new Rectangle((int) x, (int) y+32, ancho - 2, largo - 27);
         } else {
             hitbox = new Rectangle((int) x, (int) y, ancho, largo);
         }
