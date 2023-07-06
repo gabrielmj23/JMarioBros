@@ -10,8 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
-import static utils.UtilsAyuda.PuedeMoverse;
-import static utils.UtilsJugador.PoderJugador.NINGUNO;
+import static utils.UtilsAyuda.puedeMoverse;
 
 /**
  *
@@ -92,20 +91,16 @@ public class Jugador extends Entidad {
      * mueve
      */
     private void actualizarPosicion() {
-
         float xVelocidad = 0, yVelocidad = 0;
 
         if (izquierda && !derecha) {
             xVelocidad = -velocidad;
-
         } else if (derecha && !izquierda) {
             xVelocidad = velocidad;
-
         }
 
         if (arriba && !abajo) {
             yVelocidad = -velocidad;
-
         } else if (abajo && !arriba) {
             yVelocidad = velocidad;
         }
@@ -113,7 +108,7 @@ public class Jugador extends Entidad {
         if (poder == PoderJugador.NINGUNO) {
             largo = 30;
         }
-        if (PuedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, ancho, largo, nivelDatos)) {
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, ancho, largo, nivelDatos)) {
             this.x += xVelocidad;
             this.y += yVelocidad;
         }
@@ -220,7 +215,7 @@ public class Jugador extends Entidad {
     public void iniHitbox() {
         if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
         {
-            hitbox = new Rectangle((int) x, (int) y + 32, ancho - 2, largo - 27);
+            hitbox = new Rectangle((int) (x + 6), (int) (y + 50), ancho - 2, largo);
         } else {
             hitbox = new Rectangle((int) x, (int) y, ancho, largo);
         }
@@ -228,11 +223,12 @@ public class Jugador extends Entidad {
 
     @Override
     public void actualizarHitbox() {
-        hitbox.x = (int) x;
         if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
         {
-            hitbox.y = (int) (y + 32);
+            hitbox.x = (int) (x + 6);
+            hitbox.y = (int) (y + 50);
         } else {
+            hitbox.x = (int) x;
             hitbox.y = (int) y;
         }
     }

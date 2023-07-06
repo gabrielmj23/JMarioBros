@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package utils;
 
 import main.Juego;
@@ -12,11 +8,11 @@ import main.Juego;
  */
 public class UtilsAyuda {
 
-    public static boolean PuedeMoverse(float x, float y, int ancho, int largo, int[][] nivelDatos) {
-        if (!EsSolido(x, y, nivelDatos)) {
-            if (!EsSolido(x + ancho, y + largo, nivelDatos)) {
-                if (!EsSolido(x + ancho, y, nivelDatos)) {
-                    if (!EsSolido(x, y + largo, nivelDatos)) {
+    public static boolean puedeMoverse(float x, float y, int ancho, int largo, int[][] nivelDatos) {
+        if (!esSolido(x, y, nivelDatos)) {
+            if (!esSolido(x + ancho, y + largo, nivelDatos)) {
+                if (!esSolido(x + ancho, y, nivelDatos)) {
+                    if (!esSolido(x, y + largo, nivelDatos)) {
                         return true;
                     }
                 }
@@ -25,7 +21,7 @@ public class UtilsAyuda {
         return false;
     }
 
-    private static boolean EsSolido(float x, float y, int[][] nivelDatos) {
+    private static boolean esSolido(float x, float y, int[][] nivelDatos) {
         if (x < 0 || x >= Juego.JUEGO_ANCHO) {
             return true;
         }
