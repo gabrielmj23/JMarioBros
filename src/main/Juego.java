@@ -60,7 +60,18 @@ public class Juego implements Runnable {
      * Gestiona actualizaciones de objetos (personajes, paneles, etc)
      */
     public void actualizar() {
-        panel.actualizarJuego();
+        switch(EstadoJuego.estado){
+            case MENU:
+                
+                break;
+            case JUGANDO:
+                //Agregar aqui si es antes del EstadoJuego
+                panel.actualizarJuego();
+                break;                
+            default:
+                break;
+            
+        }
     }
 
     /**
@@ -69,8 +80,19 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
-        nivelConfig.dibujar(g);
-        jugador.render(g);
+        switch(EstadoJuego.estado){
+            case MENU:
+                
+                break;
+            case JUGANDO:
+                //Agregar aqui si es antes del EstadoJuego
+                nivelConfig.dibujar(g);
+                jugador.render(g);
+                break;                
+            default:
+                break;
+            
+        }
     }
 
     /**
