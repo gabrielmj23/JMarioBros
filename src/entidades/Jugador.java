@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
-import static utils.UtilsAyuda.puedeMoverse;
+import static utils.UtilsMovimiento.puedeMoverse;
 
 /**
  *
@@ -106,9 +106,9 @@ public class Jugador extends Entidad {
         }
 
         if (poder == PoderJugador.NINGUNO) {
-            largo = 30;
+            altura = 30;
         }
-        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, ancho, largo, nivelDatos)) {
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
             this.x += xVelocidad;
             this.y += yVelocidad;
         }
@@ -215,9 +215,9 @@ public class Jugador extends Entidad {
     public void iniHitbox() {
         if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
         {
-            hitbox = new Rectangle((int) (x + 6), (int) (y + 50), ancho - 2, largo);
+            hitbox = new Rectangle((int) (x + 4), (int) (y + 40), ancho + 2, altura - 25);
         } else {
-            hitbox = new Rectangle((int) x, (int) y, ancho, largo);
+            hitbox = new Rectangle((int) x, (int) (y + 2), ancho + 12, altura + 16);
         }
     }
 
@@ -225,11 +225,11 @@ public class Jugador extends Entidad {
     public void actualizarHitbox() {
         if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
         {
-            hitbox.x = (int) (x + 6);
-            hitbox.y = (int) (y + 50);
+            hitbox.x = (int) (x + 4);
+            hitbox.y = (int) (y + 40);
         } else {
             hitbox.x = (int) x;
-            hitbox.y = (int) y;
+            hitbox.y = (int) (y + 2);
         }
     }
 

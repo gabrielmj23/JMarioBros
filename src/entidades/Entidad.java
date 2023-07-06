@@ -13,14 +13,14 @@ public abstract class Entidad {
     protected float x;
     protected float y;
     protected int ancho;
-    protected int largo;
+    protected int altura;
     protected Rectangle hitbox;
 
-    public Entidad(float x, float y, int ancho, int largo) { //ancho = 32 //largo = 64
+    public Entidad(float x, float y, int ancho, int altura) { //ancho = 32 //altura = 64
         this.x = x;
         this.y = y;
         this.ancho = ancho;
-        this.largo = largo;
+        this.altura = altura;
     }
 
     protected void dibujarHitbox(Graphics g) {

@@ -6,13 +6,13 @@ import main.Juego;
  *
  * @author rober
  */
-public class UtilsAyuda {
+public class UtilsMovimiento {
 
-    public static boolean puedeMoverse(float x, float y, int ancho, int largo, int[][] nivelDatos) {
-        if (!esSolido(x, y, nivelDatos)) {
-            if (!esSolido(x + ancho, y + largo, nivelDatos)) {
-                if (!esSolido(x + ancho, y, nivelDatos)) {
-                    if (!esSolido(x, y + largo, nivelDatos)) {
+    public static boolean puedeMoverse(float xDestino, float yDestino, int anchoHitbox, int alturaHitbox, int[][] nivelDatos) {
+        if (!esSolido(xDestino, yDestino, nivelDatos)) {
+            if (!esSolido(xDestino + anchoHitbox, yDestino + alturaHitbox, nivelDatos)) {
+                if (!esSolido(xDestino + anchoHitbox, yDestino, nivelDatos)) {
+                    if (!esSolido(xDestino, yDestino + alturaHitbox, nivelDatos)) {
                         return true;
                     }
                 }
