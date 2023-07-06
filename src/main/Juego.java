@@ -52,8 +52,9 @@ public class Juego implements Runnable {
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        jugador = new Jugador(200, 200, MARIO_INDEX);
         nivelConfig = new NivelConfig(this);
+        jugador = new Jugador(100, 200, MARIO_INDEX);
+        jugador.cargarNivelDatos(nivelConfig.obtenerDatos());
     }
 
     /**

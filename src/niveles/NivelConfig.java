@@ -89,4 +89,9 @@ public class NivelConfig {
         return nivelDatos;
     }
 
+    public Nivel getNivelUno() {
+        return nivelUno;
+    }
+
+    
 }

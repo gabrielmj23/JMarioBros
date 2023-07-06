@@ -1,12 +1,17 @@
 package entidades;
 
+import java.awt.Color;
+
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
+import static utils.UtilsAyuda.PuedeMoverse;
+import static utils.UtilsJugador.PoderJugador.NINGUNO;
 
 /**
  *
@@ -28,18 +33,20 @@ public class Jugador extends Entidad {
     private BufferedImage img;
     private BufferedImage[][] animacionesCorrer;
     private BufferedImage[] animacionActual;
+    private int[][] nivelDatos;
 
     private static final int VELOCIDAD_ANIMACION = 17;
     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Jugador(float x, float y, int tipo) {
-        super(x, y);
+        super(x, y, 30, 62);
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
+        iniHitbox();
         // Cargar spritesheet y animacionesCorrer
         try {
             animacionesCorrer = new BufferedImage[3][3];
@@ -85,16 +92,30 @@ public class Jugador extends Entidad {
      * mueve
      */
     private void actualizarPosicion() {
+
+        float xVelocidad = 0, yVelocidad = 0;
+
         if (izquierda && !derecha) {
-            x -= velocidad;
+            xVelocidad = -velocidad;
+
         } else if (derecha && !izquierda) {
-            x += velocidad;
+            xVelocidad = velocidad;
+
         }
 
         if (arriba && !abajo) {
-            y -= velocidad;
+            yVelocidad = -velocidad;
+
         } else if (abajo && !arriba) {
-            y += velocidad;
+            yVelocidad = velocidad;
+        }
+
+        if (poder == PoderJugador.NINGUNO) {
+            largo = 30;
+        }
+        if (PuedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, ancho, largo, nivelDatos)) {
+            this.x += xVelocidad;
+            this.y += yVelocidad;
         }
 
         // Actualizar estado de movimiento para evitar errores
@@ -163,6 +184,11 @@ public class Jugador extends Entidad {
         }
         obtenerAnimacion();
         actualizarPosicion();
+        actualizarHitbox();
+    }
+
+    public void cargarNivelDatos(int[][] nivelDatos) {
+        this.nivelDatos = nivelDatos;
     }
 
     /**
@@ -171,13 +197,43 @@ public class Jugador extends Entidad {
      * @param g
      */
     public void render(Graphics g) {
+        g.setColor(Color.red);
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
+        if (poder == PoderJugador.NINGUNO) {
+            y -= 2;
+        }
         if (izquierda && !derecha) {
             g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            //g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
         } else {
             g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            //g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
+        }
+        if (poder == PoderJugador.NINGUNO) {
+            y += 2;
+        }
+    }
+
+    @Override
+    public void iniHitbox() {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle((int) x, (int) y + 32, ancho - 2, largo - 27);
+        } else {
+            hitbox = new Rectangle((int) x, (int) y, ancho, largo);
+        }
+    }
+
+    @Override
+    public void actualizarHitbox() {
+        hitbox.x = (int) x;
+        if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
+        {
+            hitbox.y = (int) (y + 32);
+        } else {
+            hitbox.y = (int) y;
         }
     }
 

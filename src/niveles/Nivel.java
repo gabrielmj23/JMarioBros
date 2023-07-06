@@ -14,4 +14,7 @@ public class Nivel {
     public int obtenerIndiceSprite(int x, int y){
         return nivelDatos[y][x];
     }
+    public int[][] obtenerNivelDatos(){
+        return nivelDatos;
+    }
 }
