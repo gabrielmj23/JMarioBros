@@ -1,11 +1,13 @@
 package main;
 
+import entidades.Jugador;
 import estadojuego.EstadoJuego;
 import static estadojuego.EstadoJuego.JUGANDO;
 import static estadojuego.EstadoJuego.MENU;
 import estadojuego.Jugando;
 import estadojuego.Menu;
 import java.awt.Graphics;
+import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
 import static utils.UtilsJugador.TOAD_INDEX;
@@ -19,7 +21,9 @@ public class Juego implements Runnable {
 
     private VentanaJuego ventana;
     private PanelJuego panel;
-    private Thread hiloJuego;    
+    private Thread hiloJuego;   
+    private Jugador jugador;
+    private NivelConfig nivelConfig;
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
     
@@ -47,9 +51,12 @@ public class Juego implements Runnable {
     /**
      * Inicializa las clases involucradas en el juego
      */
-    private void iniciarClases() {        
+    private void iniciarClases() {
         menu = new Menu(this);
-        jugando = new Jugando(this);        
+        jugando = new Jugando(this);
+        nivelConfig = new NivelConfig(this);
+        jugador = new Jugador(100, 200, MARIO_INDEX);
+        jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
     }
 
     /**

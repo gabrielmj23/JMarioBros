@@ -19,6 +19,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
     private void iniciarClases() {
         jugador = new Jugador(200, 200, MARIO_INDEX);
         nivelConfig = new NivelConfig(juego);
+        jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
     }
     
     public void ventanaPerdida() {

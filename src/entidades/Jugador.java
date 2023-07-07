@@ -1,12 +1,16 @@
 package entidades;
 
+import java.awt.Color;
+
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
+import static utils.UtilsMovimiento.puedeMoverse;
 
 /**
  *
@@ -25,7 +29,7 @@ public class Jugador extends Entidad {
     // Atributos de estado
     private EstadoJugador estado;
     private PoderJugador poder;
-    
+
     // Atributos de animación
     private int tipo;
     private int deltaAnimacion;
@@ -34,17 +38,21 @@ public class Jugador extends Entidad {
     private BufferedImage[][] animacionesCorrer;
     private BufferedImage[] animacionActual;
 
+    // Atributos de nivel
+    private int[][] nivelDatos;
+
     private static final int VELOCIDAD_ANIMACION = 17;
     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Jugador(float x, float y, int tipo) {
-        super(x, y);
+        super(x, y, 30, 62);
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
+        iniHitbox();
         // Cargar spritesheet y animacionesCorrer
         try {
             animacionesCorrer = new BufferedImage[3][3];
@@ -90,16 +98,23 @@ public class Jugador extends Entidad {
      * mueve
      */
     private void actualizarPosicion() {
+        float xVelocidad = 0f, yVelocidad = 0f;
+
         if (izquierda && !derecha) {
-            x -= velocidad;
+            xVelocidad = -velocidad;
         } else if (derecha && !izquierda) {
-            x += velocidad;
+            xVelocidad = velocidad;
         }
 
         if (arriba && !abajo) {
-            y -= velocidad;
+            yVelocidad = -velocidad;
         } else if (abajo && !arriba) {
-            y += velocidad;
+            yVelocidad = velocidad;
+        }
+
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+            this.x += xVelocidad;
+            this.y += yVelocidad;
         }
 
         // Actualizar estado de movimiento para evitar errores
@@ -168,6 +183,12 @@ public class Jugador extends Entidad {
         }
         obtenerAnimacion();
         actualizarPosicion();
+        actualizarHitbox();
+    }
+
+    public void cargarNivelDatos(int[][] nivelDatos) {
+        this.nivelDatos = nivelDatos;
+        System.out.println("datos cargados");
     }
 
     /**
@@ -176,13 +197,40 @@ public class Jugador extends Entidad {
      * @param g
      */
     public void render(Graphics g) {
+        g.setColor(Color.red);
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
+        int yJugador = (int) y;
+        if (poder == PoderJugador.NINGUNO) {
+            yJugador -= 2;
+        }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+        }
+    }
+
+    @Override
+    public void iniHitbox() {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+        } else {
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
+        }
+    }
+
+    @Override
+    public void actualizarHitbox() {
+        if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
+        {
+            hitbox.x = x + 4;
+            hitbox.y = y + 40;
+        } else {
+            hitbox.x = x;
+            hitbox.y = y + 2;
         }
     }
 
