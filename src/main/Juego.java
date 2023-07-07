@@ -1,8 +1,11 @@
 package main;
 
-import entidades.Jugador;
+import estadojuego.EstadoJuego;
+import static estadojuego.EstadoJuego.JUGANDO;
+import static estadojuego.EstadoJuego.MENU;
+import estadojuego.Jugando;
+import estadojuego.Menu;
 import java.awt.Graphics;
-import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
 import static utils.UtilsJugador.TOAD_INDEX;
@@ -16,12 +19,13 @@ public class Juego implements Runnable {
 
     private VentanaJuego ventana;
     private PanelJuego panel;
-    private Thread hiloJuego;
-    private Jugador jugador;
-    private NivelConfig nivelConfig;
+    private Thread hiloJuego;    
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
-
+    
+    private Jugando jugando;
+    private Menu menu;
+    
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
     public final static int CASILLAS_HORIZONTAL = 26;
@@ -40,27 +44,29 @@ public class Juego implements Runnable {
         hiloJuego.start();
     }
 
-    public Jugador getJugador() {
-        return jugador;
-    }
-
-    public NivelConfig getNivelConfig() {
-        return nivelConfig;
-    }
-
     /**
      * Inicializa las clases involucradas en el juego
      */
-    private void iniciarClases() {
-        jugador = new Jugador(200, 200, MARIO_INDEX);
-        nivelConfig = new NivelConfig(this);
+    private void iniciarClases() {        
+        menu = new Menu(this);
+        jugando = new Jugando(this);        
     }
 
     /**
      * Gestiona actualizaciones de objetos (personajes, paneles, etc)
      */
-    public void actualizar() {
-        panel.actualizarJuego();
+    public void actualizar() {        
+        switch(EstadoJuego.estado){
+            case MENU:
+                menu.actualizar();
+                break;
+            case JUGANDO:
+                jugando.actualizar();
+                break;                
+            default:
+                break;
+            
+        }
     }
 
     /**
@@ -69,15 +75,33 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
-        nivelConfig.dibujar(g);
-        jugador.render(g);
+        switch(EstadoJuego.estado){
+            case MENU:
+                menu.dibujar(g);
+                break;
+            case JUGANDO:
+                jugando.dibujar(g);
+                break;                
+            default:
+                break;
+            
+        }
     }
 
     /**
      * Detiene el juego cuando se pierde el enfoque de la ventana
      */
     public void ventanaPerdida() {
-        jugador.resetearEstado();
+        if(EstadoJuego.estado == EstadoJuego.JUGANDO)
+            jugando.getJugador().resetearEstado();
+    }
+    
+    public Menu getMenu(){
+        return menu;
+    }
+    
+    public Jugando getJugando(){
+        return jugando;
     }
 
     /**
