@@ -15,14 +15,19 @@ import static main.Juego.ESCALA;
  */
 public class Jugador extends Entidad {
 
+    // Atributos de movimiento
     private boolean izquierda;
     private boolean derecha;
     private boolean arriba;
     private boolean abajo;
     private float velocidad;
-    private int tipo;
+    
+    // Atributos de estado
     private EstadoJugador estado;
     private PoderJugador poder;
+    
+    // Atributos de animación
+    private int tipo;
     private int deltaAnimacion;
     private int indiceAnimacion;
     private BufferedImage img;
