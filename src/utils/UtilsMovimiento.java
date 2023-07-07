@@ -8,7 +8,7 @@ import main.Juego;
  */
 public class UtilsMovimiento {
 
-    public static boolean puedeMoverse(float xDestino, float yDestino, int anchoHitbox, int alturaHitbox, int[][] nivelDatos) {
+    public static boolean puedeMoverse(float xDestino, float yDestino, float anchoHitbox, float alturaHitbox, int[][] nivelDatos) {
         if (!esSolido(xDestino, yDestino, nivelDatos)) {
             if (!esSolido(xDestino + anchoHitbox, yDestino + alturaHitbox, nivelDatos)) {
                 if (!esSolido(xDestino + anchoHitbox, yDestino, nivelDatos)) {

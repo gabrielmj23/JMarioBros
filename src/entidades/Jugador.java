@@ -3,7 +3,7 @@ package entidades;
 import java.awt.Color;
 
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class Jugador extends Entidad {
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.NINGUNO;
+        poder = PoderJugador.FUEGO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox();
@@ -201,10 +201,8 @@ public class Jugador extends Entidad {
         }
         if (izquierda && !derecha) {
             g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
-            //g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
         } else {
             g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-            //g.drawRect(hitbox.x, hitbox.y, (int) (hitbox.width * ESCALA), (int) (hitbox.height * ESCALA));
         }
         if (poder == PoderJugador.NINGUNO) {
             y += 2;
@@ -215,9 +213,9 @@ public class Jugador extends Entidad {
     public void iniHitbox() {
         if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
         {
-            hitbox = new Rectangle((int) (x + 4), (int) (y + 40), ancho + 2, altura - 25);
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
         } else {
-            hitbox = new Rectangle((int) x, (int) (y + 2), ancho + 12, altura + 16);
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
         }
     }
 
@@ -225,11 +223,11 @@ public class Jugador extends Entidad {
     public void actualizarHitbox() {
         if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
         {
-            hitbox.x = (int) (x + 4);
-            hitbox.y = (int) (y + 40);
+            hitbox.x = x + 4;
+            hitbox.y = y + 40;
         } else {
-            hitbox.x = (int) x;
-            hitbox.y = (int) (y + 2);
+            hitbox.x = x;
+            hitbox.y = y + 2;
         }
     }
 

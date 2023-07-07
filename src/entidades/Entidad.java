@@ -2,7 +2,7 @@ package entidades;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -14,7 +14,7 @@ public abstract class Entidad {
     protected float y;
     protected int ancho;
     protected int altura;
-    protected Rectangle hitbox;
+    protected Rectangle2D.Float hitbox;
 
     public Entidad(float x, float y, int ancho, int altura) { //ancho = 32 //altura = 64
         this.x = x;
@@ -26,7 +26,7 @@ public abstract class Entidad {
     protected void dibujarHitbox(Graphics g) {
         //Para probar la hitbox
         g.setColor(Color.PINK);
-        g.drawRect(hitbox.x, hitbox.y, ancho, ancho);
+        //g.drawRect(hitbox.x, hitbox.y, ancho, ancho);
 
     }
 
@@ -34,7 +34,7 @@ public abstract class Entidad {
 
     public abstract void actualizarHitbox();
 
-    public Rectangle getHitbox() {
+    public Rectangle2D.Float getHitbox() {
         return hitbox;
     }
 
