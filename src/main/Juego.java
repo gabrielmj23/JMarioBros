@@ -2,6 +2,9 @@ package main;
 
 import entidades.Jugador;
 import java.awt.Graphics;
+import javax.swing.JOptionPane;
+import multijugador.Cliente;
+import multijugador.Servidor;
 import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
@@ -18,7 +21,10 @@ public class Juego implements Runnable {
     private PanelJuego panel;
     private Thread hiloJuego;
     private Jugador jugador;
+    private Servidor servidor;
+    private Cliente cliente;
     private NivelConfig nivelConfig;
+    
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
 
@@ -35,6 +41,13 @@ public class Juego implements Runnable {
         panel = new PanelJuego(this);
         ventana = new VentanaJuego(panel);
         panel.requestFocus();
+        if (JOptionPane.showConfirmDialog(panel, "Iniciar servidor?") == 0) {
+            servidor = new Servidor(this);
+            servidor.start();
+        }
+        cliente = new Cliente(this, "localhost");
+        cliente.start();
+        
         // Iniciar ciclo de juego
         hiloJuego = new Thread(this);
         hiloJuego.start();
@@ -52,7 +65,7 @@ public class Juego implements Runnable {
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        jugador = new Jugador(200, 200, MARIO_INDEX);
+        jugador = new Jugador(200, 200, MARIO_INDEX, null, true);
         nivelConfig = new NivelConfig(this);
     }
 
@@ -86,6 +99,7 @@ public class Juego implements Runnable {
      */
     @Override
     public void run() {
+        cliente.enviarDatos("Ping".getBytes());
         final double TIEMPO_POR_FRAME = 1000000000.0 / FPS_FIJOS;
         final double TIEMPO_POR_ACTUALIZAR = 1000000000.0 / UPS_FIJOS;
         long tiempoPrevio = System.nanoTime();

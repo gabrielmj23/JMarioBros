@@ -3,15 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/main/Juego.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/main/JMarioBros.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/utils/UtilsJugador.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/entidades/Entidad.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/niveles/NivelConfig.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/entidades/Jugador.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/niveles/Nivel.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/main/PanelJuego.java</file>
-            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/JMarioBros-main1/src/utils/LoadSave.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/Paquete.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/Cliente.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/niveles/Nivel.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/niveles/NivelConfig.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/entidades/Jugador.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/main/Juego.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/Usuario.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/entidades/JugadorMulti.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/Servidor.java</file>
         </group>
     </open-files>
 </project-private>

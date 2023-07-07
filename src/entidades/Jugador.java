@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
+import multijugador.Usuario;
 
 /**
  *
@@ -26,6 +27,10 @@ public class Jugador extends Entidad {
     private EstadoJugador estado;
     private PoderJugador poder;
     
+    // Atributos de multijugador
+    private Usuario usuario;
+    private boolean local;
+    
     // Atributos de animación
     private int tipo;
     private int deltaAnimacion;
@@ -37,9 +42,11 @@ public class Jugador extends Entidad {
     private static final int VELOCIDAD_ANIMACION = 17;
     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
-    public Jugador(float x, float y, int tipo) {
+    public Jugador(float x, float y, int tipo, Usuario usuario, boolean local) {
         super(x, y);
         this.tipo = tipo;
+        this.usuario = usuario;
+        this.local = local;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
         poder = PoderJugador.NINGUNO;
@@ -176,7 +183,11 @@ public class Jugador extends Entidad {
      * @param g
      */
     public void render(Graphics g) {
-        if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
+        if (animacionActual == null) {
+            return;
+        }
+        
+        if (indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
         if (izquierda && !derecha) {
