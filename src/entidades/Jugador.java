@@ -19,19 +19,26 @@ import static utils.UtilsMovimiento.puedeMoverse;
  */
 public class Jugador extends Entidad {
 
+    // Atributos de movimiento
     private boolean izquierda;
     private boolean derecha;
     private boolean arriba;
     private boolean abajo;
     private float velocidad;
-    private int tipo;
+
+    // Atributos de estado
     private EstadoJugador estado;
     private PoderJugador poder;
+
+    // Atributos de animación
+    private int tipo;
     private int deltaAnimacion;
     private int indiceAnimacion;
     private BufferedImage img;
     private BufferedImage[][] animacionesCorrer;
     private BufferedImage[] animacionActual;
+
+    // Atributos de nivel
     private int[][] nivelDatos;
 
     private static final int VELOCIDAD_ANIMACION = 17;
@@ -42,7 +49,7 @@ public class Jugador extends Entidad {
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.FUEGO;
+        poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox();
@@ -91,7 +98,7 @@ public class Jugador extends Entidad {
      * mueve
      */
     private void actualizarPosicion() {
-        float xVelocidad = 0, yVelocidad = 0;
+        float xVelocidad = 0f, yVelocidad = 0f;
 
         if (izquierda && !derecha) {
             xVelocidad = -velocidad;
@@ -105,9 +112,6 @@ public class Jugador extends Entidad {
             yVelocidad = velocidad;
         }
 
-        if (poder == PoderJugador.NINGUNO) {
-            altura = 30;
-        }
         if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
             this.x += xVelocidad;
             this.y += yVelocidad;
@@ -196,16 +200,14 @@ public class Jugador extends Entidad {
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
+        int yJugador = (int) y;
         if (poder == PoderJugador.NINGUNO) {
-            y -= 2;
+            yJugador -= 2;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-        }
-        if (poder == PoderJugador.NINGUNO) {
-            y += 2;
+            g.drawImage(animacionActual[indiceAnimacion], (int) x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
         }
     }
 

@@ -13,7 +13,13 @@ public class UtilsMovimiento {
             if (!esSolido(xDestino + anchoHitbox, yDestino + alturaHitbox, nivelDatos)) {
                 if (!esSolido(xDestino + anchoHitbox, yDestino, nivelDatos)) {
                     if (!esSolido(xDestino, yDestino + alturaHitbox, nivelDatos)) {
-                        return true;
+                        if (!esSolido(xDestino, yDestino + alturaHitbox / 2, nivelDatos)) {
+                            if (!esSolido(xDestino + anchoHitbox, yDestino + alturaHitbox / 2, nivelDatos)) {
+                                if (!esSolido(xDestino + anchoHitbox / 2, yDestino + alturaHitbox, nivelDatos)) {
+                                    return true;
+                                }
+                            }
+                        }
                     }
                 }
             }

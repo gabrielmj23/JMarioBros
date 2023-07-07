@@ -93,5 +93,4 @@ public class NivelConfig {
         return nivelUno;
     }
 
-    
 }
