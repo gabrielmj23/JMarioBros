@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
@@ -14,58 +15,43 @@ import multijugador.Usuario;
  * @author Gabriel
  * @author rober
  */
-public class Jugador extends Entidad {
+public class Jugador extends Entidad implements Serializable {
 
     // Atributos de movimiento
     private boolean izquierda;
     private boolean derecha;
     private boolean arriba;
     private boolean abajo;
-    private float velocidad;
-    
+
     // Atributos de estado
     private EstadoJugador estado;
     private PoderJugador poder;
-    
+
     // Atributos de multijugador
     private Usuario usuario;
-    private boolean local;
-    
+
     // Atributos de animación
     private int tipo;
     private int deltaAnimacion;
     private int indiceAnimacion;
-    private BufferedImage img;
-    private BufferedImage[][] animacionesCorrer;
-    private BufferedImage[] animacionActual;
+    private transient BufferedImage img;
+    private transient BufferedImage[][] animacionesCorrer;
+    private transient BufferedImage[] animacionActual;
 
+    private static final float VELOCIDAD = 1.7f;
     private static final int VELOCIDAD_ANIMACION = 17;
     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
-    public Jugador(float x, float y, int tipo, Usuario usuario, boolean local) {
+    public Jugador(float x, float y, int tipo, Usuario usuario) {
         super(x, y);
         this.tipo = tipo;
         this.usuario = usuario;
-        this.local = local;
-        velocidad = 1.7f;
+
         estado = EstadoJugador.IDLE;
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
-        // Cargar spritesheet y animacionesCorrer
-        try {
-            animacionesCorrer = new BufferedImage[3][3];
-            img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS[tipo]));
-            // Cargar animacionesCorrer de caminar
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    animacionesCorrer[i][j] = img.getSubimage(j * 32 + 32, i * 64, 32, 64);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error leyendo sprite de jugador");
-            System.out.println(e.getMessage());
-        }
+        cargarImagenes();
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -93,20 +79,39 @@ public class Jugador extends Entidad {
     }
 
     /**
+     * Carga el spritesheet y las animaciones de movimiento del jugador
+     */
+    public void cargarImagenes() {
+        try {
+            animacionesCorrer = new BufferedImage[3][3];
+            img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS[tipo]));
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    animacionesCorrer[i][j] = img.getSubimage(j * 32 + 32, i * 64, 32, 64);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error leyendo sprite de jugador");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
      * Modifica la posición del jugador dependiendo de la dirección en que se
      * mueve
      */
     private void actualizarPosicion() {
         if (izquierda && !derecha) {
-            x -= velocidad;
+            x -= VELOCIDAD;
         } else if (derecha && !izquierda) {
-            x += velocidad;
+            x += VELOCIDAD;
         }
 
         if (arriba && !abajo) {
-            y -= velocidad;
+            y -= VELOCIDAD;
         } else if (abajo && !arriba) {
-            y += velocidad;
+            y += VELOCIDAD;
         }
 
         // Actualizar estado de movimiento para evitar errores
@@ -136,6 +141,9 @@ public class Jugador extends Entidad {
      * personaje, según su estado y poder
      */
     private void obtenerAnimacion() {
+        if (img == null) {
+            cargarImagenes();
+        }
         int yAnimacion = 0;
         switch (poder) {
             case NINGUNO:
@@ -186,7 +194,7 @@ public class Jugador extends Entidad {
         if (animacionActual == null) {
             return;
         }
-        
+
         if (indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }

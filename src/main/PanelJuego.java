@@ -1,5 +1,6 @@
 package main;
 
+import entidades.JugadorMulti;
 import inputs.Teclado;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -33,7 +34,12 @@ public class PanelJuego extends JPanel {
      * Gestiona actualizaciones referentes a animaciones y objetos en el panel
      */
     public void actualizarJuego() {
-        juego.getJugador().actualizar();
+        for (JugadorMulti j: juego.getJugadores()) {
+            if (j != null) {
+                j.actualizar();
+            }
+        }
+        //juego.getJugador().actualizar();
         juego.getNivelConfig().actualizar();
     }
 

@@ -1,9 +1,14 @@
 package main;
 
 import entidades.Jugador;
+import entidades.JugadorMulti;
 import java.awt.Graphics;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import multijugador.Cliente;
+import multijugador.PaqueteUnir;
 import multijugador.Servidor;
 import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
@@ -17,14 +22,19 @@ import static utils.UtilsJugador.TOADETTE_INDEX;
  */
 public class Juego implements Runnable {
 
+    // Atributos de graficos
     private VentanaJuego ventana;
     private PanelJuego panel;
+    private NivelConfig nivelConfig;
+
+    // Atributos de hilos/concurrencia
     private Thread hiloJuego;
-    private Jugador jugador;
+
+    // Atributos de multijugador
+    private ArrayList<JugadorMulti> jugadores;
     private Servidor servidor;
     private Cliente cliente;
-    private NivelConfig nivelConfig;
-    
+
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
 
@@ -41,6 +51,7 @@ public class Juego implements Runnable {
         panel = new PanelJuego(this);
         ventana = new VentanaJuego(panel);
         panel.requestFocus();
+
         if (JOptionPane.showConfirmDialog(panel, "Iniciar servidor?") == 0) {
             servidor = new Servidor(this);
             servidor.start();
@@ -48,24 +59,52 @@ public class Juego implements Runnable {
         cliente = new Cliente(this, "localhost");
         cliente.start();
         
+        // Unirse a la partida
+        PaqueteUnir paquete = new PaqueteUnir(jugadores.get(0));
+        System.out.println("ENVIA PAQUETE DESDE JUEGO");
+        paquete.escribirDatos(cliente);
+
         // Iniciar ciclo de juego
         hiloJuego = new Thread(this);
         hiloJuego.start();
     }
 
+    /**
+     * Devuelve el jugador local, siempre en la primera posicion del arreglo
+     * jugadores
+     *
+     * @return Jugador local de esta instancia de juego
+     */
     public Jugador getJugador() {
-        return jugador;
+        return jugadores.get(0);
+    }
+
+    public ArrayList<JugadorMulti> getJugadores() {
+        return jugadores;
     }
 
     public NivelConfig getNivelConfig() {
         return nivelConfig;
     }
 
+    public void agregarJugador(JugadorMulti jugador) {
+        if (jugadores.size() == 4) {
+            System.out.println("Capacidad maxima alcanzada");
+            return;
+        }
+        jugadores.add(jugador);
+    }
+
     /**
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        jugador = new Jugador(200, 200, MARIO_INDEX, null, true);
+        jugadores = new ArrayList();
+        try {
+            jugadores.add(new JugadorMulti(200f, 200f, MARIO_INDEX, null, InetAddress.getByName("localhost"), 1331));
+        } catch (UnknownHostException e) {
+            System.out.println("Error creando jugador local");
+        }
         nivelConfig = new NivelConfig(this);
     }
 
@@ -83,14 +122,18 @@ public class Juego implements Runnable {
      */
     public void render(Graphics g) {
         nivelConfig.dibujar(g);
-        jugador.render(g);
+        for (JugadorMulti j : jugadores) {
+            if (j != null) {
+                j.render(g);
+            }
+        }
     }
 
     /**
      * Detiene el juego cuando se pierde el enfoque de la ventana
      */
     public void ventanaPerdida() {
-        jugador.resetearEstado();
+        jugadores.get(0).resetearEstado();
     }
 
     /**
@@ -99,7 +142,6 @@ public class Juego implements Runnable {
      */
     @Override
     public void run() {
-        cliente.enviarDatos("Ping".getBytes());
         final double TIEMPO_POR_FRAME = 1000000000.0 / FPS_FIJOS;
         final double TIEMPO_POR_ACTUALIZAR = 1000000000.0 / UPS_FIJOS;
         long tiempoPrevio = System.nanoTime();

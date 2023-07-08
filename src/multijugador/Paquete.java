@@ -1,5 +1,10 @@
 package multijugador;
 
+import entidades.JugadorMulti;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 /**
  *
  * @author Gabriel
@@ -41,9 +46,22 @@ public abstract class Paquete {
         String msj = new String(datos).trim();
         return msj.substring(2);
     }
-    
+
+    public JugadorMulti leerJugador(byte[] datos) throws IOException, ClassNotFoundException {
+        int inicioJ = "00".getBytes().length;
+        byte[] datosJugador = new byte[datos.length - inicioJ];
+        for (int i = inicioJ; i < datos.length; i++) {
+            datosJugador[i - inicioJ] = datos[i];
+        }
+        ByteArrayInputStream streamLectura = new ByteArrayInputStream(datosJugador);
+        ObjectInputStream streamObjeto = new ObjectInputStream(streamLectura);
+        Object o = streamObjeto.readObject();
+        System.out.println(o.toString());
+        return (JugadorMulti) o;
+    }
+
     public static TiposPaquete determinarPaquete(int id) {
-        for (TiposPaquete p: TiposPaquete.values()) {
+        for (TiposPaquete p : TiposPaquete.values()) {
             if (p.getId() == id) {
                 return p;
             }
@@ -64,4 +82,11 @@ public abstract class Paquete {
      * @param servidor
      */
     public abstract void escribirDatos(Servidor servidor);
+
+    /**
+     * Recibe del paquete sus datos en forma de byte[]
+     *
+     * @return Datos serializados en el paquete
+     */
+    public abstract byte[] getDatos();
 }

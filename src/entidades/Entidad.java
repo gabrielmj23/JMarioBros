@@ -1,10 +1,12 @@
 package entidades;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Gabriel
  */
-public abstract class Entidad {
+public abstract class Entidad implements Serializable {
 
     protected float x;
     protected float y;
