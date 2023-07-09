@@ -77,13 +77,35 @@ public class Juego implements Runnable {
     public NivelConfig getNivelConfig() {
         return nivelConfig;
     }
+    
+    public Cliente getCliente() {
+        return cliente;
+    }
+    
+    public Servidor getServidor() {
+        return servidor;
+    }
 
+    /**
+     * Agrega un jugador a la partida
+     * 
+     * @param jugador
+     */
     public void agregarJugador(JugadorMulti jugador) {
         if (jugadores.size() == 4) {
             System.out.println("Capacidad maxima alcanzada");
             return;
         }
         jugadores.add(jugador);
+    }
+    
+    /**
+     * Elimina un jugador en caso de desconexión
+     * 
+     * @param jugador
+     */
+    public void eliminarJugador(JugadorMulti jugador) {
+        jugadores.remove(jugador);
     }
 
     /**

@@ -83,6 +83,9 @@ public class Cliente extends Thread {
                 juego.agregarJugador(jugador);
                 break;
             case DESCONECTAR:
+                paquete = new PaqueteDesconectar(datos);
+                System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ABANDONO EL JUEGO");
+                juego.eliminarJugador(((PaqueteDesconectar) paquete).getJugador());
                 break;
         }
     }

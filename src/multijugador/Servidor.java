@@ -72,18 +72,29 @@ public class Servidor extends Thread {
             case UNIR:
                 paquete = new PaqueteUnir(datos);
                 System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] UNIDO");
-                JugadorMulti jugador = ((PaqueteUnir) paquete).getJugador();
-                JugadorMulti paraConexion = new JugadorMulti(jugador.getX(), jugador.getY(), 0, jugador.getUsuario(), ip, puerto);
+                JugadorMulti jugadorConectar = ((PaqueteUnir) paquete).getJugador();
+                JugadorMulti paraConexion = new JugadorMulti(
+                        jugadorConectar.getX(), jugadorConectar.getY(), 0, jugadorConectar.getUsuario(), ip, puerto
+                );
                 agregarConexion(paraConexion, (PaqueteUnir) paquete);
                 break;
             case DESCONECTAR:
+                paquete = new PaqueteDesconectar(datos);
+                System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ABANDONO EL SERVIDOR");
+                eliminarConexion((PaqueteDesconectar) paquete);
                 break;
         }
     }
 
+    /**
+     * Agregar un jugador a los jugadores conectados, o actualiza su ip y puerto
+     *
+     * @param jugador
+     * @param paquete
+     */
     public void agregarConexion(JugadorMulti jugador, PaqueteUnir paquete) {
         boolean conectado = false;
-        for (JugadorMulti j: jugadoresConectados) {
+        for (JugadorMulti j : jugadoresConectados) {
             // Si el paquete corresponde al jugador, solo actualizar atributos de conexion
             if (j.getUsuario().getLogin().equals(jugador.getUsuario().getLogin())) {
                 if (j.getIp() == null) {
@@ -104,6 +115,17 @@ public class Servidor extends Thread {
         if (!conectado) {
             jugadoresConectados.add(jugador);
         }
+    }
+
+    /**
+     * Elimina un jugador de la lista de jugadores conectados
+     *
+     * @param paquete
+     */
+    public void eliminarConexion(PaqueteDesconectar paquete) {
+        JugadorMulti jugador = paquete.getJugador();
+        jugadoresConectados.remove(jugador);
+        paquete.escribirDatos(this);
     }
 
     /**
