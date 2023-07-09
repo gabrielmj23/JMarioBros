@@ -26,5 +26,13 @@ public class JugadorMulti extends Jugador implements Serializable {
     public InetAddress getIp() {
         return ip;
     }
+    
+    public void setPuerto(int puerto) {
+        this.puerto = puerto;
+    }
+    
+    public void setIp(InetAddress ip) {
+        this.ip = ip;
+    }
 
 }

@@ -1,5 +1,6 @@
 package multijugador;
 
+import entidades.JugadorMulti;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -7,6 +8,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import main.Juego;
+import static multijugador.Paquete.TiposPaquete.DESCONECTAR;
+import static multijugador.Paquete.TiposPaquete.INVALIDO;
+import static multijugador.Paquete.TiposPaquete.UNIR;
 
 /**
  *
@@ -38,15 +42,48 @@ public class Cliente extends Thread {
     @Override
     public void run() {
         while (true) {
-            byte[] datos = new byte[1024];
+            byte[] datos = new byte[2048];
             DatagramPacket paquete = new DatagramPacket(datos, datos.length); // Paquete que llegará al server
             try {
                 socket.receive(paquete);
-                System.out.println("SERVIDOR > " + new String(paquete.getData()));
+                interpretarPaquete(paquete.getData(), paquete.getAddress(), paquete.getPort());
             } catch (IOException e) {
                 System.out.println("Error recibiendo paquete");
                 System.out.println(e.getMessage());
+            } catch (ClassNotFoundException e) {
+                System.out.println("Error antes de interpretar paquete");
+                System.out.println(e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Decide qué acción tomar según el tipo de paquete recibido
+     *
+     * @param datos
+     * @param ip
+     * @param puerto
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void interpretarPaquete(byte[] datos, InetAddress ip, int puerto) throws IOException, ClassNotFoundException {
+        String msj = new String(datos).trim();
+        Paquete.TiposPaquete tipo = Paquete.determinarPaquete(Integer.parseInt(msj.substring(0, 2)));
+
+        // Ejecutar distintas acciones dependiendo del tipo paquete
+        Paquete paquete;
+        switch (tipo) {
+            default:
+            case INVALIDO:
+                break;
+            case UNIR:
+                paquete = new PaqueteUnir(datos);
+                System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ENTRO AL JUEGO");
+                JugadorMulti jugador = ((PaqueteUnir) paquete).getJugador();
+                juego.agregarJugador(jugador);
+                break;
+            case DESCONECTAR:
+                break;
         }
     }
 

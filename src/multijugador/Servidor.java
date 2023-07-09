@@ -34,7 +34,7 @@ public class Servidor extends Thread {
     @Override
     public void run() {
         while (true) {
-            byte[] datos = new byte[1024];
+            byte[] datos = new byte[2048];
             DatagramPacket paquete = new DatagramPacket(datos, datos.length);
             try {
                 socket.receive(paquete);
@@ -61,22 +61,48 @@ public class Servidor extends Thread {
      */
     private void interpretarPaquete(byte[] datos, InetAddress ip, int puerto) throws IOException, ClassNotFoundException {
         String msj = new String(datos).trim();
-        System.out.println(Integer.parseInt("00"));
         TiposPaquete tipo = Paquete.determinarPaquete(Integer.parseInt(msj.substring(0, 2)));
 
         // Ejecutar distintas acciones dependiendo del tipo paquete
+        Paquete paquete;
         switch (tipo) {
             default:
             case INVALIDO:
                 break;
             case UNIR:
-                PaqueteUnir paquete = new PaqueteUnir(datos);
+                paquete = new PaqueteUnir(datos);
                 System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] UNIDO");
-                JugadorMulti jugador = paquete.getJugador();
-                jugadoresConectados.add(jugador);
+                JugadorMulti jugador = ((PaqueteUnir) paquete).getJugador();
+                JugadorMulti paraConexion = new JugadorMulti(jugador.getX(), jugador.getY(), 0, jugador.getUsuario(), ip, puerto);
+                agregarConexion(paraConexion, (PaqueteUnir) paquete);
                 break;
             case DESCONECTAR:
                 break;
+        }
+    }
+
+    public void agregarConexion(JugadorMulti jugador, PaqueteUnir paquete) {
+        boolean conectado = false;
+        for (JugadorMulti j: jugadoresConectados) {
+            // Si el paquete corresponde al jugador, solo actualizar atributos de conexion
+            if (j.getUsuario().getLogin().equals(jugador.getUsuario().getLogin())) {
+                if (j.getIp() == null) {
+                    j.setIp(jugador.getIp());
+                }
+                if (j.getPuerto() <= 0) {
+                    j.setPuerto(jugador.getPuerto());
+                }
+                conectado = true;
+                System.out.println("Hola");
+            } else {
+                // Si no corresponde, informarle a su cliente del nuevo jugador en la partida
+                enviarDatos(paquete.getDatos(), j.getIp(), j.getPuerto());
+                PaqueteUnir p = new PaqueteUnir(j);
+                enviarDatos(p.getDatos(), jugador.getIp(), jugador.getPuerto());
+            }
+        }
+        if (!conectado) {
+            jugadoresConectados.add(jugador);
         }
     }
 

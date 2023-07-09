@@ -29,4 +29,8 @@ public class Usuario implements Serializable {
         this.contraseña = contraseña;
         this.avatar = avatar;
     }
+    
+    public String getLogin() {
+        return login;
+    }
 }

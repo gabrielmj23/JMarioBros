@@ -5,11 +5,13 @@ import entidades.JugadorMulti;
 import java.awt.Graphics;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import multijugador.Cliente;
 import multijugador.PaqueteUnir;
 import multijugador.Servidor;
+import multijugador.Usuario;
 import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
@@ -52,19 +54,8 @@ public class Juego implements Runnable {
         ventana = new VentanaJuego(panel);
         panel.requestFocus();
 
-        if (JOptionPane.showConfirmDialog(panel, "Iniciar servidor?") == 0) {
-            servidor = new Servidor(this);
-            servidor.start();
-        }
-        cliente = new Cliente(this, "localhost");
-        cliente.start();
-        
-        // Unirse a la partida
-        PaqueteUnir paquete = new PaqueteUnir(jugadores.get(0));
-        System.out.println("ENVIA PAQUETE DESDE JUEGO");
-        paquete.escribirDatos(cliente);
-
         // Iniciar ciclo de juego
+        iniciarConexiones();
         hiloJuego = new Thread(this);
         hiloJuego.start();
     }
@@ -75,7 +66,7 @@ public class Juego implements Runnable {
      *
      * @return Jugador local de esta instancia de juego
      */
-    public Jugador getJugador() {
+    public final Jugador getJugador() {
         return jugadores.get(0);
     }
 
@@ -100,12 +91,31 @@ public class Juego implements Runnable {
      */
     private void iniciarClases() {
         jugadores = new ArrayList();
-        try {
-            jugadores.add(new JugadorMulti(200f, 200f, MARIO_INDEX, null, InetAddress.getByName("localhost"), 1331));
-        } catch (UnknownHostException e) {
-            System.out.println("Error creando jugador local");
-        }
+        String login = JOptionPane.showInputDialog(panel, "Ingresar usuario");
+        jugadores.add(new JugadorMulti(
+                200f, 200f, MARIO_INDEX, new Usuario("a", "a", login, "a"), null, -1)
+        );
         nivelConfig = new NivelConfig(this);
+    }
+
+    /**
+     * Inicializa las conexiones para el multijugador
+     */
+    private void iniciarConexiones() {
+        if (JOptionPane.showConfirmDialog(panel, "Iniciar servidor?") == 0) {
+            servidor = new Servidor(this);
+            servidor.start();
+        }
+        cliente = new Cliente(this, "localhost");
+        cliente.start();
+
+        // Unirse a la partida
+        PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) getJugador());
+        System.out.println("ENVIA PAQUETE DESDE JUEGO");
+        if (servidor != null) {
+            servidor.agregarConexion((JugadorMulti) getJugador(), paquete);
+        }
+        paquete.escribirDatos(cliente);
     }
 
     /**

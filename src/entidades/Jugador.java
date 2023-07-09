@@ -18,29 +18,29 @@ import multijugador.Usuario;
 public class Jugador extends Entidad implements Serializable {
 
     // Atributos de movimiento
-    private boolean izquierda;
-    private boolean derecha;
-    private boolean arriba;
-    private boolean abajo;
+    protected boolean izquierda;
+    protected boolean derecha;
+    protected boolean arriba;
+    protected boolean abajo;
 
     // Atributos de estado
-    private EstadoJugador estado;
-    private PoderJugador poder;
+    protected EstadoJugador estado;
+    protected PoderJugador poder;
 
     // Atributos de multijugador
-    private Usuario usuario;
+    protected Usuario usuario;
 
     // Atributos de animación
-    private int tipo;
-    private int deltaAnimacion;
-    private int indiceAnimacion;
-    private transient BufferedImage img;
-    private transient BufferedImage[][] animacionesCorrer;
-    private transient BufferedImage[] animacionActual;
+    protected int tipo;
+    protected int deltaAnimacion;
+    protected int indiceAnimacion;
+    protected transient BufferedImage img;
+    protected transient BufferedImage[][] animacionesCorrer;
+    protected transient BufferedImage[] animacionActual;
 
-    private static final float VELOCIDAD = 1.7f;
-    private static final int VELOCIDAD_ANIMACION = 17;
-    private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
+    protected static final float VELOCIDAD = 1.7f;
+    protected static final int VELOCIDAD_ANIMACION = 17;
+    protected static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Jugador(float x, float y, int tipo, Usuario usuario) {
         super(x, y);
@@ -52,6 +52,10 @@ public class Jugador extends Entidad implements Serializable {
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         cargarImagenes();
+    }
+    
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -81,7 +85,7 @@ public class Jugador extends Entidad implements Serializable {
     /**
      * Carga el spritesheet y las animaciones de movimiento del jugador
      */
-    public void cargarImagenes() {
+    public final void cargarImagenes() {
         try {
             animacionesCorrer = new BufferedImage[3][3];
             img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS[tipo]));
@@ -101,7 +105,7 @@ public class Jugador extends Entidad implements Serializable {
      * Modifica la posición del jugador dependiendo de la dirección en que se
      * mueve
      */
-    private void actualizarPosicion() {
+    protected void actualizarPosicion() {
         if (izquierda && !derecha) {
             x -= VELOCIDAD;
         } else if (derecha && !izquierda) {
@@ -125,7 +129,7 @@ public class Jugador extends Entidad implements Serializable {
     /**
      * Actualiza el frame de animación al correr según pasa el tiempo
      */
-    private void actualizarFrameAnimacion() {
+    protected void actualizarFrameAnimacion() {
         deltaAnimacion++;
         if (deltaAnimacion >= VELOCIDAD_ANIMACION) {
             deltaAnimacion = 0;
@@ -140,7 +144,7 @@ public class Jugador extends Entidad implements Serializable {
      * Guarda en animacionActual el arreglo que contenga la animación del
      * personaje, según su estado y poder
      */
-    private void obtenerAnimacion() {
+    protected void obtenerAnimacion() {
         if (img == null) {
             cargarImagenes();
         }

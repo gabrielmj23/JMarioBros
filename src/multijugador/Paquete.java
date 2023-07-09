@@ -70,7 +70,7 @@ public abstract class Paquete {
     }
 
     /**
-     * Envía un paquete de datos a un cliente
+     * Envía un paquete de datos desde un cliente
      *
      * @param cliente
      */
