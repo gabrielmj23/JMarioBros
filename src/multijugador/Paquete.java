@@ -17,7 +17,8 @@ public abstract class Paquete {
     public static enum TiposPaquete {
         INVALIDO(-1),
         UNIR(00),
-        DESCONECTAR(01);
+        DESCONECTAR(01),
+        ACTUALIZAR(02);
 
         private int id;
 
@@ -55,9 +56,7 @@ public abstract class Paquete {
         }
         ByteArrayInputStream streamLectura = new ByteArrayInputStream(datosJugador);
         ObjectInputStream streamObjeto = new ObjectInputStream(streamLectura);
-        Object o = streamObjeto.readObject();
-        System.out.println(o.toString());
-        return (JugadorMulti) o;
+        return (JugadorMulti) streamObjeto.readObject();
     }
 
     public static TiposPaquete determinarPaquete(int id) {

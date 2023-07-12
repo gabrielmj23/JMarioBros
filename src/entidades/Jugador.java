@@ -53,9 +53,45 @@ public class Jugador extends Entidad implements Serializable {
         indiceAnimacion = 0;
         cargarImagenes();
     }
-    
+
+    public boolean isIzquierda() {
+        return izquierda;
+    }
+
+    public boolean isDerecha() {
+        return derecha;
+    }
+
+    public boolean isArriba() {
+        return arriba;
+    }
+
+    public boolean isAbajo() {
+        return abajo;
+    }
+
     public Usuario getUsuario() {
         return usuario;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+
+    public EstadoJugador getEstado() {
+        return estado;
+    }
+
+    public PoderJugador getPoder() {
+        return poder;
+    }
+
+    public int getDeltaAnimacion() {
+        return deltaAnimacion;
+    }
+
+    public int getIndiceAnimacion() {
+        return indiceAnimacion;
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -76,6 +112,14 @@ public class Jugador extends Entidad implements Serializable {
 
     public void setEstado(EstadoJugador estado) {
         this.estado = estado;
+    }
+
+    public void setPoder(PoderJugador poder) {
+        this.poder = poder;
+    }
+
+    public void setDeltaAnimacion(int deltaAnimacion) {
+        this.deltaAnimacion = deltaAnimacion;
     }
 
     public void setIndiceAnimacion(int indiceAnimacion) {
@@ -144,7 +188,7 @@ public class Jugador extends Entidad implements Serializable {
      * Guarda en animacionActual el arreglo que contenga la animación del
      * personaje, según su estado y poder
      */
-    protected void obtenerAnimacion() {
+    public void obtenerAnimacion() {
         if (img == null) {
             cargarImagenes();
         }
@@ -196,7 +240,7 @@ public class Jugador extends Entidad implements Serializable {
      */
     public void render(Graphics g) {
         if (animacionActual == null) {
-            return;
+            obtenerAnimacion();
         }
 
         if (indiceAnimacion >= animacionActual.length) {

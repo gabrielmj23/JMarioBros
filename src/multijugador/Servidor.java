@@ -74,7 +74,7 @@ public class Servidor extends Thread {
                 System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] UNIDO");
                 JugadorMulti jugadorConectar = ((PaqueteUnir) paquete).getJugador();
                 JugadorMulti paraConexion = new JugadorMulti(
-                        jugadorConectar.getX(), jugadorConectar.getY(), 0, jugadorConectar.getUsuario(), ip, puerto
+                        jugadorConectar.getX(), jugadorConectar.getY(), jugadorConectar.getTipo(), jugadorConectar.getUsuario(), ip, puerto
                 );
                 agregarConexion(paraConexion, (PaqueteUnir) paquete);
                 break;
@@ -82,6 +82,14 @@ public class Servidor extends Thread {
                 paquete = new PaqueteDesconectar(datos);
                 System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ABANDONO EL SERVIDOR");
                 eliminarConexion((PaqueteDesconectar) paquete);
+                break;
+            case ACTUALIZAR:
+                //System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ENVIO ACTUALIZACION");
+                for (JugadorMulti j: jugadoresConectados) {
+                    if (j.getIp() != ip && j.getPuerto() != puerto) {
+                        enviarDatos(datos, j.getIp(), j.getPuerto());
+                    }
+                }
                 break;
         }
     }
@@ -104,7 +112,6 @@ public class Servidor extends Thread {
                     j.setPuerto(jugador.getPuerto());
                 }
                 conectado = true;
-                System.out.println("Hola");
             } else {
                 // Si no corresponde, informarle a su cliente del nuevo jugador en la partida
                 enviarDatos(paquete.getDatos(), j.getIp(), j.getPuerto());

@@ -3,9 +3,6 @@ package main;
 import entidades.Jugador;
 import entidades.JugadorMulti;
 import java.awt.Graphics;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import multijugador.Cliente;
@@ -77,18 +74,18 @@ public class Juego implements Runnable {
     public NivelConfig getNivelConfig() {
         return nivelConfig;
     }
-    
+
     public Cliente getCliente() {
         return cliente;
     }
-    
+
     public Servidor getServidor() {
         return servidor;
     }
 
     /**
      * Agrega un jugador a la partida
-     * 
+     *
      * @param jugador
      */
     public void agregarJugador(JugadorMulti jugador) {
@@ -98,14 +95,34 @@ public class Juego implements Runnable {
         }
         jugadores.add(jugador);
     }
-    
+
     /**
      * Elimina un jugador en caso de desconexión
-     * 
+     *
      * @param jugador
      */
     public void eliminarJugador(JugadorMulti jugador) {
         jugadores.remove(jugador);
+    }
+
+    /**
+     * Actualiza los datos de un jugador como indique el servidor
+     *
+     * @param jugador
+     */
+    public void actualizarJugador(JugadorMulti jugador) {
+        int idx = jugadores.indexOf(jugador);
+        jugadores.get(idx).setX(jugador.getX());
+        jugadores.get(idx).setY(jugador.getY());
+        jugadores.get(idx).setEstado(jugador.getEstado());
+        jugadores.get(idx).setPoder(jugador.getPoder());
+        jugadores.get(idx).setDeltaAnimacion(jugador.getDeltaAnimacion());
+        jugadores.get(idx).setIndiceAnimacion(jugador.getIndiceAnimacion());
+        jugadores.get(idx).setDerecha(jugador.isDerecha());
+        jugadores.get(idx).setIzquierda(jugador.isIzquierda());
+        jugadores.get(idx).setArriba(jugador.isArriba());
+        jugadores.get(idx).setAbajo(jugador.isAbajo());
+        jugadores.get(idx).obtenerAnimacion();
     }
 
     /**
@@ -133,7 +150,6 @@ public class Juego implements Runnable {
 
         // Unirse a la partida
         PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) getJugador());
-        System.out.println("ENVIA PAQUETE DESDE JUEGO");
         if (servidor != null) {
             servidor.agregarConexion((JugadorMulti) getJugador(), paquete);
         }
@@ -155,9 +171,7 @@ public class Juego implements Runnable {
     public void render(Graphics g) {
         nivelConfig.dibujar(g);
         for (JugadorMulti j : jugadores) {
-            if (j != null) {
-                j.render(g);
-            }
+            j.render(g);
         }
     }
 
