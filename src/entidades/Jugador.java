@@ -52,7 +52,7 @@ public class Jugador extends Entidad {
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
-        iniHitbox();
+        iniHitbox(x, y, ancho, altura);
         // Cargar spritesheet y animacionesCorrer
         try {
             animacionesCorrer = new BufferedImage[3][3];
@@ -66,6 +66,16 @@ public class Jugador extends Entidad {
         } catch (IOException e) {
             System.out.println("Error leyendo sprite de jugador");
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void iniHitbox(float x, float y, int ancho, int altura) {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+        } else {
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
         }
     }
 
@@ -113,8 +123,8 @@ public class Jugador extends Entidad {
         }
 
         if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
-            this.x += xVelocidad;
-            this.y += yVelocidad;
+            hitbox.x += xVelocidad;
+            hitbox.y += yVelocidad;
         }
 
         // Actualizar estado de movimiento para evitar errores
@@ -183,7 +193,7 @@ public class Jugador extends Entidad {
         }
         obtenerAnimacion();
         actualizarPosicion();
-        actualizarHitbox();
+
     }
 
     public void cargarNivelDatos(int[][] nivelDatos) {
@@ -200,36 +210,16 @@ public class Jugador extends Entidad {
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
-        int yJugador = (int) y;
+        int yJugador = (int) hitbox.y;
         if (poder == PoderJugador.NINGUNO) {
-            yJugador -= 2;
+            yJugador -= 40;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-        }
-    }
-
-    @Override
-    public void iniHitbox() {
-        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
-        {
-            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
-        } else {
-            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
-        }
-    }
-
-    @Override
-    public void actualizarHitbox() {
-        if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
-        {
-            hitbox.x = x + 4;
-            hitbox.y = y + 40;
-        } else {
-            hitbox.x = x;
-            hitbox.y = y + 2;
+            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }
 

@@ -30,9 +30,9 @@ public abstract class Entidad {
 
     }
 
-    public abstract void iniHitbox();
+    public abstract void iniHitbox(float x,float  y, int ancho,  int altura);
 
-    public abstract void actualizarHitbox();
+    
 
     public Rectangle2D.Float getHitbox() {
         return hitbox;
