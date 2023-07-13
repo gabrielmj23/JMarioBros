@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.geom.Rectangle2D;
 import main.Juego;
 
 /**
@@ -44,6 +45,44 @@ public class UtilsMovimiento {
             return true;
         }
         return false;
+    }
+
+    public static float ObtenerXPosLimite(Rectangle2D.Float hitbox, float xVelocidad) {
+        int casillaActual = (int) (hitbox.x / Juego.TAMAÑO_REAL_CASILLAS);
+        if (xVelocidad > 0) {
+            //Derecha
+            int casillaX = casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
+            int xDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS - hitbox.width);
+            return casillaX + xDesfase - 1;
+        } else {
+            //Izquierda
+            return casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
+
+        }
+    }
+
+    public static float obtenerYPosLimite(Rectangle2D.Float hitbox, float aireVelocidad) {
+        int casillaActual = (int) (hitbox.y / Juego.TAMAÑO_REAL_CASILLAS);
+        if (aireVelocidad > 0) {
+            //cayendo - piso
+            int casillaY = casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
+            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS - hitbox.height);
+            return casillaY + yDesfase - 1;
+        } else {
+            //Saltando
+            return casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
+
+        }
+    }
+
+    public static boolean EstaEnSuelo(Rectangle2D.Float hitbox, int[][] nivelDatos) {
+        //Revisar las esquinas inferiores
+        if (!esSolido(hitbox.x, hitbox.y + hitbox.height + 1, nivelDatos)) {
+            if (!esSolido(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, nivelDatos)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

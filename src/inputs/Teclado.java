@@ -36,6 +36,8 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_D:
                 panel.getJuego().getJugador().setDerecha(true);
                 break;
+            case KeyEvent.VK_SPACE:
+                panel.getJuego().getJugador().setSalto(true);
         }
     }
 
@@ -58,6 +60,8 @@ public class Teclado implements KeyListener {
                 panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setDerecha(false);
                 break;
+            case KeyEvent.VK_SPACE:
+                panel.getJuego().getJugador().setSalto(false);
         }
     }
 

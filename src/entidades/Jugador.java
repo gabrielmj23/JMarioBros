@@ -8,9 +8,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import main.Juego;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
-import static utils.UtilsMovimiento.puedeMoverse;
+import static utils.UtilsMovimiento.*;
 
 /**
  *
@@ -25,6 +26,14 @@ public class Jugador extends Entidad {
     private boolean arriba;
     private boolean abajo;
     private float velocidad;
+    private boolean salto;
+
+    //Salto y gravedad
+    private float aireVelocidad = 0f;
+    private float gravedad = 0.04f * Juego.ESCALA;
+    private float saltoVelocidad = -2.25f * Juego.ESCALA;
+    private float velocidadCaidaColision = 0.5f * Juego.ESCALA;
+    private boolean enVuelo = false;
 
     // Atributos de estado
     private EstadoJugador estado;
@@ -94,6 +103,10 @@ public class Jugador extends Entidad {
     public void setAbajo(boolean abajo) {
         this.abajo = abajo;
     }
+    
+    public void setSalto(boolean salto) {
+        this.salto = salto;
+    }
 
     public void setEstado(EstadoJugador estado) {
         this.estado = estado;
@@ -108,31 +121,73 @@ public class Jugador extends Entidad {
      * mueve
      */
     private void actualizarPosicion() {
-        float xVelocidad = 0f, yVelocidad = 0f;
-
-        if (izquierda && !derecha) {
+        float xVelocidad = 0f;
+        
+        if(salto)
+            salto();
+        if (izquierda) {
             xVelocidad = -velocidad;
-        } else if (derecha && !izquierda) {
+        } else if (derecha) {
             xVelocidad = velocidad;
         }
-
-        if (arriba && !abajo) {
-            yVelocidad = -velocidad;
-        } else if (abajo && !arriba) {
-            yVelocidad = velocidad;
+        
+        if(!enVuelo){
+            if(!EstaEnSuelo(hitbox, nivelDatos)){
+                enVuelo = true;
+            }
         }
 
-        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
-            hitbox.x += xVelocidad;
-            hitbox.y += yVelocidad;
+        if (enVuelo) {
+
+            if (puedeMoverse(hitbox.x, hitbox.y + aireVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+                hitbox.y += aireVelocidad;
+                aireVelocidad += gravedad;
+                actualizarXPos(xVelocidad);
+            } else {
+                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                if (aireVelocidad > 0) {
+                    reiniciarEnVuelo();
+                } else {
+                    aireVelocidad = velocidadCaidaColision;
+                }
+                actualizarXPos(xVelocidad);
+            }
+
+        } else {
+            actualizarXPos(xVelocidad);
         }
 
+        //       if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+        //           hitbox.x += xVelocidad;
+        //           hitbox.y += yVelocidad;
+        //       }
         // Actualizar estado de movimiento para evitar errores
         if ((izquierda ^ derecha) || (arriba ^ abajo)) {
             estado = EstadoJugador.CORRIENDO;
         } else {
             estado = EstadoJugador.IDLE;
         }
+    }
+
+    private void actualizarXPos(float xVelocidad) {
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
+            hitbox.x += xVelocidad;
+        } else {
+            hitbox.x = ObtenerXPosLimite(hitbox, xVelocidad);
+        }
+    }
+
+    private void reiniciarEnVuelo() {
+        enVuelo = false;
+        aireVelocidad = 0;
+
+    }
+    
+    private void salto(){
+        if(enVuelo)
+            return;
+        enVuelo = true;
+        aireVelocidad = saltoVelocidad;
     }
 
     /**
