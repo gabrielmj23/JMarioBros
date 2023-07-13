@@ -3,6 +3,7 @@ package inputs;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import main.PanelJuego;
+import utils.UtilsJugador;
 
 /**
  *
@@ -25,19 +26,14 @@ public class Teclado implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
-                panel.getJuego().getJugador().setArriba(true);
+                panel.getJuego().getJugador().setSalto(true);
                 break;
             case KeyEvent.VK_A:
                 panel.getJuego().getJugador().setIzquierda(true);
                 break;
-            case KeyEvent.VK_S:
-                panel.getJuego().getJugador().setAbajo(true);
-                break;
             case KeyEvent.VK_D:
                 panel.getJuego().getJugador().setDerecha(true);
                 break;
-            case KeyEvent.VK_SPACE:
-                panel.getJuego().getJugador().setSalto(true);
         }
     }
 
@@ -45,23 +41,16 @@ public class Teclado implements KeyListener {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
-                panel.getJuego().getJugador().setIndiceAnimacion(0);
-                panel.getJuego().getJugador().setArriba(false);
+                panel.getJuego().getJugador().setSalto(false);
                 break;
             case KeyEvent.VK_A:
                 panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setIzquierda(false);
                 break;
-            case KeyEvent.VK_S:
-                panel.getJuego().getJugador().setIndiceAnimacion(0);
-                panel.getJuego().getJugador().setAbajo(false);
-                break;
             case KeyEvent.VK_D:
                 panel.getJuego().getJugador().setIndiceAnimacion(0);
                 panel.getJuego().getJugador().setDerecha(false);
                 break;
-            case KeyEvent.VK_SPACE:
-                panel.getJuego().getJugador().setSalto(false);
         }
     }
 

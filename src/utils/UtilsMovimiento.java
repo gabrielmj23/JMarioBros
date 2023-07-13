@@ -66,7 +66,7 @@ public class UtilsMovimiento {
         if (aireVelocidad > 0) {
             //cayendo - piso
             int casillaY = casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
-            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS - hitbox.height);
+            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS*2 - hitbox.height);
             return casillaY + yDesfase - 1;
         } else {
             //Saltando

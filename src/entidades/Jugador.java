@@ -58,7 +58,7 @@ public class Jugador extends Entidad {
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.NINGUNO;
+        poder = PoderJugador.SUPER;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox(x, y, ancho, altura);
@@ -103,7 +103,7 @@ public class Jugador extends Entidad {
     public void setAbajo(boolean abajo) {
         this.abajo = abajo;
     }
-    
+
     public void setSalto(boolean salto) {
         this.salto = salto;
     }
@@ -122,19 +122,20 @@ public class Jugador extends Entidad {
      */
     private void actualizarPosicion() {
         float xVelocidad = 0f;
-        
-        if(salto)
+
+        if (salto) {
             salto();
+        }
         if (izquierda) {
             xVelocidad -= velocidad;
         }
-        
+
         if (derecha) {
             xVelocidad += velocidad;
         }
-        
-        if(!enVuelo){
-            if(!EstaEnSuelo(hitbox, nivelDatos)){
+
+        if (!enVuelo) {
+            if (!EstaEnSuelo(hitbox, nivelDatos)) {
                 enVuelo = true;
             }
         }
@@ -146,7 +147,9 @@ public class Jugador extends Entidad {
                 aireVelocidad += gravedad;
                 actualizarXPos(xVelocidad);
             } else {
-                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                if (poder == PoderJugador.NINGUNO) {
+                    hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                }
                 if (aireVelocidad > 0) {
                     reiniciarEnVuelo();
                 } else {
@@ -164,7 +167,9 @@ public class Jugador extends Entidad {
         //           hitbox.y += yVelocidad;
         //       }
         // Actualizar estado de movimiento para evitar errores
-        if ((izquierda ^ derecha) || (arriba ^ abajo)) {
+        if (enVuelo) {
+            estado = EstadoJugador.SALTANDO;
+        } else if ((izquierda ^ derecha) || (arriba ^ abajo)) {
             estado = EstadoJugador.CORRIENDO;
         } else {
             estado = EstadoJugador.IDLE;
@@ -175,7 +180,9 @@ public class Jugador extends Entidad {
         if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
             hitbox.x += xVelocidad;
         } else {
-            hitbox.x = ObtenerXPosLimite(hitbox, xVelocidad);
+            if (poder == PoderJugador.NINGUNO) {
+                hitbox.x = ObtenerXPosLimite(hitbox, xVelocidad);
+            }
         }
     }
 
@@ -184,10 +191,11 @@ public class Jugador extends Entidad {
         aireVelocidad = 0;
 
     }
-    
-    private void salto(){
-        if(enVuelo)
+
+    private void salto() {
+        if (enVuelo) {
             return;
+        }
         enVuelo = true;
         aireVelocidad = saltoVelocidad;
     }
@@ -273,10 +281,10 @@ public class Jugador extends Entidad {
         }
         if (izquierda && !derecha) {
             g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
-            g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+            //  g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-            g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            // g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }
 
