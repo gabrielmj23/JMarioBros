@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/Paquete.java</file>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/PaqueteActualizar.java</file>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/main/Juego.java</file>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/main/PanelJuego.java</file>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/multijugador/Servidor.java</file>
             <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/entidades/Jugador.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/entidades/JugadorMulti.java</file>
+            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/estadojuego/Jugando.java</file>
         </group>
     </open-files>
 </project-private>

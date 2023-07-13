@@ -1,6 +1,7 @@
 package entidades;
 
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import javax.imageio.ImageIO;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
 import multijugador.Usuario;
+import static utils.UtilsMovimiento.puedeMoverse;
 
 /**
  *
@@ -26,6 +28,9 @@ public class Jugador extends Entidad implements Serializable {
     // Atributos de estado
     protected EstadoJugador estado;
     protected PoderJugador poder;
+    
+    // Atributos de nivel
+    private int[][] nivelDatos;
 
     // Atributos de multijugador
     protected Usuario usuario;
@@ -43,7 +48,7 @@ public class Jugador extends Entidad implements Serializable {
     protected static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Jugador(float x, float y, int tipo, Usuario usuario) {
-        super(x, y);
+        super(x, y, 30, 62);
         this.tipo = tipo;
         this.usuario = usuario;
 
@@ -51,6 +56,7 @@ public class Jugador extends Entidad implements Serializable {
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
+        iniHitbox();
         cargarImagenes();
     }
 
@@ -149,17 +155,24 @@ public class Jugador extends Entidad implements Serializable {
      * Modifica la posición del jugador dependiendo de la dirección en que se
      * mueve
      */
-    protected void actualizarPosicion() {
+    private void actualizarPosicion() {
+        float xVelocidad = 0f, yVelocidad = 0f;
+
         if (izquierda && !derecha) {
-            x -= VELOCIDAD;
+            xVelocidad = -VELOCIDAD;
         } else if (derecha && !izquierda) {
-            x += VELOCIDAD;
+            xVelocidad = VELOCIDAD;
         }
 
         if (arriba && !abajo) {
-            y -= VELOCIDAD;
+            yVelocidad = -VELOCIDAD;
         } else if (abajo && !arriba) {
-            y += VELOCIDAD;
+            yVelocidad = VELOCIDAD;
+        }
+
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+            this.x += xVelocidad;
+            this.y += yVelocidad;
         }
 
         // Actualizar estado de movimiento para evitar errores
@@ -231,6 +244,12 @@ public class Jugador extends Entidad implements Serializable {
         }
         obtenerAnimacion();
         actualizarPosicion();
+        actualizarHitbox();
+    }
+
+    public void cargarNivelDatos(int[][] nivelDatos) {
+        this.nivelDatos = nivelDatos;
+        System.out.println("datos cargados");
     }
 
     /**
@@ -242,14 +261,36 @@ public class Jugador extends Entidad implements Serializable {
         if (animacionActual == null) {
             obtenerAnimacion();
         }
-
-        if (indiceAnimacion >= animacionActual.length) {
-            indiceAnimacion = 0;
+        int yJugador = (int) y;
+        if (poder == PoderJugador.NINGUNO) {
+            yJugador -= 2;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), (int) y, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, (int) y, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+        }
+    }
+
+    @Override
+    public void iniHitbox() {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+        } else {
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
+        }
+    }
+
+    @Override
+    public void actualizarHitbox() {
+        if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
+        {
+            hitbox.x = x + 4;
+            hitbox.y = y + 40;
+        } else {
+            hitbox.x = x;
+            hitbox.y = y + 2;
         }
     }
 

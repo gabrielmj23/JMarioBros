@@ -32,7 +32,7 @@ public class VentanaJuego {
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-                panel.getJuego().ventanaPerdida();
+                panel.getJuego().getJugando().ventanaPerdida();
             }
 
         });
@@ -45,8 +45,8 @@ public class VentanaJuego {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                PaqueteDesconectar paquete = new PaqueteDesconectar((JugadorMulti) panel.getJuego().getJugador());
-                paquete.escribirDatos(panel.getJuego().getCliente());
+                PaqueteDesconectar paquete = new PaqueteDesconectar((JugadorMulti) panel.getJuego().getJugando().getJugador());
+                paquete.escribirDatos(panel.getJuego().getJugando().getCliente());
             }
 
             @Override

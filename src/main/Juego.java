@@ -2,6 +2,11 @@ package main;
 
 import entidades.Jugador;
 import entidades.JugadorMulti;
+import estadojuego.EstadoJuego;
+import static estadojuego.EstadoJuego.JUGANDO;
+import static estadojuego.EstadoJuego.MENU;
+import estadojuego.Jugando;
+import estadojuego.Menu;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -24,10 +29,9 @@ public class Juego implements Runnable {
     // Atributos de graficos
     private VentanaJuego ventana;
     private PanelJuego panel;
-    private NivelConfig nivelConfig;
-
-    // Atributos de hilos/concurrencia
     private Thread hiloJuego;
+    private Jugador jugador;
+    private NivelConfig nivelConfig;
 
     // Atributos de multijugador
     private ArrayList<JugadorMulti> jugadores;
@@ -36,6 +40,9 @@ public class Juego implements Runnable {
 
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
+
+    private Jugando jugando;
+    private Menu menu;
 
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
@@ -58,83 +65,14 @@ public class Juego implements Runnable {
     }
 
     /**
-     * Devuelve el jugador local, siempre en la primera posicion del arreglo
-     * jugadores
-     *
-     * @return Jugador local de esta instancia de juego
-     */
-    public final Jugador getJugador() {
-        return jugadores.get(0);
-    }
-
-    public ArrayList<JugadorMulti> getJugadores() {
-        return jugadores;
-    }
-
-    public NivelConfig getNivelConfig() {
-        return nivelConfig;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public Servidor getServidor() {
-        return servidor;
-    }
-
-    /**
-     * Agrega un jugador a la partida
-     *
-     * @param jugador
-     */
-    public void agregarJugador(JugadorMulti jugador) {
-        if (jugadores.size() == 4) {
-            System.out.println("Capacidad maxima alcanzada");
-            return;
-        }
-        jugadores.add(jugador);
-    }
-
-    /**
-     * Elimina un jugador en caso de desconexión
-     *
-     * @param jugador
-     */
-    public void eliminarJugador(JugadorMulti jugador) {
-        jugadores.remove(jugador);
-    }
-
-    /**
-     * Actualiza los datos de un jugador como indique el servidor
-     *
-     * @param jugador
-     */
-    public void actualizarJugador(JugadorMulti jugador) {
-        int idx = jugadores.indexOf(jugador);
-        jugadores.get(idx).setX(jugador.getX());
-        jugadores.get(idx).setY(jugador.getY());
-        jugadores.get(idx).setEstado(jugador.getEstado());
-        jugadores.get(idx).setPoder(jugador.getPoder());
-        jugadores.get(idx).setDeltaAnimacion(jugador.getDeltaAnimacion());
-        jugadores.get(idx).setIndiceAnimacion(jugador.getIndiceAnimacion());
-        jugadores.get(idx).setDerecha(jugador.isDerecha());
-        jugadores.get(idx).setIzquierda(jugador.isIzquierda());
-        jugadores.get(idx).setArriba(jugador.isArriba());
-        jugadores.get(idx).setAbajo(jugador.isAbajo());
-        jugadores.get(idx).obtenerAnimacion();
-    }
-
-    /**
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        jugadores = new ArrayList();
-        String login = JOptionPane.showInputDialog(panel, "Ingresar usuario");
-        jugadores.add(new JugadorMulti(
-                200f, 200f, MARIO_INDEX, new Usuario("a", "a", login, "a"), null, -1)
-        );
-        nivelConfig = new NivelConfig(this);
+        menu = new Menu(this);
+        jugando = new Jugando(this);
+        //nivelConfig = new NivelConfig(this);
+        //jugador = new Jugador(100, 200, MARIO_INDEX);
+        //jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
     }
 
     /**
@@ -149,9 +87,9 @@ public class Juego implements Runnable {
         cliente.start();
 
         // Unirse a la partida
-        PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) getJugador());
+        PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) jugando.getJugador());
         if (servidor != null) {
-            servidor.agregarConexion((JugadorMulti) getJugador(), paquete);
+            servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);
         }
         paquete.escribirDatos(cliente);
     }
@@ -160,7 +98,16 @@ public class Juego implements Runnable {
      * Gestiona actualizaciones de objetos (personajes, paneles, etc)
      */
     public void actualizar() {
-        panel.actualizarJuego();
+        switch (EstadoJuego.estado) {
+            case MENU:
+                menu.actualizar();
+                break;
+            case JUGANDO:
+                jugando.actualizar();
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -169,17 +116,24 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
-        nivelConfig.dibujar(g);
-        for (JugadorMulti j : jugadores) {
-            j.render(g);
+        switch (EstadoJuego.estado) {
+            case MENU:
+                menu.dibujar(g);
+                break;
+            case JUGANDO:
+                jugando.dibujar(g);
+                break;
+            default:
+                break;
         }
     }
 
-    /**
-     * Detiene el juego cuando se pierde el enfoque de la ventana
-     */
-    public void ventanaPerdida() {
-        jugadores.get(0).resetearEstado();
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Jugando getJugando() {
+        return jugando;
     }
 
     /**

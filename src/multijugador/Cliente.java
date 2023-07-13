@@ -80,16 +80,16 @@ public class Cliente extends Thread {
                 paquete = new PaqueteUnir(datos);
                 System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ENTRO AL JUEGO");
                 JugadorMulti jugador = ((PaqueteUnir) paquete).getJugador();
-                juego.agregarJugador(jugador);
+                juego.getJugando().agregarJugador(jugador);
                 break;
             case DESCONECTAR:
                 paquete = new PaqueteDesconectar(datos);
                 System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ABANDONO EL JUEGO");
-                juego.eliminarJugador(((PaqueteDesconectar) paquete).getJugador());
+                juego.getJugando().eliminarJugador(((PaqueteDesconectar) paquete).getJugador());
                 break;
             case ACTUALIZAR:
                 paquete = new PaqueteActualizar(datos);
-                juego.actualizarJugador(((PaqueteActualizar) paquete).getJugador());
+                juego.getJugando().actualizarJugador(((PaqueteActualizar) paquete).getJugador());
                 break;
         }
     }

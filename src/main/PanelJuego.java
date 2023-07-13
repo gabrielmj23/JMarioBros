@@ -34,11 +34,13 @@ public class PanelJuego extends JPanel {
     /**
      * Gestiona actualizaciones referentes a animaciones y objetos en el panel
      */
-    public void actualizarJuego() {
+    public void actualizarJuego() {/*
         juego.getJugador().actualizar();
         PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) juego.getJugador());
         paquete.escribirDatos(juego.getCliente());
         juego.getNivelConfig().actualizar();
+        juego.actualizar();
+        juego.actualizar();*/
     }
 
     /**
