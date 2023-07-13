@@ -126,11 +126,11 @@ public class Jugador extends Entidad {
         if(salto)
             salto();
         if (izquierda) {
-            xVelocidad = -velocidad;
+            xVelocidad -= velocidad;
         }
         
         if (derecha) {
-            xVelocidad = velocidad;
+            xVelocidad += velocidad;
         }
         
         if(!enVuelo){
