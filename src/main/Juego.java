@@ -30,6 +30,14 @@ public class Juego implements Runnable {
     public final static int JUEGO_ANCHO = TAMAÑO_REAL_CASILLAS * CASILLAS_HORIZONTAL;
     public final static int JUEGO_ALTO = TAMAÑO_REAL_CASILLAS * CASILLAS_VERTICAL;
 
+    //manejar nivel
+    private int xNivelDesfase;
+    private int bordeIzquierdo = (int) (0.2 * Juego.JUEGO_ANCHO);
+    private int bordeDerecho = (int) (0.8 * Juego.JUEGO_ANCHO);
+    private int casillasNivel = NivelConfig.obtenerDatos()[0].length;
+    private int desfaseMaximoCasilla = casillasNivel - Juego.CASILLAS_HORIZONTAL;
+    private int desfaseMaximoNivel = desfaseMaximoCasilla * Juego.TAMAÑO_REAL_CASILLAS;
+
     public Juego() {
         iniciarClases();
         panel = new PanelJuego(this);
@@ -62,6 +70,27 @@ public class Juego implements Runnable {
      */
     public void actualizar() {
         panel.actualizarJuego();
+        revisarCercaBorde();
+    }
+
+    /**
+     * Calcula el desfase del jugador con el nivel
+     */
+    private void revisarCercaBorde() {
+        int jugadorX = (int) jugador.getHitbox().x;
+        int diff = jugadorX - xNivelDesfase;
+
+        if (diff > bordeDerecho) {
+            xNivelDesfase += diff - bordeDerecho;
+        } else if (diff < bordeIzquierdo) {
+            xNivelDesfase += diff - bordeIzquierdo;
+        }
+
+        if (xNivelDesfase > desfaseMaximoNivel) {
+            xNivelDesfase = desfaseMaximoNivel;
+        } else if (xNivelDesfase < 0) {
+            xNivelDesfase = 0;
+        }
     }
 
     /**
@@ -70,8 +99,8 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
-        nivelConfig.dibujar(g);
-        jugador.render(g);
+        nivelConfig.dibujar(g, xNivelDesfase);
+        jugador.render(g, xNivelDesfase);
     }
 
     /**

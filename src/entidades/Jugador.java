@@ -269,8 +269,9 @@ public class Jugador extends Entidad {
      * Dibuja al jugador en pantalla
      *
      * @param g
+     * @param xNivelDesfase
      */
-    public void render(Graphics g) {
+    public void render(Graphics g, int xNivelDesfase) {
         g.setColor(Color.red);
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
@@ -280,10 +281,10 @@ public class Jugador extends Entidad {
             yJugador -= 40;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x - xNivelDesfase + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
             //  g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - xNivelDesfase - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
             // g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }

@@ -22,7 +22,7 @@ public class NivelConfig {
     private Nivel nivelUno;
 
     private static final String SPRITE_PATHS = "SpritesNiveles.png";
-    private static final String NIVELES_PATHS = "nivel1.png";
+    private static final String NIVELES_PATHS = "nivel1grande.png";
 
     public NivelConfig(Juego juego) {
         this.juego = juego;
@@ -48,12 +48,13 @@ public class NivelConfig {
      * Dibuja el nivel
      *
      * @param g
+     * @param xNivelDesfase
      */
-    public void dibujar(Graphics g) {
+    public void dibujar(Graphics g, int xNivelDesfase) {
         for (int j = 0; j < CASILLAS_VERTICAL; j++) {
-            for (int i = 0; i < CASILLAS_HORIZONTAL; i++) {
+            for (int i = 0; i < nivelUno.obtenerNivelDatos()[0].length; i++) {
                 int index = nivelUno.obtenerIndiceSprite(i, j);
-                g.drawImage(levelSprite[index], TAMAÑO_REAL_CASILLAS * i, TAMAÑO_REAL_CASILLAS * j, TAMAÑO_REAL_CASILLAS, TAMAÑO_REAL_CASILLAS, null);
+                g.drawImage(levelSprite[index], TAMAÑO_REAL_CASILLAS * i - xNivelDesfase, TAMAÑO_REAL_CASILLAS * j, TAMAÑO_REAL_CASILLAS, TAMAÑO_REAL_CASILLAS, null);
             }
         }
     }
@@ -65,11 +66,15 @@ public class NivelConfig {
 
     }
 
-    //Obtener los datos de que debe ir en cada casilla
+    /**
+     * Obtener los datos de que debe ir en cada casilla
+     * @return 
+     */
     public static int[][] obtenerDatos() {
-        int[][] nivelDatos = new int[CASILLAS_VERTICAL][CASILLAS_HORIZONTAL];
+        int[][] nivelDatos = null;
         try {
             BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
+             nivelDatos = new int[img.getHeight()][img.getWidth()];
             for (int j = 0; j < img.getHeight(); j++) {
                 for (int i = 0; i < img.getWidth(); i++) {
                     Color color = new Color(img.getRGB(i, j));
