@@ -1,11 +1,6 @@
 package main;
 
 import entidades.Jugador;
-import estadojuego.EstadoJuego;
-import static estadojuego.EstadoJuego.JUGANDO;
-import static estadojuego.EstadoJuego.MENU;
-import estadojuego.Jugando;
-import estadojuego.Menu;
 import java.awt.Graphics;
 import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
@@ -21,15 +16,12 @@ public class Juego implements Runnable {
 
     private VentanaJuego ventana;
     private PanelJuego panel;
-    private Thread hiloJuego;   
+    private Thread hiloJuego;
     private Jugador jugador;
     private NivelConfig nivelConfig;
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
-    
-    private Jugando jugando;
-    private Menu menu;
-    
+
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
     public final static int CASILLAS_HORIZONTAL = 26;
@@ -37,6 +29,14 @@ public class Juego implements Runnable {
     public final static int TAMAÑO_REAL_CASILLAS = (int) (TAMAÑO_GENERAL_CASILLAS * ESCALA);
     public final static int JUEGO_ANCHO = TAMAÑO_REAL_CASILLAS * CASILLAS_HORIZONTAL;
     public final static int JUEGO_ALTO = TAMAÑO_REAL_CASILLAS * CASILLAS_VERTICAL;
+
+    //manejar nivel
+    private int xNivelDesfase;
+    private int bordeIzquierdo = (int) (0.2 * Juego.JUEGO_ANCHO);
+    private int bordeDerecho = (int) (0.8 * Juego.JUEGO_ANCHO);
+    private int casillasNivel = NivelConfig.obtenerDatos()[0].length;
+    private int desfaseMaximoCasilla = casillasNivel - Juego.CASILLAS_HORIZONTAL;
+    private int desfaseMaximoNivel = desfaseMaximoCasilla * Juego.TAMAÑO_REAL_CASILLAS;
 
     public Juego() {
         iniciarClases();
@@ -48,12 +48,18 @@ public class Juego implements Runnable {
         hiloJuego.start();
     }
 
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public NivelConfig getNivelConfig() {
+        return nivelConfig;
+    }
+
     /**
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
-        menu = new Menu(this);
-        jugando = new Jugando(this);
         nivelConfig = new NivelConfig(this);
         jugador = new Jugador(100, 200, MARIO_INDEX);
         jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
@@ -62,17 +68,28 @@ public class Juego implements Runnable {
     /**
      * Gestiona actualizaciones de objetos (personajes, paneles, etc)
      */
-    public void actualizar() {        
-        switch(EstadoJuego.estado){
-            case MENU:
-                menu.actualizar();
-                break;
-            case JUGANDO:
-                jugando.actualizar();
-                break;                
-            default:
-                break;
-            
+    public void actualizar() {
+        panel.actualizarJuego();
+        revisarCercaBorde();
+    }
+
+    /**
+     * Calcula el desfase del jugador con el nivel
+     */
+    private void revisarCercaBorde() {
+        int jugadorX = (int) jugador.getHitbox().x;
+        int diff = jugadorX - xNivelDesfase;
+
+        if (diff > bordeDerecho) {
+            xNivelDesfase += diff - bordeDerecho;
+        } else if (diff < bordeIzquierdo) {
+            xNivelDesfase += diff - bordeIzquierdo;
+        }
+
+        if (xNivelDesfase > desfaseMaximoNivel) {
+            xNivelDesfase = desfaseMaximoNivel;
+        } else if (xNivelDesfase < 0) {
+            xNivelDesfase = 0;
         }
     }
 
@@ -82,33 +99,16 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
-        switch(EstadoJuego.estado){
-            case MENU:
-                menu.dibujar(g);
-                break;
-            case JUGANDO:
-                jugando.dibujar(g);
-                break;                
-            default:
-                break;
-            
-        }
+        nivelConfig.dibujarFondo(g);
+        nivelConfig.dibujar(g, xNivelDesfase);
+        jugador.render(g, xNivelDesfase);
     }
 
     /**
      * Detiene el juego cuando se pierde el enfoque de la ventana
      */
     public void ventanaPerdida() {
-        if(EstadoJuego.estado == EstadoJuego.JUGANDO)
-            jugando.getJugador().resetearEstado();
-    }
-    
-    public Menu getMenu(){
-        return menu;
-    }
-    
-    public Jugando getJugando(){
-        return jugando;
+        jugador.resetearEstado();
     }
 
     /**

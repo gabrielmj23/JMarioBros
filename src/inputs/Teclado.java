@@ -1,12 +1,14 @@
 package inputs;
 
-import estadojuego.EstadoJuego;
-import static estadojuego.EstadoJuego.JUGANDO;
-import static estadojuego.EstadoJuego.MENU;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import main.PanelJuego;
+import utils.UtilsJugador;
 
+/**
+ *
+ * @author Gabriel
+ */
 public class Teclado implements KeyListener {
 
     private PanelJuego panel;
@@ -22,26 +24,32 @@ public class Teclado implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch(EstadoJuego.estado){
-            case MENU:
-                panel.getJuego().getMenu().keyPressed(e);
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                panel.getJuego().getJugador().setSalto(true);
                 break;
-            case JUGANDO:
-                 panel.getJuego().getJugando().keyPressed(e);
-            default:
+            case KeyEvent.VK_A:
+                panel.getJuego().getJugador().setIzquierda(true);
+                break;
+            case KeyEvent.VK_D:
+                panel.getJuego().getJugador().setDerecha(true);
                 break;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch(EstadoJuego.estado){
-            case MENU:
-                panel.getJuego().getMenu().keyReleased(e);
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                panel.getJuego().getJugador().setSalto(false);
                 break;
-            case JUGANDO:
-                 panel.getJuego().getJugando().keyReleased(e);
-            default:
+            case KeyEvent.VK_A:
+                panel.getJuego().getJugador().setIndiceAnimacion(0);
+                panel.getJuego().getJugador().setIzquierda(false);
+                break;
+            case KeyEvent.VK_D:
+                panel.getJuego().getJugador().setIndiceAnimacion(0);
+                panel.getJuego().getJugador().setDerecha(false);
                 break;
         }
     }

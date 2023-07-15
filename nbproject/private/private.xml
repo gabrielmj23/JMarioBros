@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/estadojuego/Jugando.java</file>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/entidades/Jugador.java</file>
-            <file>file:/C:/Users/gabri/Documents/UCAB/4to%20Semestre/Program%20III/Proyecto/JMarioBros/src/main/Juego.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/utils/UtilsEnemigo.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/main/Juego.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/utils/UtilsMovimiento.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/niveles/NivelConfig.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/entidades/Jugador.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/entidades/Entidad.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/entidades/Enemigo.java</file>
+            <file>file:/C:/Users/rober/Desktop/universidad/Cuarto%20semestre/program%203/PROYECTO/JMarioBros-rober-branch/src/utils/UtilsJugador.java</file>
         </group>
     </open-files>
 </project-private>

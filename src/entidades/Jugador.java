@@ -8,9 +8,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import main.Juego;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
-import static utils.UtilsMovimiento.puedeMoverse;
+import static utils.UtilsMovimiento.*;
 
 /**
  *
@@ -25,7 +26,15 @@ public class Jugador extends Entidad {
     private boolean arriba;
     private boolean abajo;
     private float velocidad;
-    
+    private boolean salto;
+
+    //Salto y gravedad
+    private float aireVelocidad = 0f;
+    private float gravedad = 0.04f * Juego.ESCALA;
+    private float saltoVelocidad = -2.25f * Juego.ESCALA;
+    private float velocidadCaidaColision = 0.5f * Juego.ESCALA;
+    private boolean enVuelo = false;
+
     // Atributos de estado
     private EstadoJugador estado;
     private PoderJugador poder;
@@ -52,7 +61,7 @@ public class Jugador extends Entidad {
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
-        iniHitbox();
+        iniHitbox(x, y, ancho, altura);
         // Cargar spritesheet y animacionesCorrer
         try {
             animacionesCorrer = new BufferedImage[3][3];
@@ -66,6 +75,16 @@ public class Jugador extends Entidad {
         } catch (IOException e) {
             System.out.println("Error leyendo sprite de jugador");
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void iniHitbox(float x, float y, int ancho, int altura) {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+        } else {
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
         }
     }
 
@@ -85,6 +104,10 @@ public class Jugador extends Entidad {
         this.abajo = abajo;
     }
 
+    public void setSalto(boolean salto) {
+        this.salto = salto;
+    }
+
     public void setEstado(EstadoJugador estado) {
         this.estado = estado;
     }
@@ -98,31 +121,80 @@ public class Jugador extends Entidad {
      * mueve
      */
     private void actualizarPosicion() {
-        float xVelocidad = 0f, yVelocidad = 0f;
+        float xVelocidad = 0f;
 
-        if (izquierda && !derecha) {
-            xVelocidad = -velocidad;
-        } else if (derecha && !izquierda) {
-            xVelocidad = velocidad;
+        if (salto) {
+            salto();
+        }
+        if (izquierda) {
+            xVelocidad -= velocidad;
         }
 
-        if (arriba && !abajo) {
-            yVelocidad = -velocidad;
-        } else if (abajo && !arriba) {
-            yVelocidad = velocidad;
+        if (derecha) {
+            xVelocidad += velocidad;
         }
 
-        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
-            this.x += xVelocidad;
-            this.y += yVelocidad;
+        if (!enVuelo) {
+            if (!EstaEnSuelo(hitbox, nivelDatos)) {
+                enVuelo = true;
+            }
         }
+
+        if (enVuelo) {
+
+            if (puedeMoverse(hitbox.x, hitbox.y + aireVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+                hitbox.y += aireVelocidad;
+                aireVelocidad += gravedad;
+                actualizarXPos(xVelocidad);
+            } else {
+                //if (poder == PoderJugador.NINGUNO) {
+                    hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                //}
+                if (aireVelocidad > 0) {
+                    reiniciarEnVuelo();
+                } else {
+                    aireVelocidad = velocidadCaidaColision;
+                }
+                actualizarXPos(xVelocidad);
+            }
+
+        } else {
+            actualizarXPos(xVelocidad);
+        }
+
 
         // Actualizar estado de movimiento para evitar errores
-        if ((izquierda ^ derecha) || (arriba ^ abajo)) {
+        if (enVuelo) {
+            estado = EstadoJugador.SALTANDO;
+        } else if ((izquierda ^ derecha) || (arriba ^ abajo)) {
             estado = EstadoJugador.CORRIENDO;
         } else {
             estado = EstadoJugador.IDLE;
         }
+    }
+
+    private void actualizarXPos(float xVelocidad) {
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
+            hitbox.x += xVelocidad;
+        } else {
+            if (poder == PoderJugador.NINGUNO) {
+                hitbox.x = ObtenerXPosLimite(hitbox, xVelocidad);
+            }
+        }
+    }
+
+    private void reiniciarEnVuelo() {
+        enVuelo = false;
+        aireVelocidad = 0;
+
+    }
+
+    private void salto() {
+        if (enVuelo) {
+            return;
+        }
+        enVuelo = true;
+        aireVelocidad = saltoVelocidad;
     }
 
     /**
@@ -183,54 +255,34 @@ public class Jugador extends Entidad {
         }
         obtenerAnimacion();
         actualizarPosicion();
-        actualizarHitbox();
+
     }
 
     public void cargarNivelDatos(int[][] nivelDatos) {
         this.nivelDatos = nivelDatos;
-        System.out.println("datos cargados");
     }
 
     /**
      * Dibuja al jugador en pantalla
      *
      * @param g
+     * @param xNivelDesfase
      */
-    public void render(Graphics g) {
+    public void render(Graphics g, int xNivelDesfase) {
         g.setColor(Color.red);
         if (animacionActual == null || indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
-        int yJugador = (int) y;
+        int yJugador = (int) hitbox.y;
         if (poder == PoderJugador.NINGUNO) {
-            yJugador -= 2;
+            yJugador -= 40;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x - xNivelDesfase + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            //  g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-        }
-    }
-
-    @Override
-    public void iniHitbox() {
-        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
-        {
-            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
-        } else {
-            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
-        }
-    }
-
-    @Override
-    public void actualizarHitbox() {
-        if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
-        {
-            hitbox.x = x + 4;
-            hitbox.y = y + 40;
-        } else {
-            hitbox.x = x;
-            hitbox.y = y + 2;
+            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - xNivelDesfase - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            // g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }
 
