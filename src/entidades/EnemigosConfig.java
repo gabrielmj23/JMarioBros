@@ -43,7 +43,7 @@ public class EnemigosConfig {
     private void dibujarGoomba(Graphics g, int xNivelDesfase) {
         for (Goomba go : goombas) {
             g.setColor(Color.black);
-            g.fillRect((int) go.hitbox.x - xNivelDesfase, (int) go.hitbox.y-24, go.ancho, go.altura);
+            g.drawRect((int) go.hitbox.x - xNivelDesfase, (int) go.hitbox.y-24, go.ancho, go.altura);
         }
     }
 

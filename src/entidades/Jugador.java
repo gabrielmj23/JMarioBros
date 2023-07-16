@@ -147,9 +147,9 @@ public class Jugador extends Entidad {
                 aireVelocidad += gravedad;
                 actualizarXPos(xVelocidad);
             } else {
-                //if (poder == PoderJugador.NINGUNO) {
-                    hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
-                //}
+                if (poder == PoderJugador.NINGUNO) {
+                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                }
                 if (aireVelocidad > 0) {
                     reiniciarEnVuelo();
                 } else {
@@ -161,7 +161,6 @@ public class Jugador extends Entidad {
         } else {
             actualizarXPos(xVelocidad);
         }
-
 
         // Actualizar estado de movimiento para evitar errores
         if (enVuelo) {
@@ -279,10 +278,10 @@ public class Jugador extends Entidad {
         }
         if (izquierda && !derecha) {
             g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x - xNivelDesfase + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
-            //  g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+            g.drawRect((int) (hitbox.x - xNivelDesfase), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
             g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - xNivelDesfase - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-            // g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+            g.drawRect((int) (hitbox.x - xNivelDesfase), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }
 
