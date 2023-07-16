@@ -1,10 +1,12 @@
 package niveles;
 
+import entidades.Goomba;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -12,6 +14,7 @@ import main.Juego;
 import static main.Juego.CASILLAS_HORIZONTAL;
 import static main.Juego.CASILLAS_VERTICAL;
 import static main.Juego.TAMAÑO_REAL_CASILLAS;
+import static utils.UtilsEnemigo.GOOMBA_INDEX;
 
 /**
  *
@@ -98,6 +101,29 @@ public class NivelConfig {
             System.out.println(e.getMessage());
         }
         return nivelDatos;
+    }
+
+    public static ArrayList<Goomba> obtenerGoombas() {
+        ArrayList<Goomba> list = new ArrayList<>();
+        try {
+            BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
+
+            for (int j = 0; j < img.getHeight(); j++) {
+                for (int i = 0; i < img.getWidth(); i++) {
+                    Color color = new Color(img.getRGB(i, j));
+                    int valor = color.getGreen();
+                    if (valor == GOOMBA_INDEX) //No existe el sprite
+                    {
+                        list.add(new Goomba(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    }
+                }
+            }
+            return list;
+        } catch (IOException e) {
+            System.out.println("Error leyendo datos del nivel");
+            System.out.println(e.getMessage());
+        }
+        return list;
     }
 
     public Nivel getNivelUno() {

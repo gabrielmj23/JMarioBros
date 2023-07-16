@@ -34,6 +34,7 @@ public class PanelJuego extends JPanel {
      */
     public void actualizarJuego() {
         juego.getJugador().actualizar();
+        juego.getEnemigosConfig().actualizar(juego.getNivelConfig().getNivelUno().obtenerNivelDatos());
         juego.getNivelConfig().actualizar();
     }
 

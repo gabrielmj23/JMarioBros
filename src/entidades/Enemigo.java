@@ -9,116 +9,127 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import main.Juego;
 import utils.UtilsEnemigo.*;
+import static utils.UtilsEnemigo.EstadoEnemigo.CORRIENDO;
+import static utils.UtilsEnemigo.EstadoEnemigo.IDLE;
+import static utils.UtilsMovimiento.*;
 
 /**
  *
  * @author rober
  */
 abstract class Enemigo extends Entidad {
-    
-        // Atributos de animación
+
+    // Atributos de animación
     private int tipo;
     private int deltaAnimacion;
     private int indiceAnimacion;
-    private BufferedImage img;
-    private BufferedImage[][] animacionesCorrer;
-    private BufferedImage[] animacionActual;
-    
-    private EstadoEnemigo estado;
+
+    private boolean primeraActualizacion = true;
+    private boolean enAire ;
+    private float aireVelocidad = 0f;
+    private float gravedad = 0.04f * Juego.ESCALA;
+    private float velocidad = 0.7f;
+    private String direccion = "izquierda";
+
+    private EstadoEnemigo estado = IDLE;
     private static final int VELOCIDAD_ANIMACION = 17;
-    
-     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Enemigo(float x, float y, int ancho, int altura, int tipo) throws IOException {
         super(x, y, ancho, altura);
-       // Cargar spritesheet y animacionesCorrer
-        try {
-            animacionesCorrer = new BufferedImage[3][3];
-            img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS[tipo]));
-            // Cargar animacionesCorrer de caminar
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    animacionesCorrer[i][j] = img.getSubimage(j * 32 + 32, i * 64, 32, 64);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error leyendo sprite de jugador");
-            System.out.println(e.getMessage());
-        }
-        
+        iniHitbox(x, y, ancho, altura);
+
     }
-    
-        @Override
+
+    @Override
     public void iniHitbox(float x, float y, int ancho, int altura) {
-            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
-     
+        hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+
     }
+
+    private void actualizarMovimiento(int[][] nivelDatos) {
+
+        if (primeraActualizacion) {
+            if (!EstaEnSuelo(hitbox, nivelDatos)) {
+                enAire = true;
+            }
+  
+            primeraActualizacion = false;
+        }
+        if (enAire) {
+            if (puedeMoverse(hitbox.x, hitbox.y + aireVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+                hitbox.y += aireVelocidad;
+                aireVelocidad += gravedad;
+            } else {
+                enAire = false;
+                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+            
+            }
+        } else {
+            switch (estado) {
+                case IDLE:
+                    estado = CORRIENDO;
+                    break;
+                case CORRIENDO:
+                    float xVelocidad = 0;
+                  
+                    if (direccion.equals("izquierda")) {
+                        xVelocidad = -velocidad;
+                    } else {
+                        xVelocidad = velocidad;
+                    }
+                    
+                    if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
+                        if (EsPiso(hitbox, xVelocidad, nivelDatos)) {
+                             System.out.println("No es piso");
+                            hitbox.x += xVelocidad;
+                            return;
+                        }
+                    }
+                    if(EsPiso(hitbox, xVelocidad, nivelDatos))
+                        System.out.println("Es es piso");
+                    cambiarDireccion();
+            }
+
+        }
+
+    }
+
+    private void cambiarDireccion() {
+        if (direccion.equals("izquierda")) {
+            direccion = "derecha";
+        } else {
+            direccion = "izquierda";
+        }
+
+    }
+
     /**
      * Actualiza el frame de animación al correr según pasa el tiempo
      */
-    
     private void actualizarFrameAnimacion() {
         deltaAnimacion++;
         if (deltaAnimacion >= VELOCIDAD_ANIMACION) {
             deltaAnimacion = 0;
             indiceAnimacion++;
-            if (indiceAnimacion >= animacionActual.length) {
+            if (indiceAnimacion >= 7) {
                 indiceAnimacion = 0;
             }
         }
     }
 
-    /**
-     * Guarda en animacionActual el arreglo que contenga la animación del
-     * personaje, según su estado y poder
-     */
-    private void obtenerAnimacion() {
-        int yAnimacion = 0;
-        switch (tipo) {
-            case 1:
-                yAnimacion = 0;
-                break;
-            case 2:
-                yAnimacion = 1;
-                break;
-            case 3:
-                yAnimacion = 2;
-                break;
-            case 4:
-                yAnimacion = 3;
-        }
-        switch (estado) {
-            case IDLE:
-                animacionActual = new BufferedImage[]{img.getSubimage(0, yAnimacion * 64, 32, 64)};
-                break;
-            case CORRIENDO:
-                animacionActual = animacionesCorrer[yAnimacion];
-                break;
-            case SALTANDO:
-                animacionActual = new BufferedImage[]{img.getSubimage(4 * 32, yAnimacion * 64, 32, 64)};
-                break;
-            case MURIENDO:
-                animacionActual = new BufferedImage[]{img.getSubimage(5 * 32, 0, 32, 64)};
-                break;
-            case ATACANDO:
-                animacionActual = new BufferedImage[]{img.getSubimage(5 * 32, 2 * 64, 32, 64)};
-                break;
-        }
-    }
-    
-    public void actualizar() {
+    public void actualizar(int[][] nivelDatos) {
+        actualizarMovimiento(nivelDatos);
         actualizarFrameAnimacion();
     }
-    
-    public int obtenerIndiceAnimacion(){
+
+    public int obtenerIndiceAnimacion() {
         return indiceAnimacion;
     }
-    
-    public EstadoEnemigo obtenerEnemigoEstado(){
+
+    public EstadoEnemigo obtenerEnemigoEstado() {
         return estado;
     }
-    
-    
-    
+
 }

@@ -119,5 +119,9 @@ public class UtilsMovimiento {
         }
         return true;
     }
+    
+    public static boolean EsPiso(Rectangle2D.Float hitbox, float xVelocidad, int[][] nivelDatos){
+        return (esSolido(hitbox.x + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos) && esSolido(hitbox.x +hitbox.width + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos)) ;
+    }
 
 }
