@@ -1,5 +1,6 @@
 package main;
 
+import entidades.EnemigosConfig;
 import entidades.Jugador;
 import java.awt.Graphics;
 import niveles.NivelConfig;
@@ -19,6 +20,7 @@ public class Juego implements Runnable {
     private Thread hiloJuego;
     private Jugador jugador;
     private NivelConfig nivelConfig;
+    private EnemigosConfig enemigosConfig;
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
 
@@ -55,12 +57,17 @@ public class Juego implements Runnable {
     public NivelConfig getNivelConfig() {
         return nivelConfig;
     }
+    
+    public EnemigosConfig getEnemigosConfig(){
+        return enemigosConfig;
+    }
 
     /**
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
         nivelConfig = new NivelConfig(this);
+        enemigosConfig = new EnemigosConfig(this);
         jugador = new Jugador(100, 200, MARIO_INDEX);
         jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
     }
@@ -99,8 +106,11 @@ public class Juego implements Runnable {
      * @param g
      */
     public void render(Graphics g) {
+        nivelConfig.dibujarFondo(g);
         nivelConfig.dibujar(g, xNivelDesfase);
+        enemigosConfig.dibujar(g, xNivelDesfase);
         jugador.render(g, xNivelDesfase);
+    
     }
 
     /**

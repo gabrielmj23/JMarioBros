@@ -58,7 +58,7 @@ public class UtilsMovimiento {
 
         int value = nivelDatos[(int) yIndice][(int) xIndice];
 
-        if (value >= 40 || value < 0 || value != 11) {
+        if (value >= 40 || value < 0 || value != 0) {
             return true;
         }
         return false;
@@ -95,7 +95,7 @@ public class UtilsMovimiento {
         if (aireVelocidad > 0) {
             //cayendo - piso
             int casillaY = casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
-            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS * 2 - hitbox.height);
+            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS  - hitbox.height);
             return casillaY + yDesfase - 1;
         } else {
             //Saltando
@@ -118,6 +118,10 @@ public class UtilsMovimiento {
             }
         }
         return true;
+    }
+    
+    public static boolean EsPiso(Rectangle2D.Float hitbox, float xVelocidad, int[][] nivelDatos){
+        return (esSolido(hitbox.x + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos) && esSolido(hitbox.x +hitbox.width + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos)) ;
     }
 
 }
