@@ -5,10 +5,10 @@ import entidades.JugadorMulti;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import main.Juego;
-import main.PanelJuego;
-import multijugador.Cliente;
-import multijugador.Servidor;
+import multijugador.PaqueteActualizar;
+import multijugador.PaqueteUnir;
 import multijugador.Usuario;
 import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
@@ -16,27 +16,10 @@ import static utils.UtilsJugador.MARIO_INDEX;
 public class Jugando extends Estado implements MetodosDeEstados {
 
     // Atributos de graficos
-    private PanelJuego panel;
     private NivelConfig nivelConfig;
-
-    // Atributos de hilos/concurrencia
-    private Thread hiloJuego;
 
     // Atributos de multijugador
     private ArrayList<JugadorMulti> jugadores;
-    private Servidor servidor;
-    private Cliente cliente;
-
-    private final int FPS_FIJOS = 120;
-    private final int UPS_FIJOS = 200;
-
-    public final static int TAMAÑO_GENERAL_CASILLAS = 32;
-    public final static float ESCALA = 1.25f;
-    public final static int CASILLAS_HORIZONTAL = 26;
-    public final static int CASILLAS_VERTICAL = 14;
-    public final static int TAMAÑO_REAL_CASILLAS = (int) (TAMAÑO_GENERAL_CASILLAS * ESCALA);
-    public final static int JUEGO_ANCHO = TAMAÑO_REAL_CASILLAS * CASILLAS_HORIZONTAL;
-    public final static int JUEGO_ALTO = TAMAÑO_REAL_CASILLAS * CASILLAS_VERTICAL;
 
     public Jugando(Juego juego) {
         super(juego);
@@ -44,9 +27,13 @@ public class Jugando extends Estado implements MetodosDeEstados {
     }
 
     private void iniciarClases() {
-        jugadores.add((JugadorMulti) new Jugador(200f, 200f, MARIO_INDEX, new Usuario("a", "a", "a", "a", "a")));
+        jugadores = new ArrayList();
+        String login = JOptionPane.showInputDialog(juego.getPanel(), "Ingresar usuario");
+        jugadores.add(new JugadorMulti(
+                200f, 200f, MARIO_INDEX, new Usuario("a", "a", login, "a"), null, -1)
+        );
         nivelConfig = new NivelConfig(juego);
-        jugadores.get(0).cargarNivelDatos(NivelConfig.obtenerDatos());
+        getJugador().cargarNivelDatos(NivelConfig.obtenerDatos());
     }
 
     /**
@@ -65,14 +52,6 @@ public class Jugando extends Estado implements MetodosDeEstados {
 
     public NivelConfig getNivelConfig() {
         return nivelConfig;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public Servidor getServidor() {
-        return servidor;
     }
 
     /**
@@ -130,6 +109,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
     public void actualizar() {
         nivelConfig.actualizar();
         getJugador().actualizar();
+        PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) getJugador());
+        paquete.escribirDatos(juego.getCliente());
+        nivelConfig.actualizar();
     }
 
     @Override

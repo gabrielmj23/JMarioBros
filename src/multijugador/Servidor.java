@@ -41,7 +41,6 @@ public class Servidor extends Thread {
                 interpretarPaquete(paquete.getData(), paquete.getAddress(), paquete.getPort());
             } catch (IOException e) {
                 System.out.println("Error recibiendo paquete en servidor");
-                System.out.println(e.getMessage());
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 System.out.println("Error leyendo datos");

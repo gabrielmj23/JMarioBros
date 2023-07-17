@@ -39,8 +39,8 @@ public class PanelJuego extends JPanel {
         PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) juego.getJugador());
         paquete.escribirDatos(juego.getCliente());
         juego.getNivelConfig().actualizar();
-        juego.actualizar();
         juego.actualizar();*/
+        juego.actualizar();
     }
 
     /**

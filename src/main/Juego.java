@@ -30,8 +30,6 @@ public class Juego implements Runnable {
     private VentanaJuego ventana;
     private PanelJuego panel;
     private Thread hiloJuego;
-    private Jugador jugador;
-    private NivelConfig nivelConfig;
 
     // Atributos de multijugador
     private ArrayList<JugadorMulti> jugadores;
@@ -60,8 +58,7 @@ public class Juego implements Runnable {
 
         // Iniciar ciclo de juego
         iniciarConexiones();
-        hiloJuego = new Thread(this);
-        hiloJuego.start();
+        iniciarHilo();
     }
 
     /**
@@ -92,6 +89,26 @@ public class Juego implements Runnable {
             servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);
         }
         paquete.escribirDatos(cliente);
+    }
+    
+    /**
+     * Inicia el hilo de juego
+     */
+    private void iniciarHilo() {
+        hiloJuego = new Thread(this);
+        hiloJuego.start();
+    }
+
+    public Servidor getServidor() {
+        return servidor;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public PanelJuego getPanel() {
+        return panel;
     }
 
     /**

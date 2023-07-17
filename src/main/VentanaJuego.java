@@ -45,8 +45,10 @@ public class VentanaJuego {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                PaqueteDesconectar paquete = new PaqueteDesconectar((JugadorMulti) panel.getJuego().getJugando().getJugador());
-                paquete.escribirDatos(panel.getJuego().getJugando().getCliente());
+                if (panel.getJuego().getCliente() != null) {
+                    PaqueteDesconectar paquete = new PaqueteDesconectar((JugadorMulti) panel.getJuego().getJugando().getJugador());
+                    paquete.escribirDatos(panel.getJuego().getCliente());
+                }
             }
 
             @Override

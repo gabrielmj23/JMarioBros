@@ -28,9 +28,9 @@ public class Jugador extends Entidad implements Serializable {
     // Atributos de estado
     protected EstadoJugador estado;
     protected PoderJugador poder;
-    
+
     // Atributos de nivel
-    private int[][] nivelDatos;
+    private transient int[][] nivelDatos;
 
     // Atributos de multijugador
     protected Usuario usuario;
@@ -249,7 +249,7 @@ public class Jugador extends Entidad implements Serializable {
 
     public void cargarNivelDatos(int[][] nivelDatos) {
         this.nivelDatos = nivelDatos;
-        System.out.println("datos cargados");
+        System.out.println("Datos de nivel cargados");
     }
 
     /**
@@ -260,6 +260,9 @@ public class Jugador extends Entidad implements Serializable {
     public void render(Graphics g) {
         if (animacionActual == null) {
             obtenerAnimacion();
+        }
+        if (indiceAnimacion >= animacionActual.length) {
+            indiceAnimacion = 0;
         }
         int yJugador = (int) y;
         if (poder == PoderJugador.NINGUNO) {
