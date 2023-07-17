@@ -11,7 +11,8 @@ public class UtilsMovimiento {
 
     /**
      *
-     *  Revisa si una entidad puede moverse a una posicion destino
+     * Revisa si una entidad puede moverse a una posicion destino
+     *
      * @param xDestino
      * @param yDestino
      * @param anchoHitbox
@@ -37,12 +38,14 @@ public class UtilsMovimiento {
         }
         return false;
     }
+
     /**
      * Revisa si un bloque es solido
+     *
      * @param x
      * @param y
      * @param nivelDatos
-     * @return 
+     * @return
      */
     private static boolean esSolido(float x, float y, int[][] nivelDatos) {
         int anchoMaximo = nivelDatos[0].length * Juego.TAMAÑO_REAL_CASILLAS;
@@ -58,7 +61,7 @@ public class UtilsMovimiento {
 
         int value = nivelDatos[(int) yIndice][(int) xIndice];
 
-        if (value >= 40 || value < 0 || value != 11) {
+        if (value >= 40 || value < 0 || value != 0) {
             return true;
         }
         return false;
@@ -66,9 +69,10 @@ public class UtilsMovimiento {
 
     /**
      * Devuelve la posicion pegada a una pared
+     *
      * @param hitbox
      * @param xVelocidad
-     * @return 
+     * @return
      */
     public static float ObtenerXPosLimite(Rectangle2D.Float hitbox, float xVelocidad) {
         int casillaActual = (int) (hitbox.x / Juego.TAMAÑO_REAL_CASILLAS);
@@ -86,16 +90,17 @@ public class UtilsMovimiento {
 
     /**
      * Devuelve la posicion pegada al techo o al piso
+     *
      * @param hitbox
      * @param aireVelocidad
-     * @return 
+     * @return
      */
     public static float obtenerYPosLimite(Rectangle2D.Float hitbox, float aireVelocidad) {
         int casillaActual = (int) (hitbox.y / Juego.TAMAÑO_REAL_CASILLAS);
         if (aireVelocidad > 0) {
             //cayendo - piso
             int casillaY = casillaActual * Juego.TAMAÑO_REAL_CASILLAS;
-            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS * 2 - hitbox.height);
+            int yDesfase = (int) (Juego.TAMAÑO_REAL_CASILLAS - hitbox.height);
             return casillaY + yDesfase - 1;
         } else {
             //Saltando
@@ -104,12 +109,13 @@ public class UtilsMovimiento {
         }
     }
 
-        /**
-         * Revisa si una entidad esta en el suelo
-         * @param hitbox
-         * @param nivelDatos
-         * @return 
-         */
+    /**
+     * Revisa si una entidad esta en el suelo
+     *
+     * @param hitbox
+     * @param nivelDatos
+     * @return
+     */
     public static boolean EstaEnSuelo(Rectangle2D.Float hitbox, int[][] nivelDatos) {
         //Revisar las esquinas inferiores
         if (!esSolido(hitbox.x, hitbox.y + hitbox.height + 1, nivelDatos)) {
@@ -118,6 +124,10 @@ public class UtilsMovimiento {
             }
         }
         return true;
+    }
+
+    public static boolean EsPiso(Rectangle2D.Float hitbox, float xVelocidad, int[][] nivelDatos) {
+        return (esSolido(hitbox.x + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos) && esSolido(hitbox.x + hitbox.width + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos));
     }
 
 }

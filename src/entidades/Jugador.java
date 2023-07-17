@@ -58,7 +58,7 @@ public class Jugador extends Entidad {
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.SUPER;
+        poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox(x, y, ancho, altura);
@@ -162,10 +162,6 @@ public class Jugador extends Entidad {
             actualizarXPos(xVelocidad);
         }
 
-        //       if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
-        //           hitbox.x += xVelocidad;
-        //           hitbox.y += yVelocidad;
-        //       }
         // Actualizar estado de movimiento para evitar errores
         if (enVuelo) {
             estado = EstadoJugador.SALTANDO;
@@ -282,10 +278,10 @@ public class Jugador extends Entidad {
         }
         if (izquierda && !derecha) {
             g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x - xNivelDesfase + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
-            //  g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+            g.drawRect((int) (hitbox.x - xNivelDesfase), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
             g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - xNivelDesfase - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-            // g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+            g.drawRect((int) (hitbox.x - xNivelDesfase), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }
 
