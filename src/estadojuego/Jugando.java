@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import main.Juego;
 import multijugador.PaqueteActualizar;
-import multijugador.PaqueteUnir;
 import multijugador.Usuario;
 import niveles.NivelConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 
+/**
+ *
+ * @author Bertorelli
+ */
 public class Jugando extends Estado implements MetodosDeEstados {
 
     // Atributos de graficos

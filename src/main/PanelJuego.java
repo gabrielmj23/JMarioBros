@@ -1,13 +1,11 @@
 package main;
 
-import entidades.JugadorMulti;
 import inputs.Teclado;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import static main.Juego.JUEGO_ANCHO;
 import static main.Juego.JUEGO_ALTO;
-import multijugador.PaqueteActualizar;
 
 /**
  *
@@ -34,12 +32,7 @@ public class PanelJuego extends JPanel {
     /**
      * Gestiona actualizaciones referentes a animaciones y objetos en el panel
      */
-    public void actualizarJuego() {/*
-        juego.getJugador().actualizar();
-        PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) juego.getJugador());
-        paquete.escribirDatos(juego.getCliente());
-        juego.getNivelConfig().actualizar();
-        juego.actualizar();*/
+    public void actualizarJuego() {
         juego.actualizar();
     }
 
