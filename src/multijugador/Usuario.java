@@ -15,6 +15,9 @@ public class Usuario implements Serializable {
     private String avatar;
 
     public Usuario(String nombre, String correo, String login, String contraseña) {
+        if (nombre.equals("") || correo.equals("") || login.equals("") || contraseña.equals("")) {
+            throw new IllegalArgumentException("No puede dejar campos vacios");
+        }
         this.nombre = nombre;
         this.correo = correo;
         this.login = login;

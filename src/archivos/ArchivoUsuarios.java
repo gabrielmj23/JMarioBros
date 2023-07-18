@@ -24,20 +24,20 @@ public class ArchivoUsuarios {
         return usuarios;
     }
 
-    private void abrirArchivoEscritura() throws IOException, ClassNotFoundException {
+    public void abrirArchivoEscritura() throws IOException, ClassNotFoundException {
         abrirArchivoLectura();
         usuarios = leerUsuarios();
         salida = new ObjectOutputStream(new FileOutputStream(new File("usuarios.txt")));
     }
 
-    private void abrirArchivoLectura() throws IOException {
+    public void abrirArchivoLectura() throws IOException {
         File f = new File("usuarios.txt");
         if (f.createNewFile()) {
             salida = new ObjectOutputStream(new FileOutputStream(f));
         }
         entrada = new ObjectInputStream(new FileInputStream(f));
     }
-    
+
     private void cerrarArchivo() throws IOException {
         if (salida != null) {
             salida.close();
@@ -46,7 +46,7 @@ public class ArchivoUsuarios {
             entrada.close();
         }
     }
-    
+
     public ArrayList<Usuario> leerUsuarios() throws IOException, ClassNotFoundException {
         ArrayList<Usuario> lista = new ArrayList();
         try {
@@ -55,6 +55,27 @@ public class ArchivoUsuarios {
             }
         } catch (EOFException e) {
         }
+        cerrarArchivo();
         return lista;
+    }
+
+    public void agregarRegistro(T obj) {
+        try {
+            for (T registro : registros) {
+                salida.writeObject(registro);
+            }
+            if (obj != null) {
+                salida.writeObject(obj);
+            }
+        } catch (IOException e) {
+            System.err.println("Error al escribir en archivo");
+        }
+    }
+
+    public void agregarRegistroUnico(T obj) throws RegistroRepetidoException {
+        if (registros.contains(obj)) {
+            throw new RegistroRepetidoException("El objeto ya se encuentra en el archivo");
+        }
+        agregarRegistro(obj);
     }
 }
