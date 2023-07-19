@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import main.Juego;
 import static niveles.NivelConfig.obtenerGoombas;
-import utils.UtilsJugador;
-import static utils.UtilsJugador.PoderJugador.NINGUNO;
 
 /**
  *
@@ -71,14 +69,10 @@ public class EnemigosConfig {
 
                     //Revisar si es colision por los lados
                     if (mario.hitbox.x + margen > go.hitbox.x + go.hitbox.width) { //Choque por la izquierda de mario
-                        if(mario.getPoder() != NINGUNO){
-                        mario.setPoder(NINGUNO);
-                        mario.iniHitbox(100, 200, 100, 45);
-                        }
-        
+                        mario.PalSpawn();
                         return;
                     } else if (mario.hitbox.x + mario.hitbox.width - margen < go.hitbox.x) { //Choque por la derecha de mario
-                        //mario.PalSpawn();
+                        mario.PalSpawn();
                         return;
                     }
                 }
