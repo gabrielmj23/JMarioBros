@@ -38,4 +38,8 @@ public abstract class Entidad {
         return hitbox;
     }
 
+ 
+    
+    
+
 }

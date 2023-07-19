@@ -6,10 +6,13 @@ package entidades;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import main.Juego;
 import static niveles.NivelConfig.obtenerGoombas;
+import utils.UtilsJugador;
+import static utils.UtilsJugador.PoderJugador.NINGUNO;
 
 /**
  *
@@ -19,8 +22,7 @@ public class EnemigosConfig {
 
     private Juego juego;
     private ArrayList<Goomba> goombas = new ArrayList<>();
-  
-    
+
     public EnemigosConfig(Juego juego) {
         this.juego = juego;
 
@@ -31,7 +33,9 @@ public class EnemigosConfig {
 
     public void actualizar(int[][] nivelDatos) {
         for (Goomba go : goombas) {
-            go.actualizar(nivelDatos);
+            if (go.estaVivo()) {
+                go.actualizar(nivelDatos);
+            }
         }
     }
 
@@ -42,9 +46,46 @@ public class EnemigosConfig {
 
     private void dibujarGoomba(Graphics g, int xNivelDesfase) {
         for (Goomba go : goombas) {
-            g.setColor(Color.black);
-            g.drawRect((int) go.hitbox.x - xNivelDesfase, (int) go.hitbox.y-24, go.ancho, go.altura);
+            if (go.estaVivo()) {
+                {
+                    g.setColor(Color.black);
+                    g.fillRect((int) go.hitbox.x - xNivelDesfase, (int) go.hitbox.y - 24, go.ancho, go.altura);
+                }
+            }
         }
+    }
+
+    public void revisarColision(Jugador mario) {
+        float margen = 1.8f;
+        for (Goomba go : goombas) {
+            if (go.estaVivo()) {
+                if (mario.hitbox.intersects(go.hitbox.x, go.hitbox.y - 24, go.hitbox.width, go.hitbox.height)) { //Si hay colision
+
+                    //Revisar si es colision por arriba o abajo
+                    if (mario.hitbox.y + mario.hitbox.height - margen < go.hitbox.y - 24) { //Choque por abajo de mario
+                        mario.setAireVelocidad();
+
+                    } else if (mario.hitbox.y + margen > go.hitbox.y - 24 + go.altura) { //Choque por arriba de mario
+                        System.out.println("por abajo");
+                    }
+
+                    //Revisar si es colision por los lados
+                    if (mario.hitbox.x + margen > go.hitbox.x + go.hitbox.width) { //Choque por la izquierda de mario
+                        if(mario.getPoder() != NINGUNO){
+                        mario.setPoder(NINGUNO);
+                        mario.iniHitbox(100, 200, 100, 45);
+                        }
+        
+                        return;
+                    } else if (mario.hitbox.x + mario.hitbox.width - margen < go.hitbox.x) { //Choque por la derecha de mario
+                        //mario.PalSpawn();
+                        return;
+                    }
+                }
+
+            }
+        }
+
     }
 
 }

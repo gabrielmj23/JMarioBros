@@ -68,7 +68,7 @@ public class Juego implements Runnable {
     private void iniciarClases() {
         nivelConfig = new NivelConfig(this);
         enemigosConfig = new EnemigosConfig(this);
-        jugador = new Jugador(100, 200, MARIO_INDEX);
+        jugador = new Jugador(100, 200, TOADETTE_INDEX);
         jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
     }
 

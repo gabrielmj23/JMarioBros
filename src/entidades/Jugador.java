@@ -58,7 +58,7 @@ public class Jugador extends Entidad {
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.NINGUNO;
+        poder = PoderJugador.SUPER;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox(x, y, ancho, altura);
@@ -76,6 +76,11 @@ public class Jugador extends Entidad {
             System.out.println("Error leyendo sprite de jugador");
             System.out.println(e.getMessage());
         }
+    }
+
+    public void PalSpawn() {
+        this.hitbox.x = 100;
+        this.hitbox.y = 200;
     }
 
     @Override
@@ -148,7 +153,7 @@ public class Jugador extends Entidad {
                 actualizarXPos(xVelocidad);
             } else {
                 if (poder == PoderJugador.NINGUNO) {
-                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                    hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
                 }
                 if (aireVelocidad > 0) {
                     reiniciarEnVuelo();
@@ -186,6 +191,13 @@ public class Jugador extends Entidad {
         enVuelo = false;
         aireVelocidad = 0;
 
+    }
+
+    /**
+     * Actualiza la velocidad vertical
+     */
+    public void setAireVelocidad() {
+        this.aireVelocidad = saltoVelocidad;
     }
 
     private void salto() {
@@ -290,6 +302,15 @@ public class Jugador extends Entidad {
      */
     public void resetearEstado() {
         izquierda = derecha = arriba = abajo = false;
+    }
+
+    public void setPoder(PoderJugador poder) {
+        this.poder = poder;
+
+    }
+    
+    public PoderJugador getPoder(){
+        return poder;
     }
 
 }

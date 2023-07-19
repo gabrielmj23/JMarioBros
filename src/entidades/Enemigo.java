@@ -11,8 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import main.Juego;
 import utils.UtilsEnemigo.*;
-import static utils.UtilsEnemigo.EstadoEnemigo.CORRIENDO;
-import static utils.UtilsEnemigo.EstadoEnemigo.IDLE;
+import static utils.UtilsEnemigo.EstadoEnemigo.*;
 import static utils.UtilsMovimiento.*;
 
 /**
@@ -30,10 +29,11 @@ abstract class Enemigo extends Entidad {
     private boolean enAire ;
     private float aireVelocidad = 0f;
     private float gravedad = 0.04f * Juego.ESCALA;
-    private float velocidad = 0.7f;
+    private float velocidad = 0.5f;
     private String direccion = "izquierda";
 
-    private EstadoEnemigo estado = IDLE;
+    private EstadoEnemigo estado = CORRIENDO;
+    private boolean vivo = true;
     private static final int VELOCIDAD_ANIMACION = 17;
 
     public Enemigo(float x, float y, int ancho, int altura, int tipo) throws IOException {
@@ -82,13 +82,10 @@ abstract class Enemigo extends Entidad {
                     
                     if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
                         if (EsPiso(hitbox, xVelocidad, nivelDatos)) {
-                             System.out.println("No es piso");
                             hitbox.x += xVelocidad;
                             return;
                         }
                     }
-                    if(EsPiso(hitbox, xVelocidad, nivelDatos))
-                        System.out.println("Es es piso");
                     cambiarDireccion();
             }
 
@@ -130,6 +127,10 @@ abstract class Enemigo extends Entidad {
 
     public EstadoEnemigo obtenerEnemigoEstado() {
         return estado;
+    }
+    
+    public boolean estaVivo(){
+        return vivo;
     }
 
 }

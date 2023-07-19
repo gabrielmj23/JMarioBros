@@ -33,6 +33,7 @@ public class PanelJuego extends JPanel {
      * Gestiona actualizaciones referentes a animaciones y objetos en el panel
      */
     public void actualizarJuego() {
+        juego.getEnemigosConfig().revisarColision(juego.getJugador());
         juego.getJugador().actualizar();
         juego.getEnemigosConfig().actualizar(juego.getNivelConfig().getNivelUno().obtenerNivelDatos());
         juego.getNivelConfig().actualizar();
