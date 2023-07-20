@@ -83,12 +83,14 @@ public class Servidor extends Thread {
                 eliminarConexion((PaqueteDesconectar) paquete);
                 break;
             case ACTUALIZAR:
-                //System.out.println("[" + ip.getHostAddress() + ":" + puerto + "] ENVIO ACTUALIZACION");
                 for (JugadorMulti j: jugadoresConectados) {
                     if (j.getIp() != ip && j.getPuerto() != puerto) {
                         enviarDatos(datos, j.getIp(), j.getPuerto());
                     }
                 }
+                break;
+            case INICIAR:
+                enviarDatosATodos(datos);
                 break;
         }
     }

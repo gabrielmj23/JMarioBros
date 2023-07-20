@@ -26,15 +26,35 @@ public class Usuario implements Serializable {
     }
 
     public Usuario(String nombre, String correo, String login, String contraseña, String avatar) {
+        if (nombre.equals("") || correo.equals("") || login.equals("") || contraseña.equals("")) {
+            throw new IllegalArgumentException("No puede dejar campos vacios");
+        }
         this.nombre = nombre;
         this.correo = correo;
         this.login = login;
         this.contraseña = contraseña;
         this.avatar = avatar;
     }
-    
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
     public String getLogin() {
         return login;
+    }
+
+    public String getContraseña() {
+        return contraseña;
+    }
+    
+    @Override
+    public String toString() {
+        return "Nombre: " + nombre + " / Correo: " + correo + " / Login: " + login + " / Contraseña: " + contraseña;
     }
 
     @Override

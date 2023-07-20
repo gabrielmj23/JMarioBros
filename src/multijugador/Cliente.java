@@ -91,6 +91,12 @@ public class Cliente extends Thread {
                 paquete = new PaqueteActualizar(datos);
                 juego.getJugando().actualizarJugador(((PaqueteActualizar) paquete).getJugador());
                 break;
+            case INICIAR:
+                juego.setUps(200);
+                juego.cambiarPanel("Juego");
+                juego.getJugando().setEnLobby(false);
+                juego.getPanelJuego().requestFocusInWindow();
+                break;
         }
     }
 

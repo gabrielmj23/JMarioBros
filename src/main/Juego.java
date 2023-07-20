@@ -15,6 +15,11 @@ import multijugador.PaqueteUnir;
 import multijugador.Servidor;
 import multijugador.Usuario;
 import niveles.NivelConfig;
+import ui.PanelIniciado;
+import ui.PanelInicio;
+import ui.PanelPartida;
+import ui.PanelRegistro;
+import ui.PanelSesion;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
 import static utils.UtilsJugador.TOAD_INDEX;
@@ -28,16 +33,20 @@ public class Juego implements Runnable {
 
     // Atributos de graficos
     private VentanaJuego ventana;
-    private PanelJuego panel;
+    private PanelInicio panelInicio;
+    private PanelRegistro panelRegistro;
+    private PanelSesion panelSesion;
+    private PanelIniciado panelIniciado;
+    private PanelPartida panelPartida;
+    private PanelJuego panelJuego;
     private Thread hiloJuego;
 
     // Atributos de multijugador
-    private ArrayList<JugadorMulti> jugadores;
     private Servidor servidor;
     private Cliente cliente;
 
     private final int FPS_FIJOS = 120;
-    private final int UPS_FIJOS = 200;
+    private float ups = 200;
 
     private Jugando jugando;
     private Menu menu;
@@ -52,12 +61,16 @@ public class Juego implements Runnable {
 
     public Juego() {
         iniciarClases();
-        panel = new PanelJuego(this);
-        ventana = new VentanaJuego(panel);
-        panel.requestFocus();
+        panelInicio = new PanelInicio(this);
+        panelRegistro = new PanelRegistro(this);
+        panelSesion = new PanelSesion(this);
+        panelIniciado = new PanelIniciado(this);
+        panelPartida = new PanelPartida(this);
+        panelJuego = new PanelJuego(this);
+        ventana = new VentanaJuego(panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego);
+        panelJuego.requestFocus();
 
         // Iniciar ciclo de juego
-        iniciarConexiones();
         iniciarHilo();
     }
 
@@ -67,16 +80,33 @@ public class Juego implements Runnable {
     private void iniciarClases() {
         menu = new Menu(this);
         jugando = new Jugando(this);
-        //nivelConfig = new NivelConfig(this);
-        //jugador = new Jugador(100, 200, MARIO_INDEX);
-        //jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
+    }
+
+    public void iniciarServidor() {
+        servidor = new Servidor(this);
+        servidor.start();
+    }
+
+    public void iniciarCliente() {
+        cliente = new Cliente(this, "localhost");
+        cliente.start();
+    }
+
+    public void unirAPartida() {
+        PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) jugando.getJugador());
+        if (servidor != null) {
+            servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);
+        }
+        paquete.escribirDatos(cliente);
     }
 
     /**
      * Inicializa las conexiones para el multijugador
+     *
+     * @Deprecated
      */
     private void iniciarConexiones() {
-        if (JOptionPane.showConfirmDialog(panel, "Iniciar servidor?") == 0) {
+        if (JOptionPane.showConfirmDialog(panelJuego, "Iniciar servidor?") == 0) {
             servidor = new Servidor(this);
             servidor.start();
         }
@@ -90,7 +120,7 @@ public class Juego implements Runnable {
         }
         paquete.escribirDatos(cliente);
     }
-    
+
     /**
      * Inicia el hilo de juego
      */
@@ -107,8 +137,32 @@ public class Juego implements Runnable {
         return cliente;
     }
 
-    public PanelJuego getPanel() {
-        return panel;
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Jugando getJugando() {
+        return jugando;
+    }
+
+    public PanelJuego getPanelJuego() {
+        return panelJuego;
+    }
+
+    public PanelIniciado getPanelIniciado() {
+        return panelIniciado;
+    }
+
+    public PanelPartida getPanelPartida() {
+        return panelPartida;
+    }
+
+    public void setUps(float ups) {
+        this.ups = ups;
+    }
+
+    public void cambiarPanel(String nombrePanel) {
+        ventana.getLayout().show(ventana.getFrame().getContentPane(), nombrePanel);
     }
 
     /**
@@ -145,14 +199,6 @@ public class Juego implements Runnable {
         }
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public Jugando getJugando() {
-        return jugando;
-    }
-
     /**
      * Gestiona el ciclo de juego. Por mantiene 120 frames por segundo y 200
      * actualizaciones por segundo
@@ -160,7 +206,7 @@ public class Juego implements Runnable {
     @Override
     public void run() {
         final double TIEMPO_POR_FRAME = 1000000000.0 / FPS_FIJOS;
-        final double TIEMPO_POR_ACTUALIZAR = 1000000000.0 / UPS_FIJOS;
+        final double TIEMPO_POR_ACTUALIZAR = 1000000000.0 / ups;
         long tiempoPrevio = System.nanoTime();
         // Las variables delta acumulan la fraccion de tiempo restante antes de cambiar de frame/actualizar
         double deltaActualizar = 0;
@@ -177,7 +223,7 @@ public class Juego implements Runnable {
                 deltaActualizar--;
             }
             if (deltaFrames >= 1) {
-                panel.repaint();
+                panelJuego.repaint();
                 deltaFrames--;
             }
         }

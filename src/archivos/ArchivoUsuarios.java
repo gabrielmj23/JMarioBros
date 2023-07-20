@@ -24,12 +24,23 @@ public class ArchivoUsuarios {
         return usuarios;
     }
 
+    /**
+     * Abre el archivo para poder escribir sobre él
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void abrirArchivoEscritura() throws IOException, ClassNotFoundException {
         abrirArchivoLectura();
         usuarios = leerUsuarios();
         salida = new ObjectOutputStream(new FileOutputStream(new File("usuarios.txt")));
     }
 
+    /**
+     * Abre el archivo para poder leer sobre él
+     * 
+     * @throws IOException
+     */
     public void abrirArchivoLectura() throws IOException {
         File f = new File("usuarios.txt");
         if (f.createNewFile()) {
@@ -38,7 +49,7 @@ public class ArchivoUsuarios {
         entrada = new ObjectInputStream(new FileInputStream(f));
     }
 
-    private void cerrarArchivo() throws IOException {
+    public void cerrarArchivo() throws IOException {
         if (salida != null) {
             salida.close();
         }
@@ -59,23 +70,26 @@ public class ArchivoUsuarios {
         return lista;
     }
 
-    public void agregarRegistro(T obj) {
+    private void agregarUsuario(Usuario usuario) {
         try {
-            for (T registro : registros) {
-                salida.writeObject(registro);
+            for (Usuario u : usuarios) {
+                salida.writeObject(u);
             }
-            if (obj != null) {
-                salida.writeObject(obj);
+            if (usuario != null) {
+                salida.writeObject(usuario);
             }
+            cerrarArchivo();
         } catch (IOException e) {
             System.err.println("Error al escribir en archivo");
         }
     }
 
-    public void agregarRegistroUnico(T obj) throws RegistroRepetidoException {
-        if (registros.contains(obj)) {
-            throw new RegistroRepetidoException("El objeto ya se encuentra en el archivo");
+    public void agregarUsuarioUnico(Usuario usuario) throws UsuarioRepetidoException, IOException {
+        if (usuarios.contains(usuario)) {
+            cerrarArchivo();
+            throw new UsuarioRepetidoException("El usuario ya se encuentra en el archivo");
         }
-        agregarRegistro(obj);
+        agregarUsuario(usuario);
+        cerrarArchivo();
     }
 }

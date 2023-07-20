@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import main.Juego;
 import multijugador.PaqueteActualizar;
+import multijugador.PaqueteIniciar;
 import multijugador.Usuario;
 import niveles.NivelConfig;
+import utils.UtilsJugador;
 import static utils.UtilsJugador.MARIO_INDEX;
 
 /**
@@ -23,20 +25,41 @@ public class Jugando extends Estado implements MetodosDeEstados {
 
     // Atributos de multijugador
     private ArrayList<JugadorMulti> jugadores;
+    private boolean enLobby;
 
     public Jugando(Juego juego) {
         super(juego);
         iniciarClases();
+        enLobby = true;
     }
 
     private void iniciarClases() {
         jugadores = new ArrayList();
-        String login = JOptionPane.showInputDialog(juego.getPanel(), "Ingresar usuario");
-        jugadores.add(new JugadorMulti(
-                200f, 200f, MARIO_INDEX, new Usuario("a", "a", login, "a"), null, -1)
-        );
         nivelConfig = new NivelConfig(juego);
+    }
+
+    /**
+     * Inicia el estado Jugando creando al jugador
+     *
+     * @param usuario
+     */
+    public void iniciarJugando(Usuario usuario) {
+        jugadores.add(new JugadorMulti(100f, 100f, UtilsJugador.MARIO_INDEX, usuario, null, -1));
         getJugador().cargarNivelDatos(NivelConfig.obtenerDatos());
+        enLobby = true;
+        juego.unirAPartida();
+        System.out.println(jugadores);
+        // Acomodar tipo al primero disponible
+        getJugador().setTipo(UtilsJugador.obtenerIdPersonaje(obtenerPersonajesDisponibles()[0]));
+        actualizar();
+    }
+
+    /**
+     * Inicia el estado Jugando de manera que ya se vea el mundo jugable
+     */
+    public void iniciarMundo() {
+        PaqueteIniciar paquete = new PaqueteIniciar();
+        paquete.escribirDatos(juego.getCliente());
     }
 
     /**
@@ -57,8 +80,31 @@ public class Jugando extends Estado implements MetodosDeEstados {
         return nivelConfig;
     }
 
+    public void setEnLobby(boolean enLobby) {
+        this.enLobby = enLobby;
+    }
+
     /**
-     * Agrega un jugador a la partida
+     * Devuelve la lista de personajes que no están ocupados ya
+     *
+     * @return Arreglo con los nombres de los personajes
+     */
+    public String[] obtenerPersonajesDisponibles() {
+        ArrayList<String> inicial = new ArrayList();
+        inicial.add("MARIO");
+        inicial.add("LUIGI");
+        inicial.add("TOAD");
+        inicial.add("TOADETTE");
+        ArrayList<String> usados = new ArrayList();
+        for (int i = 1; i < jugadores.size(); i++) {
+            usados.add(UtilsJugador.obtenerNombrePersonaje(jugadores.get(i).getTipo()));
+        }
+        inicial.removeAll(usados);
+        return inicial.toArray(new String[inicial.size()]);
+    }
+
+    /**
+     * Agrega un jugador a la partida activa
      *
      * @param jugador
      */
@@ -86,6 +132,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
      */
     public void actualizarJugador(JugadorMulti jugador) {
         int idx = jugadores.indexOf(jugador);
+        jugadores.get(idx).setTipo(jugador.getTipo());
         jugadores.get(idx).setX(jugador.getX());
         jugadores.get(idx).setY(jugador.getY());
         jugadores.get(idx).setEstado(jugador.getEstado());
@@ -110,61 +157,67 @@ public class Jugando extends Estado implements MetodosDeEstados {
 
     @Override
     public void actualizar() {
-        nivelConfig.actualizar();
         getJugador().actualizar();
         PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) getJugador());
         paquete.escribirDatos(juego.getCliente());
-        nivelConfig.actualizar();
+        if (!enLobby) {
+            nivelConfig.actualizar();
+        } else {
+            juego.getPanelPartida().actualizar();
+        }
     }
 
     @Override
     public void dibujar(Graphics g) {
-        nivelConfig.dibujar(g);
-        for (JugadorMulti j : jugadores) {
-            j.render(g);
+        if (!enLobby) {
+            nivelConfig.dibujar(g);
+            for (JugadorMulti j : jugadores) {
+                j.render(g);
+            }
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                getJugador().setArriba(true);
-                break;
-            case KeyEvent.VK_A:
-                getJugador().setIzquierda(true);
-                break;
-            case KeyEvent.VK_S:
-                getJugador().setAbajo(true);
-                break;
-            case KeyEvent.VK_D:
-                getJugador().setDerecha(true);
-                break;
-            case KeyEvent.VK_BACK_SPACE:
-                EstadoJuego.estado = EstadoJuego.MENU;
-
+        if (!enLobby) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    getJugador().setArriba(true);
+                    break;
+                case KeyEvent.VK_A:
+                    getJugador().setIzquierda(true);
+                    break;
+                case KeyEvent.VK_S:
+                    getJugador().setAbajo(true);
+                    break;
+                case KeyEvent.VK_D:
+                    getJugador().setDerecha(true);
+                    break;
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                getJugador().setIndiceAnimacion(0);
-                getJugador().setArriba(false);
-                break;
-            case KeyEvent.VK_A:
-                getJugador().setIndiceAnimacion(0);
-                getJugador().setIzquierda(false);
-                break;
-            case KeyEvent.VK_S:
-                getJugador().setIndiceAnimacion(0);
-                getJugador().setAbajo(false);
-                break;
-            case KeyEvent.VK_D:
-                getJugador().setIndiceAnimacion(0);
-                getJugador().setDerecha(false);
-                break;
+        if (!enLobby) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                    getJugador().setIndiceAnimacion(0);
+                    getJugador().setArriba(false);
+                    break;
+                case KeyEvent.VK_A:
+                    getJugador().setIndiceAnimacion(0);
+                    getJugador().setIzquierda(false);
+                    break;
+                case KeyEvent.VK_S:
+                    getJugador().setIndiceAnimacion(0);
+                    getJugador().setAbajo(false);
+                    break;
+                case KeyEvent.VK_D:
+                    getJugador().setIndiceAnimacion(0);
+                    getJugador().setDerecha(false);
+                    break;
+            }
         }
     }
 }

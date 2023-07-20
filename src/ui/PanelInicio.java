@@ -1,20 +1,42 @@
 package ui;
 
 import estadojuego.Menu;
+import java.awt.Dimension;
+import main.Juego;
+import static main.Juego.JUEGO_ALTO;
+import static main.Juego.JUEGO_ANCHO;
 
 /**
  *
  * @author Gabriel
  */
 public class PanelInicio extends javax.swing.JPanel {
-    
+
     private Menu menu;
+    private Juego juego;
 
     /**
      * Creates new form Inicio
+     *
+     * @param juego
      */
-    public PanelInicio() {
+    public PanelInicio(Juego juego) {
         initComponents();
+        centrarComponentes();
+        // Dar tamaño al panel
+        Dimension dimension = new Dimension(JUEGO_ANCHO, JUEGO_ALTO);
+        setMinimumSize(dimension);
+        setMaximumSize(dimension);
+        setPreferredSize(dimension);
+        revalidate();
+        repaint();
+        this.juego = juego;
+    }
+
+    private void centrarComponentes() {
+        Titulo.setLocation(JUEGO_ANCHO - Titulo.getWidth() / 2, Titulo.getY());
+        BotonIniRegistro.setLocation(JUEGO_ANCHO - BotonIniRegistro.getWidth() / 2, BotonIniRegistro.getY());
+        BotonIniSesion.setLocation(JUEGO_ANCHO - BotonIniSesion.getWidth() / 2, BotonIniSesion.getY());
     }
 
     /**
@@ -26,16 +48,19 @@ public class PanelInicio extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        Titulo = new javax.swing.JLabel();
         BotonIniRegistro = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        BotonIniSesion = new javax.swing.JButton();
 
+        setMaximumSize(new java.awt.Dimension(1040, 672));
+        setMinimumSize(new java.awt.Dimension(1040, 672));
+        setPreferredSize(new java.awt.Dimension(1040, 672));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("MARIO BROS");
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 140, 260, 70));
+        Titulo.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        Titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Titulo.setText("MARIO BROS");
+        add(Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 210, 260, 70));
 
         BotonIniRegistro.setText("Registrarse");
         BotonIniRegistro.addActionListener(new java.awt.event.ActionListener() {
@@ -43,20 +68,29 @@ public class PanelInicio extends javax.swing.JPanel {
                 BotonIniRegistroActionPerformed(evt);
             }
         });
-        add(BotonIniRegistro, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 230, 100, -1));
+        add(BotonIniRegistro, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 300, 100, 30));
 
-        jButton2.setText("Iniciar Sesion");
-        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 270, -1, -1));
+        BotonIniSesion.setText("Iniciar Sesion");
+        BotonIniSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonIniSesionActionPerformed(evt);
+            }
+        });
+        add(BotonIniSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 340, -1, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonIniRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniRegistroActionPerformed
-        // TODO add your handling code here:
+        juego.cambiarPanel("Registro");
     }//GEN-LAST:event_BotonIniRegistroActionPerformed
+
+    private void BotonIniSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniSesionActionPerformed
+        juego.cambiarPanel("Sesion");
+    }//GEN-LAST:event_BotonIniSesionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BotonIniRegistro;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton BotonIniSesion;
+    private javax.swing.JLabel Titulo;
     // End of variables declaration//GEN-END:variables
 }

@@ -116,6 +116,10 @@ public class Jugador extends Entidad implements Serializable {
         this.abajo = abajo;
     }
 
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+
     public void setEstado(EstadoJugador estado) {
         this.estado = estado;
     }

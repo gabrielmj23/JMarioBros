@@ -12,12 +12,9 @@ import ui.PanelInicio;
  * @author Bertorelli
  */
 public class Menu extends Estado implements MetodosDeEstados {
-    
-    JPanel panelMenu;
 
     public Menu(Juego juego) {
         super(juego);
-        panelMenu = new PanelInicio();
     }
 
     @Override

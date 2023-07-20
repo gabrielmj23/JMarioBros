@@ -18,7 +18,8 @@ public abstract class Paquete {
         INVALIDO(-1),
         UNIR(00),
         DESCONECTAR(01),
-        ACTUALIZAR(02);
+        ACTUALIZAR(02),
+        INICIAR(03);
 
         private int id;
 
