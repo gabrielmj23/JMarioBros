@@ -1,12 +1,11 @@
 package entidades;
 
 import java.io.Serializable;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
 /**
  *
+ * @author rober
  * @author Gabriel
  */
 public abstract class Entidad implements Serializable {
@@ -31,21 +30,23 @@ public abstract class Entidad implements Serializable {
     public float getY() {
         return y;
     }
-    
+
     public void setX(float x) {
         this.x = x;
     }
-    
+
     public void setY(float y) {
         this.y = y;
     }
 
-    public abstract void iniHitbox();
-
-    public abstract void actualizarHitbox();
+    public abstract void iniHitbox(float x, float y, int ancho, int altura);
 
     public Rectangle2D.Float getHitbox() {
         return hitbox;
+    }
+
+    public void setHitbox(Rectangle2D.Float hitbox) {
+        this.hitbox = hitbox;
     }
 
 }

@@ -1,12 +1,15 @@
 package inputs;
 
 import estadojuego.EstadoJuego;
-import static estadojuego.EstadoJuego.JUGANDO;
-import static estadojuego.EstadoJuego.MENU;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import main.PanelJuego;
+import utils.UtilsJugador;
 
+/**
+ *
+ * @author Gabriel
+ */
 public class Teclado implements KeyListener {
 
     private PanelJuego panel;

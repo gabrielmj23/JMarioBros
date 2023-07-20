@@ -1,5 +1,6 @@
 package entidades;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -7,10 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.imageio.ImageIO;
+import main.Juego;
 import utils.UtilsJugador.*;
 import static main.Juego.ESCALA;
 import multijugador.Usuario;
 import static utils.UtilsMovimiento.puedeMoverse;
+import static utils.UtilsMovimiento.*;
 
 /**
  *
@@ -24,6 +27,15 @@ public class Jugador extends Entidad implements Serializable {
     protected boolean derecha;
     protected boolean arriba;
     protected boolean abajo;
+    protected float velocidad;
+    protected boolean salto;
+
+    //Salto y gravedad
+    protected float aireVelocidad = 0f;
+    protected float gravedad = 0.04f * Juego.ESCALA;
+    protected float saltoVelocidad = -2.25f * Juego.ESCALA;
+    protected float velocidadCaidaColision = 0.5f * Juego.ESCALA;
+    protected boolean enVuelo = false;
 
     // Atributos de estado
     protected EstadoJugador estado;
@@ -43,7 +55,6 @@ public class Jugador extends Entidad implements Serializable {
     protected transient BufferedImage[][] animacionesCorrer;
     protected transient BufferedImage[] animacionActual;
 
-    protected static final float VELOCIDAD = 1.7f;
     protected static final int VELOCIDAD_ANIMACION = 17;
     protected static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
@@ -51,12 +62,12 @@ public class Jugador extends Entidad implements Serializable {
         super(x, y, 30, 62);
         this.tipo = tipo;
         this.usuario = usuario;
-
+        velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
         poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
-        iniHitbox();
+        iniHitbox(x, y, ancho, altura);
         cargarImagenes();
     }
 
@@ -100,6 +111,16 @@ public class Jugador extends Entidad implements Serializable {
         return indiceAnimacion;
     }
 
+    @Override
+    public void iniHitbox(float x, float y, int ancho, int altura) {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+        } else {
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
+        }
+    }
+
     public void setIzquierda(boolean izquierda) {
         this.izquierda = izquierda;
     }
@@ -118,6 +139,10 @@ public class Jugador extends Entidad implements Serializable {
 
     public void setTipo(int tipo) {
         this.tipo = tipo;
+    }
+
+    public void setSalto(boolean salto) {
+        this.salto = salto;
     }
 
     public void setEstado(EstadoJugador estado) {
@@ -159,32 +184,82 @@ public class Jugador extends Entidad implements Serializable {
      * Modifica la posición del jugador dependiendo de la dirección en que se
      * mueve
      */
+    /**
+     * Modifica la posición del jugador dependiendo de la dirección en que se
+     * mueve
+     */
     private void actualizarPosicion() {
-        float xVelocidad = 0f, yVelocidad = 0f;
+        float xVelocidad = 0f;
 
-        if (izquierda && !derecha) {
-            xVelocidad = -VELOCIDAD;
-        } else if (derecha && !izquierda) {
-            xVelocidad = VELOCIDAD;
+        if (salto) {
+            salto();
+        }
+        if (izquierda) {
+            xVelocidad -= velocidad;
         }
 
-        if (arriba && !abajo) {
-            yVelocidad = -VELOCIDAD;
-        } else if (abajo && !arriba) {
-            yVelocidad = VELOCIDAD;
+        if (derecha) {
+            xVelocidad += velocidad;
         }
 
-        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y + yVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
-            this.x += xVelocidad;
-            this.y += yVelocidad;
+        if (!enVuelo) {
+            if (!EstaEnSuelo(hitbox, nivelDatos)) {
+                enVuelo = true;
+            }
+        }
+
+        if (enVuelo) {
+            if (puedeMoverse(hitbox.x, hitbox.y + aireVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
+                hitbox.y += aireVelocidad;
+                aireVelocidad += gravedad;
+                actualizarXPos(xVelocidad);
+            } else {
+                if (poder == PoderJugador.NINGUNO) {
+                    hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                }
+                if (aireVelocidad > 0) {
+                    reiniciarEnVuelo();
+                } else {
+                    aireVelocidad = velocidadCaidaColision;
+                }
+                actualizarXPos(xVelocidad);
+            }
+        } else {
+            actualizarXPos(xVelocidad);
         }
 
         // Actualizar estado de movimiento para evitar errores
-        if ((izquierda ^ derecha) || (arriba ^ abajo)) {
+        if (enVuelo) {
+            estado = EstadoJugador.SALTANDO;
+        } else if ((izquierda ^ derecha) || (arriba ^ abajo)) {
             estado = EstadoJugador.CORRIENDO;
         } else {
             estado = EstadoJugador.IDLE;
         }
+    }
+
+    private void actualizarXPos(float xVelocidad) {
+        if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
+            hitbox.x += xVelocidad;
+        } else {
+            if (poder == PoderJugador.NINGUNO) {
+                hitbox.x = ObtenerXPosLimite(hitbox, xVelocidad);
+            }
+        }
+    }
+
+    private void reiniciarEnVuelo() {
+        enVuelo = false;
+        aireVelocidad = 0;
+
+    }
+
+    private void salto() {
+        if (enVuelo) {
+            return;
+        }
+        enVuelo = true;
+        aireVelocidad = saltoVelocidad;
     }
 
     /**
@@ -248,56 +323,37 @@ public class Jugador extends Entidad implements Serializable {
         }
         obtenerAnimacion();
         actualizarPosicion();
-        actualizarHitbox();
+
     }
 
     public void cargarNivelDatos(int[][] nivelDatos) {
         this.nivelDatos = nivelDatos;
-        System.out.println("Datos de nivel cargados");
     }
 
     /**
      * Dibuja al jugador en pantalla
      *
      * @param g
+     * @param xNivelDesfase
      */
-    public void render(Graphics g) {
+    public void render(Graphics g, int xNivelDesfase) {
         if (animacionActual == null) {
             obtenerAnimacion();
         }
         if (indiceAnimacion >= animacionActual.length) {
             indiceAnimacion = 0;
         }
-        int yJugador = (int) y;
+        g.setColor(Color.red);
+        int yJugador = (int) hitbox.y;
         if (poder == PoderJugador.NINGUNO) {
-            yJugador -= 2;
+            yJugador -= 40;
         }
         if (izquierda && !derecha) {
-            g.drawImage(animacionActual[indiceAnimacion], (int) (x + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawImage(animacionActual[indiceAnimacion], (int) (hitbox.x - xNivelDesfase + 32 * ESCALA), yJugador, (int) (-32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawRect((int) (hitbox.x - xNivelDesfase), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         } else {
-            g.drawImage(animacionActual[indiceAnimacion], (int) x, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
-        }
-    }
-
-    @Override
-    public void iniHitbox() {
-        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
-        {
-            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
-        } else {
-            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
-        }
-    }
-
-    @Override
-    public void actualizarHitbox() {
-        if (poder == PoderJugador.NINGUNO) // acomodar la hitbox a mario chikito
-        {
-            hitbox.x = x + 4;
-            hitbox.y = y + 40;
-        } else {
-            hitbox.x = x;
-            hitbox.y = y + 2;
+            g.drawImage(animacionActual[indiceAnimacion], (int) hitbox.x - xNivelDesfase - 3, yJugador, (int) (32 * ESCALA), (int) (64 * ESCALA), null);
+            g.drawRect((int) (hitbox.x - xNivelDesfase), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
         }
     }
 

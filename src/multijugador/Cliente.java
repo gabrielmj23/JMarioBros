@@ -11,6 +11,7 @@ import main.Juego;
 import static multijugador.Paquete.TiposPaquete.DESCONECTAR;
 import static multijugador.Paquete.TiposPaquete.INVALIDO;
 import static multijugador.Paquete.TiposPaquete.UNIR;
+import niveles.NivelConfig;
 
 /**
  *
@@ -93,6 +94,7 @@ public class Cliente extends Thread {
                 break;
             case INICIAR:
                 juego.setUps(200);
+                juego.getJugando().getJugador().cargarNivelDatos(NivelConfig.obtenerDatos());
                 juego.cambiarPanel("Juego");
                 juego.getJugando().setEnLobby(false);
                 juego.getPanelJuego().requestFocusInWindow();

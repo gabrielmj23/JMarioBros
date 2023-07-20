@@ -1,5 +1,6 @@
 package main;
 
+import entidades.EnemigosConfig;
 import entidades.Jugador;
 import entidades.JugadorMulti;
 import estadojuego.EstadoJuego;
@@ -22,10 +23,6 @@ import ui.PanelInicio;
 import ui.PanelPartida;
 import ui.PanelRegistro;
 import ui.PanelSesion;
-import static utils.UtilsJugador.MARIO_INDEX;
-import static utils.UtilsJugador.LUIGI_INDEX;
-import static utils.UtilsJugador.TOAD_INDEX;
-import static utils.UtilsJugador.TOADETTE_INDEX;
 
 /**
  *
@@ -54,6 +51,9 @@ public class Juego implements Runnable {
 
     private Jugando jugando;
     private Menu menu;
+    private Jugador jugador;
+    private NivelConfig nivelConfig;
+    private EnemigosConfig enemigosConfig;
 
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
@@ -73,11 +73,25 @@ public class Juego implements Runnable {
         panelJuego = new PanelJuego(this);
         panelAyuda = new PanelAyuda(this);
         panelAcerca = new PanelAcerca(this);
-        ventana = new VentanaJuego(panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego, panelAyuda, panelAcerca);
-        panelJuego.requestFocus();
+        ventana = new VentanaJuego(
+                panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego, panelAyuda, panelAcerca
+        );
+        panelInicio.requestFocusInWindow();
 
         // Iniciar ciclo de juego
         iniciarHilo();
+    }
+
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public NivelConfig getNivelConfig() {
+        return nivelConfig;
+    }
+
+    public EnemigosConfig getEnemigosConfig() {
+        return enemigosConfig;
     }
 
     /**
@@ -207,6 +221,13 @@ public class Juego implements Runnable {
             default:
                 break;
         }
+    }
+
+    /**
+     * Detiene el juego cuando se pierde el enfoque de la ventana
+     */
+    public void ventanaPerdida() {
+        jugador.resetearEstado();
     }
 
     /**

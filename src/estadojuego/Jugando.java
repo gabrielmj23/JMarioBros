@@ -1,5 +1,6 @@
 package estadojuego;
 
+import entidades.EnemigosConfig;
 import entidades.Jugador;
 import entidades.JugadorMulti;
 import java.awt.Graphics;
@@ -17,11 +18,22 @@ import static utils.UtilsJugador.MARIO_INDEX;
 /**
  *
  * @author Bertorelli
+ * @author rober
+ * @author Gabriel
  */
 public class Jugando extends Estado implements MetodosDeEstados {
 
-    // Atributos de graficos
+    // Atributos de graficos y juego
     private NivelConfig nivelConfig;
+    private EnemigosConfig enemigosConfig;
+
+    // Manejar nivel
+    private int xNivelDesfase;
+    private int bordeIzquierdo = (int) (0.2 * Juego.JUEGO_ANCHO);
+    private int bordeDerecho = (int) (0.8 * Juego.JUEGO_ANCHO);
+    private int casillasNivel = NivelConfig.obtenerDatos()[0].length;
+    private int desfaseMaximoCasilla = casillasNivel - Juego.CASILLAS_HORIZONTAL;
+    private int desfaseMaximoNivel = desfaseMaximoCasilla * Juego.TAMAÑO_REAL_CASILLAS;
 
     // Atributos de multijugador
     private ArrayList<JugadorMulti> jugadores;
@@ -36,6 +48,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
     private void iniciarClases() {
         jugadores = new ArrayList();
         nivelConfig = new NivelConfig(juego);
+        enemigosConfig = new EnemigosConfig(juego);
     }
 
     /**
@@ -133,17 +146,20 @@ public class Jugando extends Estado implements MetodosDeEstados {
     public void actualizarJugador(JugadorMulti jugador) {
         int idx = jugadores.indexOf(jugador);
         jugadores.get(idx).setTipo(jugador.getTipo());
-        jugadores.get(idx).setX(jugador.getX());
-        jugadores.get(idx).setY(jugador.getY());
-        jugadores.get(idx).setEstado(jugador.getEstado());
-        jugadores.get(idx).setPoder(jugador.getPoder());
-        jugadores.get(idx).setDeltaAnimacion(jugador.getDeltaAnimacion());
-        jugadores.get(idx).setIndiceAnimacion(jugador.getIndiceAnimacion());
-        jugadores.get(idx).setDerecha(jugador.isDerecha());
-        jugadores.get(idx).setIzquierda(jugador.isIzquierda());
-        jugadores.get(idx).setArriba(jugador.isArriba());
-        jugadores.get(idx).setAbajo(jugador.isAbajo());
-        jugadores.get(idx).obtenerAnimacion();
+        if (!enLobby) {
+            jugadores.get(idx).setX(jugador.getX());
+            jugadores.get(idx).setY(jugador.getY());
+            jugadores.get(idx).setHitbox(jugador.getHitbox());
+            jugadores.get(idx).setEstado(jugador.getEstado());
+            jugadores.get(idx).setPoder(jugador.getPoder());
+            jugadores.get(idx).setDeltaAnimacion(jugador.getDeltaAnimacion());
+            jugadores.get(idx).setIndiceAnimacion(jugador.getIndiceAnimacion());
+            jugadores.get(idx).setDerecha(jugador.isDerecha());
+            jugadores.get(idx).setIzquierda(jugador.isIzquierda());
+            jugadores.get(idx).setArriba(jugador.isArriba());
+            jugadores.get(idx).setAbajo(jugador.isAbajo());
+            jugadores.get(idx).obtenerAnimacion();
+        }
     }
 
     /**
@@ -155,6 +171,26 @@ public class Jugando extends Estado implements MetodosDeEstados {
         }
     }
 
+    /**
+     * Calcula el desfase del jugador con el nivel
+     */
+    private void revisarCercaBorde() {
+        int jugadorX = (int) getJugador().getHitbox().x;
+        int diff = jugadorX - xNivelDesfase;
+
+        if (diff > bordeDerecho) {
+            xNivelDesfase += diff - bordeDerecho;
+        } else if (diff < bordeIzquierdo) {
+            xNivelDesfase += diff - bordeIzquierdo;
+        }
+
+        if (xNivelDesfase > desfaseMaximoNivel) {
+            xNivelDesfase = desfaseMaximoNivel;
+        } else if (xNivelDesfase < 0) {
+            xNivelDesfase = 0;
+        }
+    }
+
     @Override
     public void actualizar() {
         getJugador().actualizar();
@@ -162,7 +198,8 @@ public class Jugando extends Estado implements MetodosDeEstados {
         paquete.escribirDatos(juego.getCliente());
         if (!enLobby) {
             nivelConfig.actualizar();
-            System.out.println(juego.getUps());
+            enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
+            revisarCercaBorde();
         } else {
             juego.getPanelPartida().actualizar();
         }
@@ -171,9 +208,11 @@ public class Jugando extends Estado implements MetodosDeEstados {
     @Override
     public void dibujar(Graphics g) {
         if (!enLobby) {
-            nivelConfig.dibujar(g);
+            nivelConfig.dibujarFondo(g);
+            nivelConfig.dibujar(g, xNivelDesfase);
+            enemigosConfig.dibujar(g, xNivelDesfase);
             for (JugadorMulti j : jugadores) {
-                j.render(g);
+                j.render(g, xNivelDesfase);
             }
         }
     }
@@ -183,13 +222,10 @@ public class Jugando extends Estado implements MetodosDeEstados {
         if (!enLobby) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    getJugador().setArriba(true);
+                    getJugador().setSalto(true);
                     break;
                 case KeyEvent.VK_A:
                     getJugador().setIzquierda(true);
-                    break;
-                case KeyEvent.VK_S:
-                    getJugador().setAbajo(true);
                     break;
                 case KeyEvent.VK_D:
                     getJugador().setDerecha(true);
@@ -203,16 +239,11 @@ public class Jugando extends Estado implements MetodosDeEstados {
         if (!enLobby) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    getJugador().setIndiceAnimacion(0);
-                    getJugador().setArriba(false);
+                    getJugador().setSalto(false);
                     break;
                 case KeyEvent.VK_A:
                     getJugador().setIndiceAnimacion(0);
                     getJugador().setIzquierda(false);
-                    break;
-                case KeyEvent.VK_S:
-                    getJugador().setIndiceAnimacion(0);
-                    getJugador().setAbajo(false);
                     break;
                 case KeyEvent.VK_D:
                     getJugador().setIndiceAnimacion(0);

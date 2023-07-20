@@ -166,6 +166,7 @@ public class PanelPartida extends javax.swing.JPanel {
 
     private void SelecPersonajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelecPersonajeActionPerformed
         juego.getJugando().getJugador().setTipo(UtilsJugador.obtenerIdPersonaje((String) SelecPersonaje.getSelectedItem()));
+        juego.getJugando().getJugador().cargarImagenes();
     }//GEN-LAST:event_SelecPersonajeActionPerformed
 
     private void IniciarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IniciarBtnActionPerformed
