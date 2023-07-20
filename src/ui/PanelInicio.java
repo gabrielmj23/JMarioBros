@@ -22,21 +22,22 @@ public class PanelInicio extends javax.swing.JPanel {
      */
     public PanelInicio(Juego juego) {
         initComponents();
-        centrarComponentes();
-        // Dar tamaño al panel
-        Dimension dimension = new Dimension(JUEGO_ANCHO, JUEGO_ALTO);
-        setMinimumSize(dimension);
-        setMaximumSize(dimension);
-        setPreferredSize(dimension);
-        revalidate();
-        repaint();
         this.juego = juego;
-    }
-
-    private void centrarComponentes() {
-        Titulo.setLocation(JUEGO_ANCHO - Titulo.getWidth() / 2, Titulo.getY());
-        BotonIniRegistro.setLocation(JUEGO_ANCHO - BotonIniRegistro.getWidth() / 2, BotonIniRegistro.getY());
-        BotonIniSesion.setLocation(JUEGO_ANCHO - BotonIniSesion.getWidth() / 2, BotonIniSesion.getY());
+        Titulo.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Titulo.png")).getImage().getScaledInstance(320, 120, java.awt.Image.SCALE_SMOOTH))
+        );
+        BotonIniRegistro.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Registrarse.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        BotonIniSesion.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Iniciar Sesion.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        BotonAcerca.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Acerca De.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        Fondo.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/FondoMenu.png")).getImage().getScaledInstance(1040, 558, java.awt.Image.SCALE_SMOOTH))
+        );
     }
 
     /**
@@ -51,32 +52,48 @@ public class PanelInicio extends javax.swing.JPanel {
         Titulo = new javax.swing.JLabel();
         BotonIniRegistro = new javax.swing.JButton();
         BotonIniSesion = new javax.swing.JButton();
+        BotonAcerca = new javax.swing.JButton();
+        Fondo = new javax.swing.JLabel();
 
-        setMaximumSize(new java.awt.Dimension(1040, 672));
-        setMinimumSize(new java.awt.Dimension(1040, 672));
-        setPreferredSize(new java.awt.Dimension(1040, 672));
+        setMaximumSize(new java.awt.Dimension(1040, 558));
+        setMinimumSize(new java.awt.Dimension(1040, 558));
+        setPreferredSize(new java.awt.Dimension(1040, 558));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Titulo.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         Titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Titulo.setText("MARIO BROS");
-        add(Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 210, 260, 70));
+        add(Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 50, 340, 150));
 
-        BotonIniRegistro.setText("Registrarse");
+        BotonIniRegistro.setBackground(new java.awt.Color(60, 63, 65));
+        BotonIniRegistro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Registrarse.png"))); // NOI18N
+        BotonIniRegistro.setContentAreaFilled(false);
         BotonIniRegistro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BotonIniRegistroActionPerformed(evt);
             }
         });
-        add(BotonIniRegistro, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 300, 100, 30));
+        add(BotonIniRegistro, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 210, 300, 80));
 
-        BotonIniSesion.setText("Iniciar Sesion");
+        BotonIniSesion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Iniciar Sesion.png"))); // NOI18N
+        BotonIniSesion.setContentAreaFilled(false);
         BotonIniSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BotonIniSesionActionPerformed(evt);
             }
         });
-        add(BotonIniSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 340, -1, 30));
+        add(BotonIniSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 310, 300, 80));
+
+        BotonAcerca.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Iniciar Sesion.png"))); // NOI18N
+        BotonAcerca.setContentAreaFilled(false);
+        BotonAcerca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonAcercaActionPerformed(evt);
+            }
+        });
+        add(BotonAcerca, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 410, 300, 80));
+
+        Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/FondoMenu.png"))); // NOI18N
+        add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 560));
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonIniRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniRegistroActionPerformed
@@ -87,10 +104,16 @@ public class PanelInicio extends javax.swing.JPanel {
         juego.cambiarPanel("Sesion");
     }//GEN-LAST:event_BotonIniSesionActionPerformed
 
+    private void BotonAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAcercaActionPerformed
+        juego.cambiarPanel("Acerca");
+    }//GEN-LAST:event_BotonAcercaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BotonAcerca;
     private javax.swing.JButton BotonIniRegistro;
     private javax.swing.JButton BotonIniSesion;
+    private javax.swing.JLabel Fondo;
     private javax.swing.JLabel Titulo;
     // End of variables declaration//GEN-END:variables
 }

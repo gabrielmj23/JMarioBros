@@ -20,6 +20,25 @@ public class PanelIniciado extends javax.swing.JPanel {
      */
     public PanelIniciado(Juego juego) {
         initComponents();
+        Salir.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Salir.png")).getImage().getScaledInstance(200, 40, java.awt.Image.SCALE_SMOOTH))
+        );
+        IniPartida.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Iniciar Partida.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        UnirPartida.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Unirse a Partida.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        Estadisticas.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Estadisticas.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        Ayuda.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Ayuda.png")).getImage().getScaledInstance(300, 60, java.awt.Image.SCALE_SMOOTH))
+        );
+        Fondo.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/FondoMenu.png")).getImage().getScaledInstance(1040, 558, java.awt.Image.SCALE_SMOOTH))
+        );
+
         this.juego = juego;
     }
 
@@ -40,39 +59,55 @@ public class PanelIniciado extends javax.swing.JPanel {
         Bienvenido = new javax.swing.JLabel();
         IniPartida = new javax.swing.JButton();
         UnirPartida = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        Estadisticas = new javax.swing.JButton();
+        Ayuda = new javax.swing.JButton();
+        Salir = new javax.swing.JButton();
+        Fondo = new javax.swing.JLabel();
 
-        setMaximumSize(new java.awt.Dimension(1040, 672));
-        setMinimumSize(new java.awt.Dimension(1040, 672));
-        setPreferredSize(new java.awt.Dimension(1040, 672));
+        setMaximumSize(new java.awt.Dimension(1040, 558));
+        setMinimumSize(new java.awt.Dimension(1040, 558));
+        setPreferredSize(new java.awt.Dimension(1040, 558));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        Bienvenido.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        Bienvenido.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 28)); // NOI18N
         Bienvenido.setText("jLabel1");
-        add(Bienvenido, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, 320, 70));
+        add(Bienvenido, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, 710, 70));
 
-        IniPartida.setText("Iniciar Partida");
+        IniPartida.setContentAreaFilled(false);
         IniPartida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IniPartidaActionPerformed(evt);
             }
         });
-        add(IniPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 230, 130, 30));
+        add(IniPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 190, 300, 60));
 
-        UnirPartida.setText("Unirse a Partida");
+        UnirPartida.setContentAreaFilled(false);
         UnirPartida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UnirPartidaActionPerformed(evt);
             }
         });
-        add(UnirPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 280, 130, 30));
+        add(UnirPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 260, 300, 60));
 
-        jButton3.setText("Estadísticas");
-        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 330, 130, 30));
+        Estadisticas.setContentAreaFilled(false);
+        add(Estadisticas, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 330, 300, 60));
 
-        jButton4.setText("Ayuda");
-        add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 380, 130, 30));
+        Ayuda.setContentAreaFilled(false);
+        Ayuda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AyudaActionPerformed(evt);
+            }
+        });
+        add(Ayuda, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 400, 300, 60));
+
+        Salir.setContentAreaFilled(false);
+        Salir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SalirActionPerformed(evt);
+            }
+        });
+        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 200, 40));
+        add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 560));
     }// </editor-fold>//GEN-END:initComponents
 
     private void IniPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IniPartidaActionPerformed
@@ -92,12 +127,22 @@ public class PanelIniciado extends javax.swing.JPanel {
         EstadoJuego.estado = EstadoJuego.JUGANDO;
     }//GEN-LAST:event_UnirPartidaActionPerformed
 
+    private void AyudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AyudaActionPerformed
+        juego.cambiarPanel("Ayuda");
+    }//GEN-LAST:event_AyudaActionPerformed
+
+    private void SalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirActionPerformed
+        juego.cambiarPanel("Inicio");
+    }//GEN-LAST:event_SalirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Ayuda;
     private javax.swing.JLabel Bienvenido;
+    private javax.swing.JButton Estadisticas;
+    private javax.swing.JLabel Fondo;
     private javax.swing.JButton IniPartida;
+    private javax.swing.JButton Salir;
     private javax.swing.JButton UnirPartida;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     // End of variables declaration//GEN-END:variables
 }

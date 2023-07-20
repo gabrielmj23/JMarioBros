@@ -162,6 +162,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
         paquete.escribirDatos(juego.getCliente());
         if (!enLobby) {
             nivelConfig.actualizar();
+            System.out.println(juego.getUps());
         } else {
             juego.getPanelPartida().actualizar();
         }

@@ -15,6 +15,8 @@ import multijugador.PaqueteUnir;
 import multijugador.Servidor;
 import multijugador.Usuario;
 import niveles.NivelConfig;
+import ui.PanelAcerca;
+import ui.PanelAyuda;
 import ui.PanelIniciado;
 import ui.PanelInicio;
 import ui.PanelPartida;
@@ -39,6 +41,8 @@ public class Juego implements Runnable {
     private PanelIniciado panelIniciado;
     private PanelPartida panelPartida;
     private PanelJuego panelJuego;
+    private PanelAyuda panelAyuda;
+    private PanelAcerca panelAcerca;
     private Thread hiloJuego;
 
     // Atributos de multijugador
@@ -67,7 +71,9 @@ public class Juego implements Runnable {
         panelIniciado = new PanelIniciado(this);
         panelPartida = new PanelPartida(this);
         panelJuego = new PanelJuego(this);
-        ventana = new VentanaJuego(panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego);
+        panelAyuda = new PanelAyuda(this);
+        panelAcerca = new PanelAcerca(this);
+        ventana = new VentanaJuego(panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego, panelAyuda, panelAcerca);
         panelJuego.requestFocus();
 
         // Iniciar ciclo de juego
@@ -127,6 +133,10 @@ public class Juego implements Runnable {
     private void iniciarHilo() {
         hiloJuego = new Thread(this);
         hiloJuego.start();
+    }
+
+    public float getUps() {
+        return ups;
     }
 
     public Servidor getServidor() {
@@ -200,13 +210,12 @@ public class Juego implements Runnable {
     }
 
     /**
-     * Gestiona el ciclo de juego. Por mantiene 120 frames por segundo y 200
+     * Gestiona el ciclo de juego. Mantiene 120 frames por segundo y 200
      * actualizaciones por segundo
      */
     @Override
     public void run() {
         final double TIEMPO_POR_FRAME = 1000000000.0 / FPS_FIJOS;
-        final double TIEMPO_POR_ACTUALIZAR = 1000000000.0 / ups;
         long tiempoPrevio = System.nanoTime();
         // Las variables delta acumulan la fraccion de tiempo restante antes de cambiar de frame/actualizar
         double deltaActualizar = 0;
@@ -214,7 +223,7 @@ public class Juego implements Runnable {
 
         while (true) {
             long tiempoAhora = System.nanoTime();
-            deltaActualizar += (tiempoAhora - tiempoPrevio) / TIEMPO_POR_ACTUALIZAR;
+            deltaActualizar += (tiempoAhora - tiempoPrevio) / (1000000000.0 / ups);
             deltaFrames += (tiempoAhora - tiempoPrevio) / TIEMPO_POR_FRAME;
             tiempoPrevio = tiempoAhora;
 

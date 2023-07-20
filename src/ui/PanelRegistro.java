@@ -24,12 +24,16 @@ public class PanelRegistro extends javax.swing.JPanel {
      */
     public PanelRegistro(Juego juego) {
         initComponents();
+        Salir.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Salir.png")).getImage().getScaledInstance(200, 40, java.awt.Image.SCALE_SMOOTH))
+        );
+        RegBoton.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Registrarse.png")).getImage().getScaledInstance(200, 40, java.awt.Image.SCALE_SMOOTH))
+        );
+        Fondo.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/FondoMenu.png")).getImage().getScaledInstance(1040, 558, java.awt.Image.SCALE_SMOOTH))
+        );
         this.juego = juego;
-        // Dar tamaño al panel
-        Dimension dimension = new Dimension(JUEGO_ANCHO, JUEGO_ALTO);
-        setMinimumSize(dimension);
-        setMaximumSize(dimension);
-        setPreferredSize(dimension);
         RegError.setVisible(false);
     }
 
@@ -56,59 +60,61 @@ public class PanelRegistro extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         AvatarBox = new javax.swing.JComboBox<>();
         Salir = new javax.swing.JButton();
+        Fondo = new javax.swing.JLabel();
 
-        setMaximumSize(new java.awt.Dimension(1040, 672));
-        setMinimumSize(new java.awt.Dimension(1040, 672));
-        setPreferredSize(new java.awt.Dimension(1040, 672));
+        setMaximumSize(new java.awt.Dimension(1040, 558));
+        setMinimumSize(new java.awt.Dimension(1040, 558));
+        setPreferredSize(new java.awt.Dimension(1040, 558));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 28)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("REGISTRO");
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 100, 230, 60));
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 60, 230, 60));
 
         jLabel2.setText("Nombre");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 160, -1, -1));
-        add(RegNombreField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, 250, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 120, -1, -1));
+        add(RegNombreField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 140, 250, -1));
 
         jLabel3.setText("Correo");
-        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 220, -1, -1));
-        add(RegCorreoField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 240, 250, -1));
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, -1, -1));
+        add(RegCorreoField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 200, 250, -1));
 
         jLabel4.setText("Login");
-        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 280, -1, -1));
-        add(RegLoginField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 300, 250, -1));
+        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 240, -1, -1));
+        add(RegLoginField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, 250, -1));
 
         jLabel5.setText("Contraseña");
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 340, -1, -1));
-        add(RegContraField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 360, 250, -1));
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 300, -1, -1));
+        add(RegContraField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 320, 250, -1));
 
-        RegBoton.setText("Registrarse");
+        RegBoton.setContentAreaFilled(false);
         RegBoton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RegBotonActionPerformed(evt);
             }
         });
-        add(RegBoton, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 460, 110, 30));
+        add(RegBoton, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 430, 210, 40));
 
         RegError.setForeground(new java.awt.Color(255, 0, 51));
         RegError.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         RegError.setText("jLabel6");
-        add(RegError, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 500, 250, -1));
+        add(RegError, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 490, 250, -1));
 
         jLabel6.setText("Avatar");
-        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 400, -1, -1));
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 360, -1, -1));
 
         AvatarBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Mario", "Luigi", "Toad", "Toadette" }));
-        add(AvatarBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 420, 250, 30));
+        add(AvatarBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 380, 250, 30));
 
-        Salir.setText("Salir");
+        Salir.setContentAreaFilled(false);
         Salir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SalirActionPerformed(evt);
             }
         });
-        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, -1, -1));
+        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, 200, 40));
+        add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 560));
     }// </editor-fold>//GEN-END:initComponents
 
     private void RegBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegBotonActionPerformed
@@ -166,6 +172,7 @@ public class PanelRegistro extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> AvatarBox;
+    private javax.swing.JLabel Fondo;
     private javax.swing.JButton RegBoton;
     private javax.swing.JPasswordField RegContraField;
     private javax.swing.JTextField RegCorreoField;

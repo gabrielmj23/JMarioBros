@@ -19,6 +19,15 @@ public class PanelSesion extends javax.swing.JPanel {
      */
     public PanelSesion(Juego juego) {
         initComponents();
+        Salir.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Salir.png")).getImage().getScaledInstance(200, 40, java.awt.Image.SCALE_SMOOTH))
+        );
+        SesionBoton.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Iniciar Sesion.png")).getImage().getScaledInstance(200, 40, java.awt.Image.SCALE_SMOOTH))
+        );
+        Fondo.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/FondoMenu.png")).getImage().getScaledInstance(1040, 558, java.awt.Image.SCALE_SMOOTH))
+        );
         this.juego = juego;
         Error.setVisible(false);
     }
@@ -40,45 +49,51 @@ public class PanelSesion extends javax.swing.JPanel {
         Error = new javax.swing.JLabel();
         ContraField = new javax.swing.JPasswordField();
         Salir = new javax.swing.JButton();
+        Fondo = new javax.swing.JLabel();
 
-        setMaximumSize(new java.awt.Dimension(1040, 672));
-        setMinimumSize(new java.awt.Dimension(1040, 672));
-        setPreferredSize(new java.awt.Dimension(1040, 672));
+        setMaximumSize(new java.awt.Dimension(1040, 558));
+        setMinimumSize(new java.awt.Dimension(1040, 558));
+        setPreferredSize(new java.awt.Dimension(1040, 558));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 28)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 0, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Iniciar Sesión");
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 200, 180, 40));
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 150, 210, 40));
 
         jLabel2.setText("Login");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, -1, -1));
-        add(LoginField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 280, 260, 30));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 210, -1, -1));
+        add(LoginField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 230, 260, 30));
 
         jLabel3.setText("Contraseña");
-        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 330, -1, -1));
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 280, -1, -1));
 
-        SesionBoton.setText("Iniciar Sesión");
+        SesionBoton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Iniciar Sesion.png"))); // NOI18N
+        SesionBoton.setContentAreaFilled(false);
         SesionBoton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SesionBotonActionPerformed(evt);
             }
         });
-        add(SesionBoton, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 410, 140, 30));
+        add(SesionBoton, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 350, 200, 40));
 
         Error.setForeground(new java.awt.Color(255, 0, 51));
         Error.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Error.setText("jLabel4");
-        add(Error, new org.netbeans.lib.awtextra.AbsoluteConstraints(398, 460, 260, -1));
-        add(ContraField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 350, 260, 30));
+        add(Error, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 410, 260, -1));
+        add(ContraField, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 300, 260, 30));
 
-        Salir.setText("Salir");
+        Salir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Salir.png"))); // NOI18N
+        Salir.setContentAreaFilled(false);
         Salir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SalirActionPerformed(evt);
             }
         });
-        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, -1, -1));
+        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, 200, 40));
+
+        Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/FondoMenu.png"))); // NOI18N
+        add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 560));
     }// </editor-fold>//GEN-END:initComponents
 
     private void SesionBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SesionBotonActionPerformed
@@ -128,6 +143,7 @@ public class PanelSesion extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField ContraField;
     private javax.swing.JLabel Error;
+    private javax.swing.JLabel Fondo;
     private javax.swing.JTextField LoginField;
     private javax.swing.JButton Salir;
     private javax.swing.JButton SesionBoton;
