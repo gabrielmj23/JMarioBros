@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import main.Juego;
 import static niveles.NivelConfig.obtenerGoombas;
+import static utils.UtilsJugador.PoderJugador.*;
 
 /**
  *
@@ -69,18 +70,22 @@ public class EnemigosConfig {
                     }
 
                     //Revisar si es colision por los lados
-                    if (mario.hitbox.x + margen > go.hitbox.x + go.hitbox.width) { //Choque por la izquierda de mario
-                        mario.PalSpawn();
-                        return;
-                    } else if (mario.hitbox.x + mario.hitbox.width - margen < go.hitbox.x) { //Choque por la derecha de mario
-                        mario.PalSpawn();
+                    if (mario.hitbox.x + margen > go.hitbox.x + go.hitbox.width || mario.hitbox.x + mario.hitbox.width - margen < go.hitbox.x) { //Choque por la izquierda o derecha de mario
+                        if (mario.getPoder() == SUPER) {
+                            mario.setPoder(NINGUNO);
+                            mario.iniHitbox(mario.hitbox.x, mario.hitbox.y, mario.ancho, mario.altura);
+                        } else if (mario.getPoder() == FUEGO) {
+                            mario.setPoder(SUPER);
+                        }
+                     
                         return;
                     }
                 }
-
             }
-        }
 
+        }
     }
 
 }
+
+

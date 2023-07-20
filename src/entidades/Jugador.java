@@ -91,6 +91,7 @@ public class Jugador extends Entidad {
         } else {
             hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
         }
+        System.out.println("ancho: " + hitbox.width + " altura: " + hitbox.height);
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -175,6 +176,9 @@ public class Jugador extends Entidad {
         } else {
             estado = EstadoJugador.IDLE;
         }
+        //Caida al vacio
+        if ( hitbox.y + hitbox.height + 1 >= Juego.JUEGO_ALTO)
+            PalSpawn();
     }
 
     private void actualizarXPos(float xVelocidad) {

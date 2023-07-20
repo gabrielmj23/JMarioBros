@@ -34,9 +34,11 @@ public class PanelJuego extends JPanel {
      */
     public void actualizarJuego() {
         juego.getEnemigosConfig().revisarColision(juego.getJugador());
+        juego.getObjetosConfig().revisarPoderTocado(juego.getJugador());
         juego.getJugador().actualizar();
         juego.getEnemigosConfig().actualizar(juego.getNivelConfig().getNivelUno().obtenerNivelDatos());
         juego.getNivelConfig().actualizar();
+        juego.getObjetosConfig().actualizar();
     }
 
     /**

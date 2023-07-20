@@ -4,6 +4,7 @@ import entidades.EnemigosConfig;
 import entidades.Jugador;
 import java.awt.Graphics;
 import niveles.NivelConfig;
+import objetos.ObjetosConfig;
 import static utils.UtilsJugador.MARIO_INDEX;
 import static utils.UtilsJugador.LUIGI_INDEX;
 import static utils.UtilsJugador.TOAD_INDEX;
@@ -21,6 +22,7 @@ public class Juego implements Runnable {
     private Jugador jugador;
     private NivelConfig nivelConfig;
     private EnemigosConfig enemigosConfig;
+    private ObjetosConfig objetosConfig;
     private final int FPS_FIJOS = 120;
     private final int UPS_FIJOS = 200;
 
@@ -59,16 +61,20 @@ public class Juego implements Runnable {
     }
     
     public EnemigosConfig getEnemigosConfig(){
-        return enemigosConfig;
+        return enemigosConfig;    
     }
 
+    public ObjetosConfig getObjetosConfig(){
+        return objetosConfig;
+    }
     /**
      * Inicializa las clases involucradas en el juego
      */
     private void iniciarClases() {
         nivelConfig = new NivelConfig(this);
         enemigosConfig = new EnemigosConfig(this);
-        jugador = new Jugador(100, 200, TOADETTE_INDEX);
+        objetosConfig = new ObjetosConfig(this);
+        jugador = new Jugador(100, 200, MARIO_INDEX);
         jugador.cargarNivelDatos(NivelConfig.obtenerDatos());
     }
 
@@ -110,6 +116,7 @@ public class Juego implements Runnable {
         nivelConfig.dibujar(g, xNivelDesfase);
         enemigosConfig.dibujar(g, xNivelDesfase);
         jugador.render(g, xNivelDesfase);
+        objetosConfig.dibujar(g, xNivelDesfase);
     
     }
 
