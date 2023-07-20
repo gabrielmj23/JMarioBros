@@ -71,6 +71,16 @@ public class Jugador extends Entidad implements Serializable {
         cargarImagenes();
     }
 
+    @Override
+    public void iniHitbox(float x, float y, int ancho, int altura) {
+        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
+        {
+            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
+        } else {
+            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
+        }
+    }
+
     public boolean isIzquierda() {
         return izquierda;
     }
@@ -109,16 +119,6 @@ public class Jugador extends Entidad implements Serializable {
 
     public int getIndiceAnimacion() {
         return indiceAnimacion;
-    }
-
-    @Override
-    public void iniHitbox(float x, float y, int ancho, int altura) {
-        if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
-        {
-            hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho + 2, altura - 25);
-        } else {
-            hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
-        }
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -161,6 +161,15 @@ public class Jugador extends Entidad implements Serializable {
         this.indiceAnimacion = indiceAnimacion;
     }
 
+    public void setAireVelocidad() {
+        aireVelocidad = saltoVelocidad;
+    }
+
+    public void palSpawn() {
+        this.hitbox.x = 100;
+        this.hitbox.y = 200;
+    }
+
     /**
      * Carga el spritesheet y las animaciones de movimiento del jugador
      */
@@ -180,10 +189,6 @@ public class Jugador extends Entidad implements Serializable {
         }
     }
 
-    /**
-     * Modifica la posición del jugador dependiendo de la dirección en que se
-     * mueve
-     */
     /**
      * Modifica la posición del jugador dependiendo de la dirección en que se
      * mueve
@@ -209,6 +214,7 @@ public class Jugador extends Entidad implements Serializable {
         }
 
         if (enVuelo) {
+
             if (puedeMoverse(hitbox.x, hitbox.y + aireVelocidad, hitbox.width, hitbox.height, nivelDatos)) {
                 hitbox.y += aireVelocidad;
                 aireVelocidad += gravedad;
@@ -224,6 +230,7 @@ public class Jugador extends Entidad implements Serializable {
                 }
                 actualizarXPos(xVelocidad);
             }
+
         } else {
             actualizarXPos(xVelocidad);
         }

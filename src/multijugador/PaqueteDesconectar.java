@@ -9,13 +9,13 @@ import java.io.ObjectOutputStream;
  *
  * @author Gabriel
  */
-public class PaqueteDesconectar extends Paquete {
+public class PaqueteDesconectar extends Paquete<JugadorMulti> {
 
     private JugadorMulti jugador;
 
     public PaqueteDesconectar(byte[] datos) throws IOException, ClassNotFoundException {
         super(01);
-        this.jugador = leerJugador(datos);
+        this.jugador = leerObj(datos);
     }
 
     public PaqueteDesconectar(JugadorMulti jugador) {

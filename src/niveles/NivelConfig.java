@@ -1,5 +1,6 @@
 package niveles;
 
+import entidades.Enemigo;
 import entidades.Goomba;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,7 +13,7 @@ import main.Juego;
 import static main.Juego.CASILLAS_HORIZONTAL;
 import static main.Juego.CASILLAS_VERTICAL;
 import static main.Juego.TAMAÑO_REAL_CASILLAS;
-import static utils.UtilsEnemigo.GOOMBA_INDEX;
+import static utils.UtilsEnemigo.*;
 
 /**
  *
@@ -101,8 +102,8 @@ public class NivelConfig {
         return nivelDatos;
     }
 
-    public static ArrayList<Goomba> obtenerGoombas() {
-        ArrayList<Goomba> list = new ArrayList<>();
+    public static ArrayList<Enemigo> obtenerEnemigos() {
+        ArrayList<Enemigo> list = new ArrayList<>();
         try {
             BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
 
@@ -110,9 +111,14 @@ public class NivelConfig {
                 for (int i = 0; i < img.getWidth(); i++) {
                     Color color = new Color(img.getRGB(i, j));
                     int valor = color.getGreen();
-                    if (valor == GOOMBA_INDEX) //No existe el sprite
-                    {
+                    if (valor == GOOMBA_INDEX) {
                         list.add(new Goomba(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    } else if (valor == KOOPAR_INDEX) {
+                        //list.add(new KoopaR(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    } else if (valor == KOOPAV_INDEX) {
+                        //list.add(new KoopaV(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    } else if (valor == PLANTA_INDEX) {
+                        // list.add(new Planta(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
                     }
                 }
             }

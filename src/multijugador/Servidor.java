@@ -92,6 +92,13 @@ public class Servidor extends Thread {
             case INICIAR:
                 enviarDatosATodos(datos);
                 break;
+            case ENEMIGO:
+                for (JugadorMulti j: jugadoresConectados) {
+                    if (j.getIp() != ip && j.getPuerto() != puerto) {
+                        enviarDatos(datos, j.getIp(), j.getPuerto());
+                    }
+                }
+                break;
         }
     }
 

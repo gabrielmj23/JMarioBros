@@ -99,6 +99,9 @@ public class Cliente extends Thread {
                 juego.getJugando().setEnLobby(false);
                 juego.getPanelJuego().requestFocusInWindow();
                 break;
+            case ENEMIGO:
+                paquete = new PaqueteEnemigo(datos);
+                juego.getJugando().getEnemigosConfig().setEnemigos(((PaqueteEnemigo) paquete).getEnemigos());
         }
     }
 

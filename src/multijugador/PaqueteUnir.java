@@ -9,13 +9,13 @@ import java.io.ObjectOutputStream;
  *
  * @author Gabriel
  */
-public class PaqueteUnir extends Paquete {
+public class PaqueteUnir extends Paquete<JugadorMulti> {
 
     private JugadorMulti jugador;
 
     public PaqueteUnir(byte[] datos) throws IOException, ClassNotFoundException {
         super(00);
-        this.jugador = leerJugador(datos);
+        this.jugador = leerObj(datos);
     }
 
     public PaqueteUnir(JugadorMulti jugador) {

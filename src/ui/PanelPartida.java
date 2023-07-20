@@ -51,7 +51,7 @@ public class PanelPartida extends javax.swing.JPanel {
         String seleccionado = (String) SelecPersonaje.getSelectedItem();
         SelecPersonaje.setModel(new DefaultComboBoxModel(juego.getJugando().obtenerPersonajesDisponibles()));
         SelecPersonaje.setSelectedItem(seleccionado);
-        IniciarBtn.setEnabled(jugadores.size() > 1);
+        //IniciarBtn.setEnabled(jugadores.size() > 1);
     }
 
     private void crearListaLobby() {

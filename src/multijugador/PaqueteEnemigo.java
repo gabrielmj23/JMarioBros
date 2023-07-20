@@ -1,30 +1,31 @@
 package multijugador;
 
-import entidades.JugadorMulti;
+import entidades.Enemigo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 /**
  *
  * @author Gabriel
  */
-public class PaqueteActualizar extends Paquete<JugadorMulti> {
+public class PaqueteEnemigo extends Paquete<ArrayList<Enemigo>> {
 
-    private JugadorMulti jugador;
+    private ArrayList<Enemigo> enemigos;
 
-    public PaqueteActualizar(byte[] datos) throws IOException, ClassNotFoundException {
-        super(02);
-        this.jugador = leerObj(datos);
+    public PaqueteEnemigo(byte[] datos) throws IOException, ClassNotFoundException {
+        super(04);
+        this.enemigos = leerObj(datos);
     }
 
-    public PaqueteActualizar(JugadorMulti jugador) {
-        super(02);
-        this.jugador = jugador;
+    public PaqueteEnemigo(ArrayList<Enemigo> enemigos) {
+        super(04);
+        this.enemigos = enemigos;
     }
 
-    public JugadorMulti getJugador() {
-        return jugador;
+    public ArrayList<Enemigo> getEnemigos() {
+        return enemigos;
     }
 
     @Override
@@ -41,21 +42,21 @@ public class PaqueteActualizar extends Paquete<JugadorMulti> {
     public byte[] getDatos() {
         ObjectOutputStream streamObj = null;
         try {
-            byte[] codBytes = "02".getBytes(); // Obtener bytes de código
+            byte[] codBytes = "04".getBytes(); // Obtener bytes de código
             // Obtener bytes de usuario
             ByteArrayOutputStream streamBytes = new ByteArrayOutputStream();
             streamObj = new ObjectOutputStream(streamBytes);
-            streamObj.writeObject(jugador);
+            streamObj.writeObject(enemigos);
             streamObj.flush();
-            byte[] jugadorBytes = streamBytes.toByteArray();
+            byte[] enemigosBytes = streamBytes.toByteArray();
             // Crear arreglo de retorno
-            byte[] datosPaquete = new byte[codBytes.length + jugadorBytes.length];
+            byte[] datosPaquete = new byte[codBytes.length + enemigosBytes.length];
             int idxPaquete = 0;
             for (int i = 0; i < codBytes.length; i++) {
                 datosPaquete[idxPaquete++] = codBytes[i];
             }
-            for (int i = 0; i < jugadorBytes.length; i++) {
-                datosPaquete[idxPaquete++] = jugadorBytes[i];
+            for (int i = 0; i < enemigosBytes.length; i++) {
+                datosPaquete[idxPaquete++] = enemigosBytes[i];
             }
             return datosPaquete;
         } catch (IOException e) {
@@ -70,5 +71,4 @@ public class PaqueteActualizar extends Paquete<JugadorMulti> {
         }
         return null;
     }
-
 }

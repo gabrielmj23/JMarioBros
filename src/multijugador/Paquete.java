@@ -8,8 +8,9 @@ import java.io.ObjectInputStream;
 /**
  *
  * @author Gabriel
+ * @param <T>
  */
-public abstract class Paquete {
+public abstract class Paquete<T> {
 
     /**
      * Define los tipos de paquete con sus códigos respectivos
@@ -19,7 +20,8 @@ public abstract class Paquete {
         UNIR(00),
         DESCONECTAR(01),
         ACTUALIZAR(02),
-        INICIAR(03);
+        INICIAR(03),
+        ENEMIGO(04);
 
         private int id;
 
@@ -49,15 +51,15 @@ public abstract class Paquete {
         return msj.substring(2);
     }
 
-    public JugadorMulti leerJugador(byte[] datos) throws IOException, ClassNotFoundException {
-        int inicioJ = "00".getBytes().length;
-        byte[] datosJugador = new byte[datos.length - inicioJ];
-        for (int i = inicioJ; i < datos.length; i++) {
-            datosJugador[i - inicioJ] = datos[i];
+    public T leerObj(byte[] datos) throws IOException, ClassNotFoundException {
+        int inicioT = "00".getBytes().length;
+        byte[] datosJugador = new byte[datos.length - inicioT];
+        for (int i = inicioT; i < datos.length; i++) {
+            datosJugador[i - inicioT] = datos[i];
         }
         ByteArrayInputStream streamLectura = new ByteArrayInputStream(datosJugador);
         ObjectInputStream streamObjeto = new ObjectInputStream(streamLectura);
-        return (JugadorMulti) streamObjeto.readObject();
+        return (T) streamObjeto.readObject();
     }
 
     public static TiposPaquete determinarPaquete(int id) {

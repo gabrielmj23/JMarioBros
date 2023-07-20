@@ -93,6 +93,14 @@ public class Jugando extends Estado implements MetodosDeEstados {
         return nivelConfig;
     }
 
+    public EnemigosConfig getEnemigosConfig() {
+        return enemigosConfig;
+    }
+
+    public void setEnemigosConfig(EnemigosConfig enemigosConfig) {
+        this.enemigosConfig = enemigosConfig;
+    }
+
     public void setEnLobby(boolean enLobby) {
         this.enLobby = enLobby;
     }
@@ -198,6 +206,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
         paquete.escribirDatos(juego.getCliente());
         if (!enLobby) {
             nivelConfig.actualizar();
+            enemigosConfig.revisarColision(getJugador());
             enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
             revisarCercaBorde();
         } else {
