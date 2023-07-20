@@ -2,6 +2,9 @@ package niveles;
 
 import entidades.Enemigo;
 import entidades.Goomba;
+import entidades.KoopaR;
+import entidades.KoopaV;
+import entidades.Planta;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -111,14 +114,21 @@ public class NivelConfig {
                 for (int i = 0; i < img.getWidth(); i++) {
                     Color color = new Color(img.getRGB(i, j));
                     int valor = color.getGreen();
-                    if (valor == GOOMBA_INDEX) {
-                        list.add(new Goomba(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
-                    } else if (valor == KOOPAR_INDEX) {
-                        //list.add(new KoopaR(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
-                    } else if (valor == KOOPAV_INDEX) {
-                        //list.add(new KoopaV(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
-                    } else if (valor == PLANTA_INDEX) {
-                        // list.add(new Planta(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    switch (valor) {
+                        case GOOMBA_INDEX:
+                            list.add(new Goomba(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                            break;
+                        case KOOPAR_INDEX:
+                            list.add(new KoopaR(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                            break;
+                        case KOOPAV_INDEX:
+                            list.add(new KoopaV(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                            break;
+                        case PLANTA_INDEX:
+                            list.add(new Planta(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                            break;
+                        default:
+                            break;
                     }
                 }
             }

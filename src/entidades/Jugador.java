@@ -40,6 +40,7 @@ public class Jugador extends Entidad implements Serializable {
     // Atributos de estado
     protected EstadoJugador estado;
     protected PoderJugador poder;
+    protected int invencible = 0;
 
     // Atributos de nivel
     private transient int[][] nivelDatos;
@@ -64,7 +65,7 @@ public class Jugador extends Entidad implements Serializable {
         this.usuario = usuario;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.NINGUNO;
+        poder = PoderJugador.FUEGO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox(x, y, ancho, altura);
@@ -121,6 +122,14 @@ public class Jugador extends Entidad implements Serializable {
         return indiceAnimacion;
     }
 
+    public int getInvencible() {
+        return invencible;
+    }
+
+    public void tickInvencible() {
+        invencible--;
+    }
+
     public void setIzquierda(boolean izquierda) {
         this.izquierda = izquierda;
     }
@@ -168,6 +177,23 @@ public class Jugador extends Entidad implements Serializable {
     public void palSpawn() {
         this.hitbox.x = 100;
         this.hitbox.y = 200;
+    }
+
+    public void disminuirPoder() {
+        invencible = 300;
+        switch (poder) {
+            case NINGUNO:
+                palSpawn();
+                break;
+            case SUPER:
+                poder = PoderJugador.NINGUNO;
+                iniHitbox(x, y, ancho, altura); // Cambiar hitbox
+                break;
+            default:
+                poder = PoderJugador.SUPER;
+                break;
+        }
+        cargarImagenes();
     }
 
     /**

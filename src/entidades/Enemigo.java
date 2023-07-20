@@ -39,6 +39,7 @@ public abstract class Enemigo extends Entidad {
 
     public Enemigo(float x, float y, int ancho, int altura, int tipo) throws IOException {
         super(x, y, ancho, altura);
+        this.tipo = tipo;
         iniHitbox(x, y, ancho, altura);
         cargarImagenes();
     }
@@ -48,13 +49,21 @@ public abstract class Enemigo extends Entidad {
         hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho - 2, altura - 5);
     }
 
+    /**
+     * Revisa por donde ha chocado con el jugador y decide qué hacer
+     *
+     * @param mario
+     * @param conf
+     */
+    public abstract void revisarColision(Jugador mario, EnemigosConfig conf);
+
     private void cargarImagenes() {
         try {
             animaciones = new BufferedImage[3];
             BufferedImage img = ImageIO.read(new File("media/sprites/Enemigos.png"));
 
             for (int i = 0; i < 3; i++) {
-                animaciones[i] = img.getSubimage(i * 32, tipo * 48, 32, 48);
+                animaciones[i] = img.getSubimage(i * 32, (tipo + 1) * 48, 32, 48);
             }
         } catch (IOException e) {
             System.out.println("Error leyendo sprite de enemigo");

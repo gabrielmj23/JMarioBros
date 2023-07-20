@@ -205,6 +205,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
         PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) getJugador());
         paquete.escribirDatos(juego.getCliente());
         if (!enLobby) {
+            if (getJugador().getInvencible() > 0) {
+                getJugador().tickInvencible();
+            }
             nivelConfig.actualizar();
             enemigosConfig.revisarColision(getJugador());
             enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
