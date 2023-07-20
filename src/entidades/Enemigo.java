@@ -132,5 +132,8 @@ abstract class Enemigo extends Entidad {
     public boolean estaVivo(){
         return vivo;
     }
+    public void setVivo (boolean vivo){
+        this.vivo = vivo;
+    }
 
 }

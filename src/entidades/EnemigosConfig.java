@@ -62,6 +62,7 @@ public class EnemigosConfig {
                     //Revisar si es colision por arriba o abajo
                     if (mario.hitbox.y + mario.hitbox.height - margen < go.hitbox.y - 24) { //Choque por abajo de mario
                         mario.setAireVelocidad();
+                        go.setVivo(false);
 
                     } else if (mario.hitbox.y + margen > go.hitbox.y - 24 + go.altura) { //Choque por arriba de mario
                         System.out.println("por abajo");
