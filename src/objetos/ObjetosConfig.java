@@ -92,8 +92,10 @@ public class ObjetosConfig {
     
     private void actualizarProyectiles(Jugador mario){
         for(Proyectil p : proyectiles)
-            if(p.estaActivo())
+            if(p.estaActivo()){
                 p.actualizarPosicion();
+                p.revisarColision(mario);
+            }
         
     }
    
@@ -219,5 +221,10 @@ public class ObjetosConfig {
                 }
             }
         }
+    }
+    
+    public void revisarProyectilTocado(Jugador mario){
+        for(Proyectil p: proyectiles)
+            p.revisarColision(mario);
     }
 }

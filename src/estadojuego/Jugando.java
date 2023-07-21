@@ -211,6 +211,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
             }
             nivelConfig.actualizar();
             enemigosConfig.revisarColision(getJugador());
+            objetosConfig.revisarProyectilTocado(getJugador());
             enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
             objetosConfig.revisarPoderTocado(getJugador());
             objetosConfig.revisarBloqueTocado(getJugador(), nivelConfig.getNivelUno().obtenerNivelDatos());
@@ -247,8 +248,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
                 case KeyEvent.VK_D:
                     getJugador().setDerecha(true);
                     break;
-               // case KeyEvent.VK_SPACE:
-                 //   getJugador().setAtaque(true);
+                case KeyEvent.VK_SPACE:
+                    getJugador().setAtaque(true);
+                    break;
             }
         }
     }
@@ -267,6 +269,10 @@ public class Jugando extends Estado implements MetodosDeEstados {
                 case KeyEvent.VK_D:
                     getJugador().setIndiceAnimacion(0);
                     getJugador().setDerecha(false);
+                    break;
+                case KeyEvent.VK_SPACE:
+                    getJugador().setIndiceAnimacion(0);
+                    getJugador().setAtaque(false);
                     break;
             }
         }

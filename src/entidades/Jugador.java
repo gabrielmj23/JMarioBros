@@ -437,4 +437,14 @@ public class Jugador extends Entidad implements Serializable {
         this.nivelDatos = nivelDatos;
     }
 
+    public boolean setAtaque() {
+        return ataque;
+    }
+
+    public void setAtaque(boolean ataque) {
+        this.ataque = ataque;
+    }
+    
+    
+
 }
