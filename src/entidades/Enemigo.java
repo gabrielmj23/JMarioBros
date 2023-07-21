@@ -25,17 +25,18 @@ public abstract class Enemigo extends Entidad {
     private int deltaAnimacion;
     private int indiceAnimacion;
     private transient BufferedImage[] animaciones;
+    protected int muriendo = 0;
 
     private boolean primeraActualizacion = true;
     private boolean enAire;
     private float aireVelocidad = 0f;
     private float gravedad = 0.04f * Juego.ESCALA;
-    private float velocidad = 0.7f;
+    protected float velocidad = 0.7f;
     private String direccion = "izquierda";
 
-    private EstadoEnemigo estado = IDLE;
+    protected EstadoEnemigo estado = IDLE;
     boolean vivo = true;
-    private static final int VELOCIDAD_ANIMACION = 17;
+    protected int velocidadAnimacion = 17;
 
     public Enemigo(float x, float y, int ancho, int altura, int tipo) throws IOException {
         super(x, y, ancho, altura);
@@ -61,9 +62,8 @@ public abstract class Enemigo extends Entidad {
         try {
             animaciones = new BufferedImage[3];
             BufferedImage img = ImageIO.read(new File("media/sprites/Enemigos.png"));
-
             for (int i = 0; i < 3; i++) {
-                animaciones[i] = img.getSubimage(i * 32, (tipo + 1) * 48, 32, 48);
+                animaciones[i] = img.getSubimage(i * 32, tipo * 48, 32, 48);
             }
         } catch (IOException e) {
             System.out.println("Error leyendo sprite de enemigo");
@@ -126,7 +126,7 @@ public abstract class Enemigo extends Entidad {
      */
     private void actualizarFrameAnimacion() {
         deltaAnimacion++;
-        if (deltaAnimacion >= VELOCIDAD_ANIMACION) {
+        if (deltaAnimacion >= velocidadAnimacion) {
             deltaAnimacion = 0;
             indiceAnimacion++;
             if (indiceAnimacion >= 2) {
@@ -136,6 +136,12 @@ public abstract class Enemigo extends Entidad {
     }
 
     public void actualizar(int[][] nivelDatos) {
+        if (muriendo > 0) {
+            muriendo--;
+            if (muriendo == 0) {
+                vivo = false;
+            }
+        }
         actualizarMovimiento(nivelDatos);
         actualizarFrameAnimacion();
     }
@@ -146,6 +152,9 @@ public abstract class Enemigo extends Entidad {
         }
         if (indiceAnimacion >= animaciones.length) {
             indiceAnimacion = 0;
+        }
+        if (muriendo > 0) {
+            indiceAnimacion = 2;
         }
         float desfase = 0;
         if (tipo == UtilsEnemigo.GOOMBA_INDEX) {

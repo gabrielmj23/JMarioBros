@@ -6,14 +6,12 @@ import entidades.JugadorMulti;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import main.Juego;
 import multijugador.PaqueteActualizar;
 import multijugador.PaqueteIniciar;
 import multijugador.Usuario;
 import niveles.NivelConfig;
 import utils.UtilsJugador;
-import static utils.UtilsJugador.MARIO_INDEX;
 
 /**
  *
@@ -61,7 +59,6 @@ public class Jugando extends Estado implements MetodosDeEstados {
         getJugador().cargarNivelDatos(NivelConfig.obtenerDatos());
         enLobby = true;
         juego.unirAPartida();
-        System.out.println(jugadores);
         // Acomodar tipo al primero disponible
         getJugador().setTipo(UtilsJugador.obtenerIdPersonaje(obtenerPersonajesDisponibles()[0]));
         actualizar();
@@ -155,8 +152,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
         int idx = jugadores.indexOf(jugador);
         jugadores.get(idx).setTipo(jugador.getTipo());
         if (!enLobby) {
-            jugadores.get(idx).setX(jugador.getX());
-            jugadores.get(idx).setY(jugador.getY());
+            jugadores.get(idx).setPuntaje(jugador.getPuntaje());
+            //jugadores.get(idx).setX(jugador.getX());
+            //jugadores.get(idx).setY(jugador.getY());
             jugadores.get(idx).setHitbox(jugador.getHitbox());
             jugadores.get(idx).setEstado(jugador.getEstado());
             jugadores.get(idx).setPoder(jugador.getPoder());

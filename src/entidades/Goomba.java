@@ -3,6 +3,7 @@ package entidades;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import multijugador.PaqueteEnemigo;
+import utils.UtilsEnemigo;
 import static utils.UtilsEnemigo.*;
 
 /**
@@ -31,7 +32,9 @@ public class Goomba extends Enemigo {
                     return;
                 }
                 mario.setAireVelocidad();
-                vivo = false;
+                muriendo = 300;
+                estado = UtilsEnemigo.EstadoEnemigo.MURIENDO;
+                mario.setPuntaje(mario.getPuntaje() + 10);
                 // Informar a los otros clientes del cambio
                 PaqueteEnemigo paquete = new PaqueteEnemigo(conf.getEnemigos());
                 paquete.escribirDatos(conf.getJuego().getCliente());

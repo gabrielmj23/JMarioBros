@@ -9,12 +9,10 @@ import static estadojuego.EstadoJuego.MENU;
 import estadojuego.Jugando;
 import estadojuego.Menu;
 import java.awt.Graphics;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import multijugador.Cliente;
 import multijugador.PaqueteUnir;
 import multijugador.Servidor;
-import multijugador.Usuario;
 import niveles.NivelConfig;
 import ui.PanelAcerca;
 import ui.PanelAyuda;
@@ -113,27 +111,6 @@ public class Juego implements Runnable {
     }
 
     public void unirAPartida() {
-        PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) jugando.getJugador());
-        if (servidor != null) {
-            servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);
-        }
-        paquete.escribirDatos(cliente);
-    }
-
-    /**
-     * Inicializa las conexiones para el multijugador
-     *
-     * @Deprecated
-     */
-    private void iniciarConexiones() {
-        if (JOptionPane.showConfirmDialog(panelJuego, "Iniciar servidor?") == 0) {
-            servidor = new Servidor(this);
-            servidor.start();
-        }
-        cliente = new Cliente(this, "localhost");
-        cliente.start();
-
-        // Unirse a la partida
         PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) jugando.getJugador());
         if (servidor != null) {
             servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);

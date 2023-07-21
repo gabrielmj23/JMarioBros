@@ -41,6 +41,7 @@ public class Jugador extends Entidad implements Serializable {
     protected EstadoJugador estado;
     protected PoderJugador poder;
     protected int invencible = 0;
+    protected int puntaje = 0;
 
     // Atributos de nivel
     private transient int[][] nivelDatos;
@@ -130,6 +131,14 @@ public class Jugador extends Entidad implements Serializable {
         invencible--;
     }
 
+    public int getPuntaje() {
+        return puntaje;
+    }
+
+    public void setPuntaje(int puntaje) {
+        this.puntaje = puntaje;
+    }
+
     public void setIzquierda(boolean izquierda) {
         this.izquierda = izquierda;
     }
@@ -187,7 +196,7 @@ public class Jugador extends Entidad implements Serializable {
                 break;
             case SUPER:
                 poder = PoderJugador.NINGUNO;
-                iniHitbox(x, y, ancho, altura); // Cambiar hitbox
+                iniHitbox(hitbox.x, hitbox.y, ancho, altura); // Cambiar hitbox
                 break;
             default:
                 poder = PoderJugador.SUPER;

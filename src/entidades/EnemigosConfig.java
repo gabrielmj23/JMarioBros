@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import main.Juego;
 import static niveles.NivelConfig.obtenerEnemigos;
+import utils.UtilsEnemigo;
 
 /**
  *
@@ -57,7 +58,7 @@ public class EnemigosConfig {
 
     public void revisarColision(Jugador mario) {
         for (Enemigo go : enemigos) {
-            if (go.estaVivo()) {
+            if (go.estado != UtilsEnemigo.EstadoEnemigo.MURIENDO) {
                 go.revisarColision(mario, this);
             }
         }
