@@ -9,10 +9,12 @@ import static estadojuego.EstadoJuego.MENU;
 import estadojuego.Jugando;
 import estadojuego.Menu;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import multijugador.Cliente;
 import multijugador.PaqueteUnir;
 import multijugador.Servidor;
+import multijugador.Usuario;
 import niveles.NivelConfig;
 import ui.PanelAcerca;
 import ui.PanelAyuda;
@@ -21,11 +23,6 @@ import ui.PanelInicio;
 import ui.PanelPartida;
 import ui.PanelRegistro;
 import ui.PanelSesion;
-import objetos.ObjetosConfig;
-import static utils.UtilsJugador.MARIO_INDEX;
-import static utils.UtilsJugador.LUIGI_INDEX;
-import static utils.UtilsJugador.TOAD_INDEX;
-import static utils.UtilsJugador.TOADETTE_INDEX;
 
 /**
  *
@@ -57,7 +54,6 @@ public class Juego implements Runnable {
     private Jugador jugador;
     private NivelConfig nivelConfig;
     private EnemigosConfig enemigosConfig;
-    private ObjetosConfig objetosConfig;
 
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
@@ -98,10 +94,6 @@ public class Juego implements Runnable {
         return enemigosConfig;
     }
 
-    public ObjetosConfig getObjetosConfig() {
-        return objetosConfig;
-    }
-
     /**
      * Inicializa las clases involucradas en el juego
      */
@@ -121,6 +113,27 @@ public class Juego implements Runnable {
     }
 
     public void unirAPartida() {
+        PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) jugando.getJugador());
+        if (servidor != null) {
+            servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);
+        }
+        paquete.escribirDatos(cliente);
+    }
+
+    /**
+     * Inicializa las conexiones para el multijugador
+     *
+     * @Deprecated
+     */
+    private void iniciarConexiones() {
+        if (JOptionPane.showConfirmDialog(panelJuego, "Iniciar servidor?") == 0) {
+            servidor = new Servidor(this);
+            servidor.start();
+        }
+        cliente = new Cliente(this, "localhost");
+        cliente.start();
+
+        // Unirse a la partida
         PaqueteUnir paquete = new PaqueteUnir((JugadorMulti) jugando.getJugador());
         if (servidor != null) {
             servidor.agregarConexion((JugadorMulti) jugando.getJugador(), paquete);
@@ -172,6 +185,10 @@ public class Juego implements Runnable {
         this.ups = ups;
     }
 
+    /**
+     * 
+     * @param nombrePanel 
+     */
     public void cambiarPanel(String nombrePanel) {
         ventana.getLayout().show(ventana.getFrame().getContentPane(), nombrePanel);
     }

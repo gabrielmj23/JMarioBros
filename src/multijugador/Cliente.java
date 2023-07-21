@@ -22,6 +22,7 @@ public class Cliente extends Thread {
     private InetAddress ip;
     private DatagramSocket socket;
     private Juego juego;
+    private NivelConfig nivelConfig = new NivelConfig(juego);
 
     public Cliente(Juego juego, String ip) {
         this.juego = juego;
@@ -94,7 +95,7 @@ public class Cliente extends Thread {
                 break;
             case INICIAR:
                 juego.setUps(200);
-                juego.getJugando().getJugador().cargarNivelDatos(NivelConfig.obtenerDatos());
+                juego.getJugando().getJugador().cargarNivelDatos(nivelConfig.obtenerNivelActual().obtenerNivelDatos());
                 juego.cambiarPanel("Juego");
                 juego.getJugando().setEnLobby(false);
                 juego.getPanelJuego().requestFocusInWindow();

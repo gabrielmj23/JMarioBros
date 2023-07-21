@@ -12,8 +12,6 @@ import utils.UtilsEnemigo;
 import utils.UtilsEnemigo.EstadoEnemigo;
 import static utils.UtilsEnemigo.EstadoEnemigo.CORRIENDO;
 import static utils.UtilsEnemigo.EstadoEnemigo.IDLE;
-import utils.UtilsEnemigo.*;
-import static utils.UtilsEnemigo.EstadoEnemigo.*;
 import static utils.UtilsMovimiento.*;
 
 /**
@@ -27,22 +25,20 @@ public abstract class Enemigo extends Entidad {
     private int deltaAnimacion;
     private int indiceAnimacion;
     private transient BufferedImage[] animaciones;
-    protected int muriendo = 0;
 
     private boolean primeraActualizacion = true;
     private boolean enAire;
     private float aireVelocidad = 0f;
     private float gravedad = 0.04f * Juego.ESCALA;
-    protected float velocidad = 0.7f;
+    private float velocidad = 0.7f;
     private String direccion = "izquierda";
 
-    protected EstadoEnemigo estado = IDLE;
+    private EstadoEnemigo estado = IDLE;
     boolean vivo = true;
-    protected int velocidadAnimacion = 17;
+    private static final int VELOCIDAD_ANIMACION = 17;
 
     public Enemigo(float x, float y, int ancho, int altura, int tipo) throws IOException {
         super(x, y, ancho, altura);
-        this.tipo = tipo;
         iniHitbox(x, y, ancho, altura);
         cargarImagenes();
     }
@@ -52,18 +48,11 @@ public abstract class Enemigo extends Entidad {
         hitbox = new Rectangle2D.Float(x + 4, y + 40, ancho - 2, altura - 5);
     }
 
-    /**
-     * Revisa por donde ha chocado con el jugador y decide qué hacer
-     *
-     * @param mario
-     * @param conf
-     */
-    public abstract void revisarColision(Jugador mario, EnemigosConfig conf);
-
     private void cargarImagenes() {
         try {
             animaciones = new BufferedImage[3];
             BufferedImage img = ImageIO.read(new File("media/sprites/Enemigos.png"));
+
             for (int i = 0; i < 3; i++) {
                 animaciones[i] = img.getSubimage(i * 32, tipo * 48, 32, 48);
             }
@@ -95,26 +84,22 @@ public abstract class Enemigo extends Entidad {
                     break;
                 case CORRIENDO:
                     float xVelocidad = 0;
+
                     if (direccion.equals("izquierda")) {
                         xVelocidad = -velocidad;
                     } else {
                         xVelocidad = velocidad;
                     }
+
                     if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
                         if (EsPiso(hitbox, xVelocidad, nivelDatos)) {
                             //System.out.println("No es piso");
-                            if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
-                                if (EsPiso(hitbox, xVelocidad, nivelDatos)) {
-                                    hitbox.x += xVelocidad;
-                                    return;
-                                }
-                            }
+                            hitbox.x += xVelocidad;
+                            return;
                         }
                     }
                     cambiarDireccion();
-
             }
-
         }
     }
 
@@ -132,7 +117,7 @@ public abstract class Enemigo extends Entidad {
      */
     private void actualizarFrameAnimacion() {
         deltaAnimacion++;
-        if (deltaAnimacion >= velocidadAnimacion) {
+        if (deltaAnimacion >= VELOCIDAD_ANIMACION) {
             deltaAnimacion = 0;
             indiceAnimacion++;
             if (indiceAnimacion >= 2) {
@@ -142,12 +127,6 @@ public abstract class Enemigo extends Entidad {
     }
 
     public void actualizar(int[][] nivelDatos) {
-        if (muriendo > 0) {
-            muriendo--;
-            if (muriendo == 0) {
-                vivo = false;
-            }
-        }
         actualizarMovimiento(nivelDatos);
         actualizarFrameAnimacion();
     }
@@ -158,9 +137,6 @@ public abstract class Enemigo extends Entidad {
         }
         if (indiceAnimacion >= animaciones.length) {
             indiceAnimacion = 0;
-        }
-        if (muriendo > 0) {
-            indiceAnimacion = 2;
         }
         float desfase = 0;
         if (tipo == UtilsEnemigo.GOOMBA_INDEX) {

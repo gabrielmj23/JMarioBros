@@ -4,13 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import main.Juego;
-import static niveles.NivelConfig.obtenerEnemigos;
-import utils.UtilsEnemigo;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import main.Juego;
-import static utils.UtilsJugador.PoderJugador.*;
+import multijugador.PaqueteEnemigo;
+import niveles.Nivel;
 
 /**
  *
@@ -23,32 +18,53 @@ public class EnemigosConfig {
 
     public EnemigosConfig(Juego juego) {
         this.juego = juego;
-        enemigos = obtenerEnemigos();
-        System.out.println("cantidad de goombas: " + enemigos.size());
+        //enemigos = obtenerEnemigos();
+        //System.out.println("cantidad de goombas: " + enemigos.size());
     }
-
+    
+    /**
+     * 
+     * @param nivel 
+     */
+    public void cargarEnemigos(Nivel nivel){
+        enemigos = nivel.getEnemigos();
+    }
+    
     public ArrayList<Enemigo> getEnemigos() {
         return enemigos;
     }
 
+    /**
+     * 
+     * @param enemigos 
+     */
     public void setEnemigos(ArrayList<Enemigo> enemigos) {
         this.enemigos = enemigos;
     }
 
-    public Juego getJuego() {
-        return juego;
-    }
-
+    /**
+     * 
+     * @param nivelDatos 
+     */
     public void actualizar(int[][] nivelDatos) {
+        boolean estaAlgunoActivo = false;
         for (Enemigo go : enemigos) {
             if (go.estaVivo()) {
                 go.actualizar(nivelDatos);
             }
         }
+        if (!estaAlgunoActivo)
+            juego.getJugando().cargarSiguienteNivel();
     }
 
+    /**
+     * 
+     * @param g
+     * @param xNivelDesfase 
+     */
     public void dibujar(Graphics g, int xNivelDesfase) {
         dibujarEnemigos(g, xNivelDesfase);
+
     }
 
     private void dibujarEnemigos(Graphics g, int xNivelDesfase) {
@@ -61,10 +77,37 @@ public class EnemigosConfig {
         }
     }
 
+    /**
+     * 
+     * @param mario 
+     */
     public void revisarColision(Jugador mario) {
+        float margen = 1.8f;
         for (Enemigo go : enemigos) {
-            if (go.estado != UtilsEnemigo.EstadoEnemigo.MURIENDO) {
-                go.revisarColision(mario, this);
+            if (go.estaVivo()) {
+                if (mario.hitbox.intersects(go.hitbox.x, go.hitbox.y - 24, go.hitbox.width, go.hitbox.height)) { //Si hay colision
+
+                    //Revisar si es colision por arriba o abajo
+                    if (mario.hitbox.y + mario.hitbox.height - margen < go.hitbox.y - 24) { //Choque por abajo de mario
+                        mario.setAireVelocidad();
+                        go.setVivo(false);
+                        // Informar a los otros clientes del cambio
+                        PaqueteEnemigo paquete = new PaqueteEnemigo(enemigos);
+                        paquete.escribirDatos(juego.getCliente());
+                    } else if (mario.hitbox.y + margen > go.hitbox.y - 24 + go.altura) { //Choque por arriba de mario
+                        System.out.println("por abajo");
+                    }
+
+                    //Revisar si es colision por los lados
+                    if (mario.hitbox.x + margen > go.hitbox.x + go.hitbox.width) { //Choque por la izquierda de mario
+                        mario.palSpawn();
+                        return;
+                    } else if (mario.hitbox.x + mario.hitbox.width - margen < go.hitbox.x) { //Choque por la derecha de mario
+                        mario.palSpawn();
+                        return;
+                    }
+                }
+
             }
         }
     }

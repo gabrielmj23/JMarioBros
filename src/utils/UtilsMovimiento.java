@@ -1,7 +1,19 @@
 package utils;
 
+import entidades.Enemigo;
+import entidades.Goomba;
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import main.Juego;
+import static utils.UtilsEnemigo.GOOMBA_INDEX;
+import static utils.UtilsEnemigo.KOOPAR_INDEX;
+import static utils.UtilsEnemigo.KOOPAV_INDEX;
+import static utils.UtilsEnemigo.PLANTA_INDEX;
 
 /**
  *
@@ -126,8 +138,66 @@ public class UtilsMovimiento {
         return true;
     }
 
+    /**
+     * 
+     * @param hitbox
+     * @param xVelocidad
+     * @param nivelDatos
+     * @return 
+     */
     public static boolean EsPiso(Rectangle2D.Float hitbox, float xVelocidad, int[][] nivelDatos) {
         return (esSolido(hitbox.x + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos) && esSolido(hitbox.x + hitbox.width + xVelocidad, hitbox.y + hitbox.height + 1, nivelDatos));
     }
-
+    
+    /**
+     * 
+     * @param img
+     * @return 
+     */
+    public static int[][] obtenerDatos(BufferedImage img) {
+        int[][] nivelDatos = new int[img.getHeight()][img.getWidth()];
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int valor = color.getRed();
+                if (valor >= 40) //No existe el sprite
+                {
+                    valor = 0;
+                }
+                nivelDatos[j][i] = valor;
+            }
+        }
+        return nivelDatos;
+    }
+    
+    /**
+     * 
+     * @param img
+     * @return 
+     */
+    public static ArrayList<Enemigo> obtenerEnemigos(BufferedImage img) {
+        ArrayList<Enemigo> list = new ArrayList<>();
+        try {
+            for (int j = 0; j < img.getHeight(); j++) {
+                for (int i = 0; i < img.getWidth(); i++) {
+                    Color color = new Color(img.getRGB(i, j));
+                    int valor = color.getGreen();
+                    if (valor == GOOMBA_INDEX) {
+                        list.add(new Goomba(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    } else if (valor == KOOPAR_INDEX) {
+                        //list.add(new KoopaR(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    } else if (valor == KOOPAV_INDEX) {
+                        //list.add(new KoopaV(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    } else if (valor == PLANTA_INDEX) {
+                        // list.add(new Planta(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS));
+                    }
+                }
+            }
+            return list;
+        } catch (IOException e) {
+            System.out.println("Error leyendo datos del nivel");
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
 }

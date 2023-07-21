@@ -10,7 +10,11 @@ import main.Juego;
 public class Estado {
 
     protected Juego juego;
-
+    
+    /**
+     * 
+     * @param juego 
+     */
     public Estado(Juego juego) {
         this.juego = juego;
     }

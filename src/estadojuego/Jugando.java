@@ -6,13 +6,14 @@ import entidades.JugadorMulti;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import main.Juego;
 import multijugador.PaqueteActualizar;
 import multijugador.PaqueteIniciar;
 import multijugador.Usuario;
 import niveles.NivelConfig;
-import objetos.ObjetosConfig;
 import utils.UtilsJugador;
+import static utils.UtilsJugador.MARIO_INDEX;
 
 /**
  *
@@ -25,15 +26,12 @@ public class Jugando extends Estado implements MetodosDeEstados {
     // Atributos de graficos y juego
     private NivelConfig nivelConfig;
     private EnemigosConfig enemigosConfig;
-    private ObjetosConfig objetosConfig;
 
     // Manejar nivel
     private int xNivelDesfase;
     private int bordeIzquierdo = (int) (0.2 * Juego.JUEGO_ANCHO);
     private int bordeDerecho = (int) (0.8 * Juego.JUEGO_ANCHO);
-    private int casillasNivel = NivelConfig.obtenerDatos()[0].length;
-    private int desfaseMaximoCasilla = casillasNivel - Juego.CASILLAS_HORIZONTAL;
-    private int desfaseMaximoNivel = desfaseMaximoCasilla * Juego.TAMAÑO_REAL_CASILLAS;
+    private int desfaseMaximoNivel;
 
     // Atributos de multijugador
     private ArrayList<JugadorMulti> jugadores;
@@ -43,15 +41,28 @@ public class Jugando extends Estado implements MetodosDeEstados {
         super(juego);
         iniciarClases();
         enLobby = true;
+        desfaseCalculoNivel();
+        cargarNivelInicial();
     }
-
+    
+    public void cargarSiguienteNivel(){
+        nivelConfig.cargarSiguienteNivel();
+    }
+    
+    private void cargarNivelInicial(){
+        enemigosConfig.cargarEnemigos(nivelConfig.obtenerNivelActual());
+    }
+    
+    private void desfaseCalculoNivel(){
+        desfaseMaximoNivel = nivelConfig.obtenerNivelActual().obtenerDesfaseMaximoNivel();
+    }
+    
     private void iniciarClases() {
         jugadores = new ArrayList();
         nivelConfig = new NivelConfig(juego);
-        enemigosConfig = new EnemigosConfig(juego);
-        objetosConfig = new ObjetosConfig(juego);
-    }
-
+        enemigosConfig = new EnemigosConfig(juego);        
+    }    
+    
     /**
      * Inicia el estado Jugando creando al jugador
      *
@@ -59,9 +70,10 @@ public class Jugando extends Estado implements MetodosDeEstados {
      */
     public void iniciarJugando(Usuario usuario) {
         jugadores.add(new JugadorMulti(100f, 100f, UtilsJugador.MARIO_INDEX, usuario, null, -1));
-        getJugador().cargarNivelDatos(NivelConfig.obtenerDatos());
+        getJugador().cargarNivelDatos(nivelConfig.obtenerNivelActual().obtenerNivelDatos());
         enLobby = true;
         juego.unirAPartida();
+        System.out.println(jugadores);
         // Acomodar tipo al primero disponible
         getJugador().setTipo(UtilsJugador.obtenerIdPersonaje(obtenerPersonajesDisponibles()[0]));
         actualizar();
@@ -95,12 +107,16 @@ public class Jugando extends Estado implements MetodosDeEstados {
 
     public EnemigosConfig getEnemigosConfig() {
         return enemigosConfig;
-    }
-
+    }    
+    
     public void setEnemigosConfig(EnemigosConfig enemigosConfig) {
         this.enemigosConfig = enemigosConfig;
     }
-
+    
+    public void setDesfaseMaximoNivel(int desfaseMaximoNivel){
+        this.desfaseMaximoNivel = desfaseMaximoNivel;
+    }
+    
     public void setEnLobby(boolean enLobby) {
         this.enLobby = enLobby;
     }
@@ -155,9 +171,8 @@ public class Jugando extends Estado implements MetodosDeEstados {
         int idx = jugadores.indexOf(jugador);
         jugadores.get(idx).setTipo(jugador.getTipo());
         if (!enLobby) {
-            jugadores.get(idx).setPuntaje(jugador.getPuntaje());
-            //jugadores.get(idx).setX(jugador.getX());
-            //jugadores.get(idx).setY(jugador.getY());
+            jugadores.get(idx).setX(jugador.getX());
+            jugadores.get(idx).setY(jugador.getY());
             jugadores.get(idx).setHitbox(jugador.getHitbox());
             jugadores.get(idx).setEstado(jugador.getEstado());
             jugadores.get(idx).setPoder(jugador.getPoder());
@@ -179,7 +194,8 @@ public class Jugando extends Estado implements MetodosDeEstados {
             jugadores.get(0).resetearEstado();
         }
     }
-
+    
+    
     /**
      * Calcula el desfase del jugador con el nivel
      */
@@ -206,15 +222,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
         PaqueteActualizar paquete = new PaqueteActualizar((JugadorMulti) getJugador());
         paquete.escribirDatos(juego.getCliente());
         if (!enLobby) {
-            if (getJugador().getInvencible() > 0) {
-                getJugador().tickInvencible();
-            }
             nivelConfig.actualizar();
             enemigosConfig.revisarColision(getJugador());
-            enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
-            objetosConfig.revisarPoderTocado(getJugador());
-            objetosConfig.revisarBloqueTocado(getJugador(), nivelConfig.getNivelUno().obtenerNivelDatos());
-            objetosConfig.actualizar();
+            enemigosConfig.actualizar(nivelConfig.obtenerNivelActual().obtenerNivelDatos());
             revisarCercaBorde();
         } else {
             juego.getPanelPartida().actualizar();
@@ -227,7 +237,6 @@ public class Jugando extends Estado implements MetodosDeEstados {
             nivelConfig.dibujarFondo(g);
             nivelConfig.dibujar(g, xNivelDesfase);
             enemigosConfig.dibujar(g, xNivelDesfase);
-            objetosConfig.dibujar(g, xNivelDesfase);
             for (JugadorMulti j : jugadores) {
                 j.render(g, xNivelDesfase);
             }

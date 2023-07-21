@@ -40,8 +40,6 @@ public class Jugador extends Entidad implements Serializable {
     // Atributos de estado
     protected EstadoJugador estado;
     protected PoderJugador poder;
-    protected int invencible = 0;
-    protected int puntaje = 0;
 
     // Atributos de nivel
     private transient int[][] nivelDatos;
@@ -66,16 +64,11 @@ public class Jugador extends Entidad implements Serializable {
         this.usuario = usuario;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.FUEGO;
+        poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox(x, y, ancho, altura);
         cargarImagenes();
-    }
-
-    public void PalSpawn() {
-        this.hitbox.x = 100;
-        this.hitbox.y = 200;
     }
 
     @Override
@@ -86,7 +79,6 @@ public class Jugador extends Entidad implements Serializable {
         } else {
             hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
         }
-        System.out.println("ancho: " + hitbox.width + " altura: " + hitbox.height);
     }
 
     public boolean isIzquierda() {
@@ -127,26 +119,6 @@ public class Jugador extends Entidad implements Serializable {
 
     public int getIndiceAnimacion() {
         return indiceAnimacion;
-    }
-
-    public float getVelocidadCaidaColision() {
-        return velocidadCaidaColision;
-    }
-
-    public int getInvencible() {
-        return invencible;
-    }
-
-    public void tickInvencible() {
-        invencible--;
-    }
-
-    public int getPuntaje() {
-        return puntaje;
-    }
-
-    public void setPuntaje(int puntaje) {
-        this.puntaje = puntaje;
     }
 
     public void setIzquierda(boolean izquierda) {
@@ -196,23 +168,6 @@ public class Jugador extends Entidad implements Serializable {
     public void palSpawn() {
         this.hitbox.x = 100;
         this.hitbox.y = 200;
-    }
-
-    public void disminuirPoder() {
-        invencible = 300;
-        switch (poder) {
-            case NINGUNO:
-                palSpawn();
-                break;
-            case SUPER:
-                poder = PoderJugador.NINGUNO;
-                iniHitbox(hitbox.x, hitbox.y, ancho, altura); // Cambiar hitbox
-                break;
-            default:
-                poder = PoderJugador.SUPER;
-                break;
-        }
-        cargarImagenes();
     }
 
     /**
@@ -287,10 +242,6 @@ public class Jugador extends Entidad implements Serializable {
             estado = EstadoJugador.CORRIENDO;
         } else {
             estado = EstadoJugador.IDLE;
-        }
-        //Caida al vacio
-        if (hitbox.y + hitbox.height + 1 >= Juego.JUEGO_ALTO) {
-            PalSpawn();
         }
     }
 
@@ -418,22 +369,6 @@ public class Jugador extends Entidad implements Serializable {
      */
     public void resetearEstado() {
         izquierda = derecha = arriba = abajo = false;
-    }
-
-    public float getAireVelocidad() {
-        return aireVelocidad;
-    }
-
-    public void setAireVelocidad(float aireVelocidad) {
-        this.aireVelocidad = aireVelocidad;
-    }
-
-    public int[][] getNivelDatos() {
-        return nivelDatos;
-    }
-
-    public void setNivelDatos(int[][] nivelDatos) {
-        this.nivelDatos = nivelDatos;
     }
 
 }
