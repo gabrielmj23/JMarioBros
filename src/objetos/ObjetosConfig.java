@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import main.Juego;
 import static niveles.NivelConfig.obtenerBloquesInteractivos;
@@ -83,7 +84,7 @@ public class ObjetosConfig {
                 }
             } else if (b.isActivo()) //Dibujar ladrillos
             {
-                g.drawImage(objetosImg[b.getTipo() + 1], (int) b.hitbox.x - xNivelDesfase, (int) b.hitbox.y, Juego.TAMAÑO_REAL_CASILLAS, Juego.TAMAÑO_REAL_CASILLAS, null);
+                g.drawImage(objetosImg[b.getTipo()], (int) b.hitbox.x - xNivelDesfase, (int) b.hitbox.y, Juego.TAMAÑO_REAL_CASILLAS, Juego.TAMAÑO_REAL_CASILLAS, null);
             }
         }
 
@@ -98,7 +99,7 @@ public class ObjetosConfig {
     }
 
     public void revisarPoderTocado(Jugador mario) {
-        
+
         for (Poder p : poderes) {
             PoderJugador poderActual = mario.getPoder();
             if (p.isActivo()) {
@@ -109,14 +110,42 @@ public class ObjetosConfig {
                     } else if (p.getTipo() == FLOR_INDEX) {
                         mario.setPoder(FUEGO);
                     }
-                    if(poderActual == NINGUNO && poderActual != mario.getPoder()) //Si el poder de mario cambio de chikito a super/fuego ajustar hitbox
-                    mario.iniHitbox((int)mario.getHitbox().x, (int) mario.getHitbox().y -45,  mario.getAncho(), mario.getAltura());
-                    if(p.getTipo() == MONEDA_INDEX) {
+                    if (poderActual == NINGUNO && poderActual != mario.getPoder()) //Si el poder de mario cambio de chikito a super/fuego ajustar hitbox
+                    {
+                        mario.iniHitbox((int) mario.getHitbox().x, (int) mario.getHitbox().y - 45, mario.getAncho(), mario.getAltura());
+                    }
+                    if (p.getTipo() == MONEDA_INDEX) {
                         //SUMAR PUNTAJE??
                     }
                 }
             }
 
+        }
+    }
+
+    public void revisarBloqueTocado(Jugador mario, int[][] nivelDatos) {
+        Random rand = new Random();
+        for (BloqueInteractivo b : bloques) {
+
+            if (mario.getHitbox().intersects(b.hitbox.x, b.hitbox.y + 2, b.hitbox.width, b.hitbox.height)) {
+                if (mario.getAireVelocidad() != 0) {
+                    if (mario.getHitbox().y  > b.hitbox.y + b.hitbox.height -1) { //Choque por arriba de mario
+                        //Coordenadas del bloque
+                        int j = b.y / Juego.TAMAÑO_REAL_CASILLAS;
+                        int i = b.x / Juego.TAMAÑO_REAL_CASILLAS;
+                        if (b.getTipo() != LUCKYBLOCK_INDEX) {
+                            nivelDatos[j][i] = mario.getNivelDatos()[j][i] = 0;
+                        }else
+                            nivelDatos[j][i] = mario.getNivelDatos()[j][i] = 4;
+                        
+                        mario.setAireVelocidad(mario.velocidadCaidaColision);
+                        if(b.isActivo())
+                        poderes.add(new Poder(b.x, (int) (b.y - b.hitbox.height), rand.nextInt(2)));
+                        b.setActivo(false);
+
+                    }
+                }
+            }
         }
     }
 }

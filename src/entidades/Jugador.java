@@ -32,7 +32,7 @@ public class Jugador extends Entidad {
     private float aireVelocidad = 0f;
     private float gravedad = 0.04f * Juego.ESCALA;
     private float saltoVelocidad = -2.25f * Juego.ESCALA;
-    private float velocidadCaidaColision = 0.5f * Juego.ESCALA;
+    public float velocidadCaidaColision = 0.5f * Juego.ESCALA;
     private boolean enVuelo = false;
 
     // Atributos de estado
@@ -54,7 +54,7 @@ public class Jugador extends Entidad {
     private static final String[] SPRITE_PATHS = {"MarioSprites.png", "LuigiSprites.png", "ToadSprites.png", "ToadetteSprites.png"};
 
     public Jugador(float x, float y, int tipo) {
-        super(x, y, 30, 62);
+        super(x, y, 29, 62);
         this.tipo = tipo;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
@@ -316,5 +316,24 @@ public class Jugador extends Entidad {
     public PoderJugador getPoder(){
         return poder;
     }
+
+    public float getAireVelocidad() {
+        return aireVelocidad;
+    }
+
+    public void setAireVelocidad(float aireVelocidad) {
+        this.aireVelocidad = aireVelocidad;
+    }
+
+    public int[][] getNivelDatos() {
+        return nivelDatos;
+    }
+
+    public void setNivelDatos(int[][] nivelDatos) {
+        this.nivelDatos = nivelDatos;
+    }
+    
+    
+    
 
 }

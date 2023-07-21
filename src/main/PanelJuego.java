@@ -32,9 +32,10 @@ public class PanelJuego extends JPanel {
     /**
      * Gestiona actualizaciones referentes a animaciones y objetos en el panel
      */
-    public void actualizarJuego() {
+    public void actualizarJuego() { //TODO: ACTUALIZAR METODO DE BLOQUE TOCADO PARA CADA NIVEL
         juego.getEnemigosConfig().revisarColision(juego.getJugador());
         juego.getObjetosConfig().revisarPoderTocado(juego.getJugador());
+        juego.getObjetosConfig().revisarBloqueTocado(juego.getJugador(), juego.getNivelConfig().getNivelUno().obtenerNivelDatos());
         juego.getJugador().actualizar();
         juego.getEnemigosConfig().actualizar(juego.getNivelConfig().getNivelUno().obtenerNivelDatos());
         juego.getNivelConfig().actualizar();
