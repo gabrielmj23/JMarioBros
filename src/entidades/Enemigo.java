@@ -86,7 +86,7 @@ public abstract class Enemigo extends Entidad {
                 aireVelocidad += gravedad;
             } else {
                 enAire = false;
-                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                //hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
             }
         } else {
             switch (estado) {
@@ -166,6 +166,10 @@ public abstract class Enemigo extends Entidad {
         if (tipo == UtilsEnemigo.GOOMBA_INDEX) {
             desfase = 21 * ESCALA;
         }
+        if (tipo == UtilsEnemigo.KOOPAR_INDEX || tipo == UtilsEnemigo.KOOPAV_INDEX) {
+            desfase = 10 * ESCALA;
+        }
+
         if (direccion.equals("derecha")) {
             g.drawImage(animaciones[indiceAnimacion], (int) (hitbox.x - xNivelDesfase - 3 + 32 * ESCALA), (int) (hitbox.y - desfase), (int) (-32 * ESCALA), (int) (48 * ESCALA), null);
         } else {
