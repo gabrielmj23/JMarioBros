@@ -19,6 +19,7 @@ import static main.Juego.CASILLAS_VERTICAL;
 import static main.Juego.TAMAÑO_REAL_CASILLAS;
 import static utils.UtilsEnemigo.*;
 import objetos.BloqueInteractivo;
+import objetos.Canon;
 import objetos.Poder;
 import static utils.UtilsEnemigo.*;
 import static utils.UtilsObjetos.*;
@@ -152,7 +153,7 @@ public class NivelConfig {
                 for (int i = 0; i < img.getWidth(); i++) {
                     Color color = new Color(img.getRGB(i, j));
                     int valor = color.getBlue();
-                    if (valor == FLOR_INDEX || valor == HONGO_INDEX || valor == MONEDA_INDEX) //No existe el sprite
+                    if (valor == FLOR_INDEX || valor == HONGO_INDEX || valor == MONEDA_INDEX) 
                     {
                         list.add(new Poder(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS, valor));
                     }
@@ -178,6 +179,29 @@ public class NivelConfig {
                     if (valor == LUCKYBLOCK_INDEX || valor == LADRILLO1_INDEX || valor == LADRILLO2_INDEX || valor == LADRILLO3_INDEX) //No existe el sprite
                     {
                         list.add(new BloqueInteractivo(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS, valor));
+                    }
+                }
+            }
+            return list;
+        } catch (IOException e) {
+            System.out.println("Error leyendo datos del nivel");
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+    
+    public static ArrayList<Canon> obtenerCanones() {
+        ArrayList<Canon> list = new ArrayList<>();
+        try {
+            BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
+
+            for (int j = 0; j < img.getHeight(); j++) {
+                for (int i = 0; i < img.getWidth(); i++) {
+                    Color color = new Color(img.getRGB(i, j));
+                    int valor = color.getBlue();
+                    if (valor == CANON_INDEX) 
+                    {
+                        list.add(new Canon(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS, valor));
                     }
                 }
             }

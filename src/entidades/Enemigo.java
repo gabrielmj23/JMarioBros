@@ -86,7 +86,8 @@ public abstract class Enemigo extends Entidad {
                 aireVelocidad += gravedad;
             } else {
                 enAire = false;
-                //hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
+                if(hitbox.height < Juego.TAMAÑO_REAL_CASILLAS)
+                hitbox.y = obtenerYPosLimite(hitbox, aireVelocidad);
             }
         } else {
             switch (estado) {
@@ -167,7 +168,7 @@ public abstract class Enemigo extends Entidad {
             desfase = 21 * ESCALA;
         }
         if (tipo == UtilsEnemigo.KOOPAR_INDEX || tipo == UtilsEnemigo.KOOPAV_INDEX) {
-            desfase = 10 * ESCALA;
+            desfase = 21 * ESCALA;
         }
 
         if (direccion.equals("derecha")) {

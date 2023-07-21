@@ -13,7 +13,7 @@ import static utils.UtilsEnemigo.KOOPAR_INDEX;
 public class KoopaR extends Enemigo {
 
     public KoopaR(float x, float y) throws IOException {
-        super(x, y, 32, 48, KOOPAR_INDEX);
+        super(x, y, 32, 32, KOOPAR_INDEX);
         iniHitbox(x, y, ancho, altura);
     }
 

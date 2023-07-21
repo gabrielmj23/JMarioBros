@@ -25,4 +25,8 @@ public class Canon extends ObjetoJuego {
         
     }
     
+    public int getCasillaY(){
+        return casillaY;
+    }
+    
 }

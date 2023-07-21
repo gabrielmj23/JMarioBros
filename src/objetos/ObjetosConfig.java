@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import main.Juego;
 import static niveles.NivelConfig.obtenerBloquesInteractivos;
 import static niveles.NivelConfig.obtenerPoderes;
+import static niveles.NivelConfig.obtenerCanones;
 import utils.UtilsJugador.PoderJugador;
 import static utils.UtilsJugador.PoderJugador.*;
 import static utils.UtilsObjetos.*;
@@ -25,23 +26,31 @@ public class ObjetosConfig {
     private Juego juego;
 
     private BufferedImage[] objetosImg;
+    private BufferedImage[] canonImg;
     private ArrayList<BloqueInteractivo> bloques = new ArrayList<>();
     private ArrayList<Poder> poderes = new ArrayList<>();
+    private ArrayList<Canon> canones = new ArrayList<>();
 
     private static final String SPRITE_PATHS = "Objetos.png";
+    private static final String CANON_PATHS = "Proyectiles.png";
 
     public ObjetosConfig(Juego juego) {
         this.juego = juego;
 
         bloques = obtenerBloquesInteractivos();
         poderes = obtenerPoderes();
+        canones = obtenerCanones();
 
         try {
             objetosImg = new BufferedImage[8];
+            canonImg = new BufferedImage[3];
             BufferedImage img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS));
+            BufferedImage img2 = ImageIO.read(new File("media/sprites/" + CANON_PATHS));
             for (int i = 0; i < 8; i++) {
                 objetosImg[i] = img.getSubimage(i * 32, 0 * 32, 32, 32); //Obtener los 8 sprites
             }
+            for(int i = 0; i < 3; i++)
+                canonImg[i] = img2.getSubimage(i * 32, 0 * 32, 32, 32);
 
         } catch (IOException e) {
             System.out.println("Error leyendo sprite de objetos");
@@ -62,11 +71,19 @@ public class ObjetosConfig {
                 p.actualizar();
             }
         }
+        
+       actualizarCanones();
+    }
+    
+    private void actualizarCanones(){
+        for(Canon c : canones)
+            c.actualizar();
     }
 
     public void dibujar(Graphics g, int xNivelDesfase) {
         dibujarObjetos(g, xNivelDesfase);
         dibujarBloques(g, xNivelDesfase);
+        dibujarCanones(g, xNivelDesfase);
 
     }
 
@@ -90,6 +107,15 @@ public class ObjetosConfig {
         for (Poder p : poderes) {
             if (p.isActivo()) {
                 g.drawImage(objetosImg[p.getTipo()], (int) p.hitbox.x - xNivelDesfase, (int) p.hitbox.y, Juego.TAMAÑO_REAL_CASILLAS, Juego.TAMAÑO_REAL_CASILLAS, null);
+            }
+        }
+    }
+    
+    private void dibujarCanones(Graphics g, int xNivelDesfase){
+        for(Canon c : canones){
+            if(c.isActivo()){
+                g.drawImage(canonImg[0],(int) c.hitbox.x - xNivelDesfase, (int) c.hitbox.y , Juego.TAMAÑO_REAL_CASILLAS,Juego.TAMAÑO_REAL_CASILLAS, null);
+                g.drawImage(canonImg[1],(int) c.hitbox.x - xNivelDesfase, (int) c.hitbox.y + Juego.TAMAÑO_REAL_CASILLAS , Juego.TAMAÑO_REAL_CASILLAS,Juego.TAMAÑO_REAL_CASILLAS, null);
             }
         }
     }

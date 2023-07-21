@@ -13,7 +13,7 @@ import static utils.UtilsEnemigo.KOOPAV_INDEX;
 public class KoopaV extends Enemigo {
 
     public KoopaV(float x, float y) throws IOException {
-        super(x, y, 32, 48, KOOPAV_INDEX);
+        super(x, y, 32, 32, KOOPAV_INDEX);
         iniHitbox(x, y, ancho, altura);
     }
 
