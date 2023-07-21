@@ -125,18 +125,21 @@ public class ObjetosConfig {
 
             if (mario.getHitbox().intersects(b.hitbox.x, b.hitbox.y + 2, b.hitbox.width, b.hitbox.height)) {
                 if (mario.getAireVelocidad() != 0) {
-                    if (mario.getHitbox().y  > b.hitbox.y + b.hitbox.height -1) { //Choque por arriba de mario
+                    if (mario.getHitbox().y > b.hitbox.y + b.hitbox.height - 1) { //Choque por arriba de mario
                         //Coordenadas del bloque
                         int j = b.y / Juego.TAMAÑO_REAL_CASILLAS;
                         int i = b.x / Juego.TAMAÑO_REAL_CASILLAS;
                         if (b.getTipo() != LUCKYBLOCK_INDEX) {
                             nivelDatos[j][i] = mario.getNivelDatos()[j][i] = 0;
-                        }else
+                        } else {
                             nivelDatos[j][i] = mario.getNivelDatos()[j][i] = 4;
-                        
-                        mario.setAireVelocidad(mario.getVelocidadCaidaColision());
-                        if(b.isActivo())
-                        poderes.add(new Poder(b.x, (int) (b.y - b.hitbox.height), rand.nextInt(2)));
+                        }
+                        if (b.isActivo()) {
+                            mario.setAireVelocidad(mario.getVelocidadCaidaColision());
+                        }
+                        if (b.isActivo() && b.getTipo() == LUCKYBLOCK_INDEX) {
+                            poderes.add(new Poder(b.x, (int) (b.y - b.hitbox.height), rand.nextInt(2)));
+                        }
                         b.setActivo(false);
 
                     }
