@@ -20,6 +20,6 @@ public class UtilsObjetos {
     public static final int LADRILLO3_INDEX = 4; // sprite: 32
     public static final int LUCKYBLOCK_INDEX = 5; //sprite: 3  apagado: 4
     public static final int MONEDA_INDEX = 7;
-    public static final int CANON_INDEX = 8;
-    public static final int CANONBASE_INDEX = 9;
+    public static final int CANON_INDEX = 8; //sprite: 6
+    public static final int CANONBASE_INDEX = 9; //sprite: 6
 }

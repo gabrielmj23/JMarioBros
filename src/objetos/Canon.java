@@ -13,6 +13,7 @@ import main.Juego;
 public class Canon extends ObjetoJuego {
     
     private int casillaY;
+    private int enfriamiento = 0;
 
     public Canon(int x, int y, int tipo) {
         super(x, y, tipo);
@@ -22,11 +23,25 @@ public class Canon extends ObjetoJuego {
     }
     
     public void actualizar(){
-        
+        if(enfriamiento > 0)
+        tickEnfriamiento();
     }
     
     public int getCasillaY(){
         return casillaY;
     }
+
+    public int getEnfriamiento() {
+        return enfriamiento;
+    }
+
+    public void setEnfriamiento(int enfriamiento) {
+        this.enfriamiento = enfriamiento;
+    }
+    
+    public void tickEnfriamiento(){
+        enfriamiento--;
+    }
+    
     
 }

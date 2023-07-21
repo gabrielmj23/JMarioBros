@@ -30,7 +30,7 @@ public class ObjetosConfig {
     private ArrayList<BloqueInteractivo> bloques = new ArrayList<>();
     private ArrayList<Poder> poderes = new ArrayList<>();
     private ArrayList<Canon> canones = new ArrayList<>();
-
+    private ArrayList<Proyectil> proyectiles = new ArrayList<>();
     private static final String SPRITE_PATHS = "Objetos.png";
     private static final String CANON_PATHS = "Proyectiles.png";
 
@@ -49,8 +49,9 @@ public class ObjetosConfig {
             for (int i = 0; i < 8; i++) {
                 objetosImg[i] = img.getSubimage(i * 32, 0 * 32, 32, 32); //Obtener los 8 sprites
             }
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++) {
                 canonImg[i] = img2.getSubimage(i * 32, 0 * 32, 32, 32);
+            }
 
         } catch (IOException e) {
             System.out.println("Error leyendo sprite de objetos");
@@ -59,7 +60,7 @@ public class ObjetosConfig {
 
     }
 
-    public void actualizar() {
+    public void actualizar(Jugador mario) {
         for (BloqueInteractivo b : bloques) {
             if (b.isActivo()) {
                 b.actualizar();
@@ -71,20 +72,66 @@ public class ObjetosConfig {
                 p.actualizar();
             }
         }
-        
-       actualizarCanones();
+        actualizarCanones(mario);
+        actualizarProyectiles(mario);
+    }
+   
+    private void actualizarCanones(Jugador mario) {
+        for (Canon c : canones) {
+            if (c.getEnfriamiento() == 0) {
+             
+                if (c.getCasillaY() == (int)(mario.getHitbox().y/ Juego.TAMAÑO_REAL_CASILLAS) || c.getCasillaY() - 1 == (int)(mario.getHitbox().y / Juego.TAMAÑO_REAL_CASILLAS)) {
+                    if (jugadorEnRango(c, mario)) {
+                        dispararCanon(c,jugadorDireccionCanon(c, mario));
+                    }
+                }
+            }
+            c.actualizar();           
+        }
     }
     
-    private void actualizarCanones(){
-        for(Canon c : canones)
-            c.actualizar();
+    private void actualizarProyectiles(Jugador mario){
+        for(Proyectil p : proyectiles)
+            if(p.estaActivo())
+                p.actualizarPosicion();
+        
+    }
+   
+    private void dispararCanon(Canon c, int dir){
+        System.out.println("Disparo");
+        proyectiles.add(new Proyectil ((int)c.hitbox.x, (int) c.hitbox.y, dir));
+        c.setEnfriamiento(800);
+    }
+
+    private boolean jugadorEnRango(Canon c, Jugador mario) {
+        int absValor = (int) Math.abs(mario.getHitbox().x - c.hitbox.x);
+        return absValor <= Juego.TAMAÑO_REAL_CASILLAS * 8;
+    }
+    
+    private int jugadorDireccionCanon(Canon c, Jugador mario) {
+        if(mario.getHitbox().x - c.hitbox.x > 0)
+            return 1;
+        else
+            return -1;
     }
 
     public void dibujar(Graphics g, int xNivelDesfase) {
         dibujarObjetos(g, xNivelDesfase);
         dibujarBloques(g, xNivelDesfase);
+        dibujarProyectiles(g, xNivelDesfase);
         dibujarCanones(g, xNivelDesfase);
 
+    }
+    
+    private void dibujarProyectiles(Graphics g, int xNivelDesfase) {
+        for(Proyectil p : proyectiles)
+            if (p.estaActivo()){
+                int derechaDesfase = 0;
+                if(p.getDir() == 1)
+                     derechaDesfase = (int) p.getHitbox().width;
+                g.drawImage(canonImg[2], (int) (p.getHitbox().x - xNivelDesfase + derechaDesfase), (int) p.getHitbox().y, 30 * -p.getDir(), 30, null);
+                g.drawRect((int) p.getHitbox().x - xNivelDesfase, (int) p.getHitbox().y, (int) p.getHitbox().width, (int) p.getHitbox().height);
+            }    
     }
 
     private void dibujarBloques(Graphics g, int xNivelDesfase) {
@@ -110,12 +157,12 @@ public class ObjetosConfig {
             }
         }
     }
-    
-    private void dibujarCanones(Graphics g, int xNivelDesfase){
-        for(Canon c : canones){
-            if(c.isActivo()){
-                g.drawImage(canonImg[0],(int) c.hitbox.x - xNivelDesfase, (int) c.hitbox.y , Juego.TAMAÑO_REAL_CASILLAS,Juego.TAMAÑO_REAL_CASILLAS, null);
-                g.drawImage(canonImg[1],(int) c.hitbox.x - xNivelDesfase, (int) c.hitbox.y + Juego.TAMAÑO_REAL_CASILLAS , Juego.TAMAÑO_REAL_CASILLAS,Juego.TAMAÑO_REAL_CASILLAS, null);
+
+    private void dibujarCanones(Graphics g, int xNivelDesfase) {
+        for (Canon c : canones) {
+            if (c.isActivo()) {
+                g.drawImage(canonImg[0], (int) c.hitbox.x - xNivelDesfase, (int) c.hitbox.y, Juego.TAMAÑO_REAL_CASILLAS, Juego.TAMAÑO_REAL_CASILLAS, null);
+                g.drawImage(canonImg[1], (int) c.hitbox.x - xNivelDesfase, (int) c.hitbox.y + Juego.TAMAÑO_REAL_CASILLAS, Juego.TAMAÑO_REAL_CASILLAS, Juego.TAMAÑO_REAL_CASILLAS, null);
             }
         }
     }

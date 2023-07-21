@@ -29,6 +29,7 @@ public class Jugador extends Entidad implements Serializable {
     protected boolean abajo;
     protected float velocidad;
     protected boolean salto;
+    protected boolean ataque;
 
     //Salto y gravedad
     protected float aireVelocidad = 0f;
