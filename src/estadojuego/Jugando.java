@@ -11,6 +11,7 @@ import multijugador.PaqueteActualizar;
 import multijugador.PaqueteIniciar;
 import multijugador.Usuario;
 import niveles.NivelConfig;
+import objetos.ObjetosConfig;
 import utils.UtilsJugador;
 
 /**
@@ -24,6 +25,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
     // Atributos de graficos y juego
     private NivelConfig nivelConfig;
     private EnemigosConfig enemigosConfig;
+    private ObjetosConfig objetosConfig;
 
     // Manejar nivel
     private int xNivelDesfase;
@@ -47,6 +49,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
         jugadores = new ArrayList();
         nivelConfig = new NivelConfig(juego);
         enemigosConfig = new EnemigosConfig(juego);
+        objetosConfig = new ObjetosConfig(juego);
     }
 
     /**
@@ -209,6 +212,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
             nivelConfig.actualizar();
             enemigosConfig.revisarColision(getJugador());
             enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
+            objetosConfig.revisarPoderTocado(getJugador());
+            objetosConfig.revisarBloqueTocado(getJugador(), nivelConfig.getNivelUno().obtenerNivelDatos());
+            objetosConfig.actualizar();
             revisarCercaBorde();
         } else {
             juego.getPanelPartida().actualizar();
@@ -221,6 +227,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
             nivelConfig.dibujarFondo(g);
             nivelConfig.dibujar(g, xNivelDesfase);
             enemigosConfig.dibujar(g, xNivelDesfase);
+            objetosConfig.dibujar(g, xNivelDesfase);
             for (JugadorMulti j : jugadores) {
                 j.render(g, xNivelDesfase);
             }

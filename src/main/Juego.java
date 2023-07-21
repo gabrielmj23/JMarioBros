@@ -21,6 +21,11 @@ import ui.PanelInicio;
 import ui.PanelPartida;
 import ui.PanelRegistro;
 import ui.PanelSesion;
+import objetos.ObjetosConfig;
+import static utils.UtilsJugador.MARIO_INDEX;
+import static utils.UtilsJugador.LUIGI_INDEX;
+import static utils.UtilsJugador.TOAD_INDEX;
+import static utils.UtilsJugador.TOADETTE_INDEX;
 
 /**
  *
@@ -52,6 +57,7 @@ public class Juego implements Runnable {
     private Jugador jugador;
     private NivelConfig nivelConfig;
     private EnemigosConfig enemigosConfig;
+    private ObjetosConfig objetosConfig;
 
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
@@ -90,6 +96,10 @@ public class Juego implements Runnable {
 
     public EnemigosConfig getEnemigosConfig() {
         return enemigosConfig;
+    }
+
+    public ObjetosConfig getObjetosConfig() {
+        return objetosConfig;
     }
 
     /**

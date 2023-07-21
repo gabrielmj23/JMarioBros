@@ -49,4 +49,19 @@ public abstract class Entidad implements Serializable {
         this.hitbox = hitbox;
     }
 
+    public int getAncho() {
+        return ancho;
+    }
+
+    public void setAncho(int ancho) {
+        this.ancho = ancho;
+    }
+
+    public int getAltura() {
+        return altura;
+    }
+
+    public void setAltura(int altura) {
+        this.altura = altura;
+    }
 }

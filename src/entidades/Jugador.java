@@ -73,6 +73,11 @@ public class Jugador extends Entidad implements Serializable {
         cargarImagenes();
     }
 
+    public void PalSpawn() {
+        this.hitbox.x = 100;
+        this.hitbox.y = 200;
+    }
+
     @Override
     public void iniHitbox(float x, float y, int ancho, int altura) {
         if (poder == PoderJugador.NINGUNO) //Acomodar la hitbox a mario chikito
@@ -81,6 +86,7 @@ public class Jugador extends Entidad implements Serializable {
         } else {
             hitbox = new Rectangle2D.Float(x, y + 2, ancho + 9, altura + 16);
         }
+        System.out.println("ancho: " + hitbox.width + " altura: " + hitbox.height);
     }
 
     public boolean isIzquierda() {
@@ -121,6 +127,10 @@ public class Jugador extends Entidad implements Serializable {
 
     public int getIndiceAnimacion() {
         return indiceAnimacion;
+    }
+
+    public float getVelocidadCaidaColision() {
+        return velocidadCaidaColision;
     }
 
     public int getInvencible() {
@@ -278,6 +288,10 @@ public class Jugador extends Entidad implements Serializable {
         } else {
             estado = EstadoJugador.IDLE;
         }
+        //Caida al vacio
+        if (hitbox.y + hitbox.height + 1 >= Juego.JUEGO_ALTO) {
+            PalSpawn();
+        }
     }
 
     private void actualizarXPos(float xVelocidad) {
@@ -404,6 +418,22 @@ public class Jugador extends Entidad implements Serializable {
      */
     public void resetearEstado() {
         izquierda = derecha = arriba = abajo = false;
+    }
+
+    public float getAireVelocidad() {
+        return aireVelocidad;
+    }
+
+    public void setAireVelocidad(float aireVelocidad) {
+        this.aireVelocidad = aireVelocidad;
+    }
+
+    public int[][] getNivelDatos() {
+        return nivelDatos;
+    }
+
+    public void setNivelDatos(int[][] nivelDatos) {
+        this.nivelDatos = nivelDatos;
     }
 
 }

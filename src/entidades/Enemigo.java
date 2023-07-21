@@ -12,6 +12,8 @@ import utils.UtilsEnemigo;
 import utils.UtilsEnemigo.EstadoEnemigo;
 import static utils.UtilsEnemigo.EstadoEnemigo.CORRIENDO;
 import static utils.UtilsEnemigo.EstadoEnemigo.IDLE;
+import utils.UtilsEnemigo.*;
+import static utils.UtilsEnemigo.EstadoEnemigo.*;
 import static utils.UtilsMovimiento.*;
 
 /**
@@ -93,22 +95,26 @@ public abstract class Enemigo extends Entidad {
                     break;
                 case CORRIENDO:
                     float xVelocidad = 0;
-
                     if (direccion.equals("izquierda")) {
                         xVelocidad = -velocidad;
                     } else {
                         xVelocidad = velocidad;
                     }
-
                     if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
                         if (EsPiso(hitbox, xVelocidad, nivelDatos)) {
                             //System.out.println("No es piso");
-                            hitbox.x += xVelocidad;
-                            return;
+                            if (puedeMoverse(hitbox.x + xVelocidad, hitbox.y, hitbox.width, hitbox.height, nivelDatos)) {
+                                if (EsPiso(hitbox, xVelocidad, nivelDatos)) {
+                                    hitbox.x += xVelocidad;
+                                    return;
+                                }
+                            }
                         }
                     }
                     cambiarDireccion();
+
             }
+
         }
     }
 

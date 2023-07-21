@@ -5,6 +5,7 @@ import entidades.Goomba;
 import entidades.KoopaR;
 import entidades.KoopaV;
 import entidades.Planta;
+import entidades.Goomba;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -17,6 +18,10 @@ import static main.Juego.CASILLAS_HORIZONTAL;
 import static main.Juego.CASILLAS_VERTICAL;
 import static main.Juego.TAMAÑO_REAL_CASILLAS;
 import static utils.UtilsEnemigo.*;
+import objetos.BloqueInteractivo;
+import objetos.Poder;
+import static utils.UtilsEnemigo.*;
+import static utils.UtilsObjetos.*;
 
 /**
  *
@@ -38,20 +43,18 @@ public class NivelConfig {
         nivelUno = new Nivel(obtenerDatos());
         try {
             levelFondo = ImageIO.read(new File("media/sprites/" + FONDO_PATHS));
-            levelSprite = new BufferedImage[40];
+            levelSprite = new BufferedImage[44];
             BufferedImage img = ImageIO.read(new File("media/sprites/" + SPRITE_PATHS));
             for (int j = 0; j < 4; j++) {
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 11; i++) {
                     int index = j * 10 + i;
                     levelSprite[index] = img.getSubimage(i * 32, j * 32, 32, 32); //Obtener los 40 sprites
                 }
             }
-
         } catch (IOException e) {
             System.out.println("Error leyendo sprite del nivel");
             System.out.println(e.getMessage());
         }
-
     }
 
     /**
@@ -129,6 +132,52 @@ public class NivelConfig {
                             break;
                         default:
                             break;
+                    }
+                }
+            }
+            return list;
+        } catch (IOException e) {
+            System.out.println("Error leyendo datos del nivel");
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+    public static ArrayList<Poder> obtenerPoderes() {
+        ArrayList<Poder> list = new ArrayList<>();
+        try {
+            BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
+
+            for (int j = 0; j < img.getHeight(); j++) {
+                for (int i = 0; i < img.getWidth(); i++) {
+                    Color color = new Color(img.getRGB(i, j));
+                    int valor = color.getBlue();
+                    if (valor == FLOR_INDEX || valor == HONGO_INDEX || valor == MONEDA_INDEX) //No existe el sprite
+                    {
+                        list.add(new Poder(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS, valor));
+                    }
+                }
+            }
+            return list;
+        } catch (IOException e) {
+            System.out.println("Error leyendo datos del nivel");
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+    public static ArrayList<BloqueInteractivo> obtenerBloquesInteractivos() {
+        ArrayList<BloqueInteractivo> list = new ArrayList<>();
+        try {
+            BufferedImage img = ImageIO.read(new File("media/sprites/" + NIVELES_PATHS));
+
+            for (int j = 0; j < img.getHeight(); j++) {
+                for (int i = 0; i < img.getWidth(); i++) {
+                    Color color = new Color(img.getRGB(i, j));
+                    int valor = color.getBlue();
+                    if (valor == LUCKYBLOCK_INDEX || valor == LADRILLO1_INDEX || valor == LADRILLO2_INDEX || valor == LADRILLO3_INDEX) //No existe el sprite
+                    {
+                        list.add(new BloqueInteractivo(i * Juego.TAMAÑO_REAL_CASILLAS, j * Juego.TAMAÑO_REAL_CASILLAS, valor));
                     }
                 }
             }
