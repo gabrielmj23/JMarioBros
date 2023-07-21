@@ -1,6 +1,5 @@
 package objetos;
 
-import entidades.Goomba;
 import entidades.Jugador;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -10,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import main.Juego;
+import multijugador.PaqueteBloquesint;
+import multijugador.PaquetePoder;
 import static niveles.NivelConfig.obtenerBloquesInteractivos;
 import static niveles.NivelConfig.obtenerPoderes;
 import static niveles.NivelConfig.obtenerCanones;
@@ -75,33 +76,33 @@ public class ObjetosConfig {
         actualizarCanones(mario);
         actualizarProyectiles(mario);
     }
-   
+
     private void actualizarCanones(Jugador mario) {
         for (Canon c : canones) {
             if (c.getEnfriamiento() == 0) {
-             
-                if (c.getCasillaY() == (int)(mario.getHitbox().y/ Juego.TAMAÑO_REAL_CASILLAS) || c.getCasillaY() - 1 == (int)(mario.getHitbox().y / Juego.TAMAÑO_REAL_CASILLAS)) {
+                if (c.getCasillaY() == (int) (mario.getHitbox().y / Juego.TAMAÑO_REAL_CASILLAS) || c.getCasillaY() - 1 == (int) (mario.getHitbox().y / Juego.TAMAÑO_REAL_CASILLAS)) {
                     if (jugadorEnRango(c, mario)) {
-                        dispararCanon(c,jugadorDireccionCanon(c, mario));
+                        dispararCanon(c, jugadorDireccionCanon(c, mario));
                     }
                 }
             }
-            c.actualizar();           
+            c.actualizar();
         }
     }
-    
-    private void actualizarProyectiles(Jugador mario){
-        for(Proyectil p : proyectiles)
-            if(p.estaActivo()){
+
+    private void actualizarProyectiles(Jugador mario) {
+        for (Proyectil p : proyectiles) {
+            if (p.estaActivo()) {
                 p.actualizarPosicion();
                 p.revisarColision(mario);
             }
-        
+        }
+
     }
-   
-    private void dispararCanon(Canon c, int dir){
+
+    private void dispararCanon(Canon c, int dir) {
         System.out.println("Disparo");
-        proyectiles.add(new Proyectil ((int)c.hitbox.x, (int) c.hitbox.y, dir));
+        proyectiles.add(new Proyectil((int) c.hitbox.x, (int) c.hitbox.y, dir));
         c.setEnfriamiento(800);
     }
 
@@ -109,12 +110,13 @@ public class ObjetosConfig {
         int absValor = (int) Math.abs(mario.getHitbox().x - c.hitbox.x);
         return absValor <= Juego.TAMAÑO_REAL_CASILLAS * 8;
     }
-    
+
     private int jugadorDireccionCanon(Canon c, Jugador mario) {
-        if(mario.getHitbox().x - c.hitbox.x > 0)
+        if (mario.getHitbox().x - c.hitbox.x > 0) {
             return 1;
-        else
+        } else {
             return -1;
+        }
     }
 
     public void dibujar(Graphics g, int xNivelDesfase) {
@@ -122,18 +124,19 @@ public class ObjetosConfig {
         dibujarBloques(g, xNivelDesfase);
         dibujarProyectiles(g, xNivelDesfase);
         dibujarCanones(g, xNivelDesfase);
-
     }
-    
+
     private void dibujarProyectiles(Graphics g, int xNivelDesfase) {
-        for(Proyectil p : proyectiles)
-            if (p.estaActivo()){
+        for (Proyectil p : proyectiles) {
+            if (p.estaActivo()) {
                 int derechaDesfase = 0;
-                if(p.getDir() == 1)
-                     derechaDesfase = (int) p.getHitbox().width;
+                if (p.getDir() == 1) {
+                    derechaDesfase = (int) p.getHitbox().width;
+                }
                 g.drawImage(canonImg[2], (int) (p.getHitbox().x - xNivelDesfase + derechaDesfase), (int) p.getHitbox().y, 30 * -p.getDir(), 30, null);
                 g.drawRect((int) p.getHitbox().x - xNivelDesfase, (int) p.getHitbox().y, (int) p.getHitbox().width, (int) p.getHitbox().height);
-            }    
+            }
+        }
     }
 
     private void dibujarBloques(Graphics g, int xNivelDesfase) {
@@ -170,12 +173,14 @@ public class ObjetosConfig {
     }
 
     public void revisarPoderTocado(Jugador mario) {
-
         for (Poder p : poderes) {
             PoderJugador poderActual = mario.getPoder();
             if (p.isActivo()) {
                 if (mario.getHitbox().intersects(p.hitbox)) {
                     p.setActivo(false);
+                    // Informar a otros clientes
+                    //PaquetePoder paquete = new PaquetePoder(poderes);
+                    //paquete.escribirDatos(juego.getCliente());
                     if (p.getTipo() == HONGO_INDEX && mario.getPoder() != FUEGO) {
                         mario.setPoder(SUPER);
                     } else if (p.getTipo() == FLOR_INDEX) {
@@ -186,7 +191,7 @@ public class ObjetosConfig {
                         mario.iniHitbox((int) mario.getHitbox().x, (int) mario.getHitbox().y - 45, mario.getAncho(), mario.getAltura());
                     }
                     if (p.getTipo() == MONEDA_INDEX) {
-                        //SUMAR PUNTAJE??
+                        mario.setPuntaje(mario.getPuntaje() + 5);
                     }
                 }
             }
@@ -197,7 +202,6 @@ public class ObjetosConfig {
     public void revisarBloqueTocado(Jugador mario, int[][] nivelDatos) {
         Random rand = new Random();
         for (BloqueInteractivo b : bloques) {
-
             if (mario.getHitbox().intersects(b.hitbox.x, b.hitbox.y + 2, b.hitbox.width, b.hitbox.height)) {
                 if (mario.getAireVelocidad() != 0) {
                     if (mario.getHitbox().y > b.hitbox.y + b.hitbox.height - 1) { //Choque por arriba de mario
@@ -216,15 +220,42 @@ public class ObjetosConfig {
                             poderes.add(new Poder(b.x, (int) (b.y - b.hitbox.height), rand.nextInt(2)));
                         }
                         b.setActivo(false);
-
+                        // Actualizar en todos los clientes
+                        //PaqueteBloquesint paquete = new PaqueteBloquesint(bloques);
+                        //paquete.escribirDatos(juego.getCliente());
                     }
                 }
             }
         }
     }
-    
-    public void revisarProyectilTocado(Jugador mario){
-        for(Proyectil p: proyectiles)
+
+    public void revisarProyectilTocado(Jugador mario) {
+        for (Proyectil p : proyectiles) {
             p.revisarColision(mario);
+        }
+    }
+
+    public ArrayList<BloqueInteractivo> getBloques() {
+        return bloques;
+    }
+
+    public void setBloques(ArrayList<BloqueInteractivo> bloques) {
+        this.bloques = bloques;
+    }
+
+    public ArrayList<Poder> getPoderes() {
+        return poderes;
+    }
+
+    public void setPoderes(ArrayList<Poder> poderes) {
+        this.poderes = poderes;
+    }
+
+    public ArrayList<Proyectil> getProyectiles() {
+        return proyectiles;
+    }
+
+    public void setProyectiles(ArrayList<Proyectil> proyectiles) {
+        this.proyectiles = proyectiles;
     }
 }

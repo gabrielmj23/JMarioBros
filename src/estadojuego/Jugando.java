@@ -97,6 +97,14 @@ public class Jugando extends Estado implements MetodosDeEstados {
         return enemigosConfig;
     }
 
+    public ObjetosConfig getObjetosConfig() {
+        return objetosConfig;
+    }
+
+    public void setObjetosConfig(ObjetosConfig objetosConfig) {
+        this.objetosConfig = objetosConfig;
+    }
+
     public void setEnemigosConfig(EnemigosConfig enemigosConfig) {
         this.enemigosConfig = enemigosConfig;
     }
@@ -210,11 +218,11 @@ public class Jugando extends Estado implements MetodosDeEstados {
                 getJugador().tickInvencible();
             }
             nivelConfig.actualizar();
-            enemigosConfig.revisarColision(getJugador());
             objetosConfig.revisarProyectilTocado(getJugador());
-            enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
             objetosConfig.revisarPoderTocado(getJugador());
             objetosConfig.revisarBloqueTocado(getJugador(), nivelConfig.getNivelUno().obtenerNivelDatos());
+            enemigosConfig.revisarColision(getJugador());
+            enemigosConfig.actualizar(nivelConfig.getNivelUno().obtenerNivelDatos());
             objetosConfig.actualizar(getJugador());
             revisarCercaBorde();
         } else {
@@ -250,6 +258,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
                     break;
                 case KeyEvent.VK_SPACE:
                     getJugador().setAtaque(true);
+                    getJugador().setEstado(UtilsJugador.EstadoJugador.ATACANDO);
                     break;
             }
         }
@@ -273,6 +282,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
                 case KeyEvent.VK_SPACE:
                     getJugador().setIndiceAnimacion(0);
                     getJugador().setAtaque(false);
+                    getJugador().setEstado(UtilsJugador.EstadoJugador.IDLE);
                     break;
             }
         }

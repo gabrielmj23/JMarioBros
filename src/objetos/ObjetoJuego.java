@@ -6,13 +6,14 @@ package objetos;
 
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import static utils.UtilsObjetos.*;
 
 /**
  *
  * @author rober
  */
-public class ObjetoJuego {
+public class ObjetoJuego implements Serializable {
 
     protected int x, y;
     protected Rectangle2D.Float hitbox;

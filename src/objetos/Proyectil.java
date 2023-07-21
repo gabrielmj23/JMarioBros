@@ -1,12 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package objetos;
 
 import entidades.EnemigosConfig;
 import entidades.Jugador;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import multijugador.PaqueteEnemigo;
 import utils.UtilsEnemigo;
 
@@ -14,7 +11,7 @@ import utils.UtilsEnemigo;
  *
  * @author rober
  */
-public class Proyectil {
+public class Proyectil implements Serializable {
     private Rectangle2D.Float hitbox;
     private int dir;
     private boolean activo = true;

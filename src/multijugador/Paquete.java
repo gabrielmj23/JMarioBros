@@ -1,6 +1,5 @@
 package multijugador;
 
-import entidades.JugadorMulti;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,7 +20,10 @@ public abstract class Paquete<T> {
         DESCONECTAR(01),
         ACTUALIZAR(02),
         INICIAR(03),
-        ENEMIGO(04);
+        ENEMIGO(04),
+        PODER(05),
+        BLOQUESINT(06),
+        PROYECTILES(07);
 
         private int id;
 

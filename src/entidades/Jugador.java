@@ -378,6 +378,9 @@ public class Jugador extends Entidad implements Serializable {
         if (estado == EstadoJugador.CORRIENDO) {
             actualizarFrameAnimacion();
         }
+        if (estado == EstadoJugador.ATACANDO) {
+            
+        }
         obtenerAnimacion();
         actualizarPosicion();
 
@@ -444,7 +447,5 @@ public class Jugador extends Entidad implements Serializable {
     public void setAtaque(boolean ataque) {
         this.ataque = ataque;
     }
-    
-    
 
 }

@@ -2,15 +2,10 @@ package entidades;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
-import main.Juego;
 import static niveles.NivelConfig.obtenerEnemigos;
 import utils.UtilsEnemigo;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import main.Juego;
-import static utils.UtilsJugador.PoderJugador.*;
 
 /**
  *

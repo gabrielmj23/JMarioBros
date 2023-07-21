@@ -9,7 +9,6 @@ import static estadojuego.EstadoJuego.MENU;
 import estadojuego.Jugando;
 import estadojuego.Menu;
 import java.awt.Graphics;
-import javax.swing.JOptionPane;
 import multijugador.Cliente;
 import multijugador.PaqueteUnir;
 import multijugador.Servidor;
@@ -22,10 +21,6 @@ import ui.PanelPartida;
 import ui.PanelRegistro;
 import ui.PanelSesion;
 import objetos.ObjetosConfig;
-import static utils.UtilsJugador.MARIO_INDEX;
-import static utils.UtilsJugador.LUIGI_INDEX;
-import static utils.UtilsJugador.TOAD_INDEX;
-import static utils.UtilsJugador.TOADETTE_INDEX;
 
 /**
  *
@@ -54,7 +49,6 @@ public class Juego implements Runnable {
 
     private Jugando jugando;
     private Menu menu;
-    private Jugador jugador;
     private NivelConfig nivelConfig;
     private EnemigosConfig enemigosConfig;
     private ObjetosConfig objetosConfig;
@@ -84,10 +78,6 @@ public class Juego implements Runnable {
 
         // Iniciar ciclo de juego
         iniciarHilo();
-    }
-
-    public Jugador getJugador() {
-        return jugador;
     }
 
     public NivelConfig getNivelConfig() {
@@ -214,7 +204,7 @@ public class Juego implements Runnable {
      * Detiene el juego cuando se pierde el enfoque de la ventana
      */
     public void ventanaPerdida() {
-        jugador.resetearEstado();
+        jugando.getJugador().resetearEstado();
     }
 
     /**

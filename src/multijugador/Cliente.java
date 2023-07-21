@@ -102,6 +102,15 @@ public class Cliente extends Thread {
             case ENEMIGO:
                 paquete = new PaqueteEnemigo(datos);
                 juego.getJugando().getEnemigosConfig().setEnemigos(((PaqueteEnemigo) paquete).getEnemigos());
+                break;
+            case PODER:
+                paquete = new PaquetePoder(datos);
+                juego.getJugando().getObjetosConfig().setPoderes(((PaquetePoder) paquete).getPoderes());
+                break;
+            case BLOQUESINT:
+                paquete = new PaqueteBloquesint(datos);
+                juego.getJugando().getObjetosConfig().setBloques(((PaqueteBloquesint) paquete).getBloques());
+                break;
         }
     }
 

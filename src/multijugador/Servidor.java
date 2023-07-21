@@ -83,7 +83,7 @@ public class Servidor extends Thread {
                 eliminarConexion((PaqueteDesconectar) paquete);
                 break;
             case ACTUALIZAR:
-                for (JugadorMulti j: jugadoresConectados) {
+                for (JugadorMulti j : jugadoresConectados) {
                     if (j.getIp() != ip && j.getPuerto() != puerto) {
                         enviarDatos(datos, j.getIp(), j.getPuerto());
                     }
@@ -93,7 +93,21 @@ public class Servidor extends Thread {
                 enviarDatosATodos(datos);
                 break;
             case ENEMIGO:
-                for (JugadorMulti j: jugadoresConectados) {
+                for (JugadorMulti j : jugadoresConectados) {
+                    if (j.getIp() != ip && j.getPuerto() != puerto) {
+                        enviarDatos(datos, j.getIp(), j.getPuerto());
+                    }
+                }
+                break;
+            case PODER:
+                for (JugadorMulti j : jugadoresConectados) {
+                    if (j.getIp() != ip && j.getPuerto() != puerto) {
+                        enviarDatos(datos, j.getIp(), j.getPuerto());
+                    }
+                }
+                break;
+            case BLOQUESINT:
+                for (JugadorMulti j : jugadoresConectados) {
                     if (j.getIp() != ip && j.getPuerto() != puerto) {
                         enviarDatos(datos, j.getIp(), j.getPuerto());
                     }
