@@ -20,7 +20,7 @@ import static utils.UtilsMovimiento.*;
  * @author Gabriel
  * @author rober
  */
-public class Jugador extends Entidad implements Serializable {
+public abstract class Jugador extends Entidad implements Serializable {
 
     // Atributos de movimiento
     protected boolean izquierda;
@@ -67,7 +67,7 @@ public class Jugador extends Entidad implements Serializable {
         this.usuario = usuario;
         velocidad = 1.7f;
         estado = EstadoJugador.IDLE;
-        poder = PoderJugador.FUEGO;
+        poder = PoderJugador.NINGUNO;
         deltaAnimacion = 0;
         indiceAnimacion = 0;
         iniHitbox(x, y, ancho, altura);

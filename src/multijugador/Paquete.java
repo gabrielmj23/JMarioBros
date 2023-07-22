@@ -42,17 +42,6 @@ public abstract class Paquete<T> {
         this.id = (byte) id;
     }
 
-    /**
-     * Lee la cadena de información contenida en el paquete
-     *
-     * @param datos
-     * @return Datos del paquete
-     */
-    public String leerDatos(byte[] datos) {
-        String msj = new String(datos).trim();
-        return msj.substring(2);
-    }
-
     public T leerObj(byte[] datos) throws IOException, ClassNotFoundException {
         int inicioT = "00".getBytes().length;
         byte[] datosJugador = new byte[datos.length - inicioT];

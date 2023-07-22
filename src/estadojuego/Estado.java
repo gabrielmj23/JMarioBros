@@ -7,7 +7,7 @@ import main.Juego;
  *
  * @author Bertorelli
  */
-public class Estado {
+public abstract class Estado {
 
     protected Juego juego;
 

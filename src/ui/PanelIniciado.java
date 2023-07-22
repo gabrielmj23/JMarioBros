@@ -45,6 +45,9 @@ public class PanelIniciado extends javax.swing.JPanel {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
         Bienvenido.setText("Bienvenido, " + usuario.getNombre());
+        Avatar.setIcon(
+                new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource(usuario.getAvatar())).getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH))
+        );
     }
 
     /**
@@ -62,6 +65,7 @@ public class PanelIniciado extends javax.swing.JPanel {
         Estadisticas = new javax.swing.JButton();
         Ayuda = new javax.swing.JButton();
         Salir = new javax.swing.JButton();
+        Avatar = new javax.swing.JLabel();
         Fondo = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1040, 558));
@@ -90,6 +94,11 @@ public class PanelIniciado extends javax.swing.JPanel {
         add(UnirPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 260, 300, 60));
 
         Estadisticas.setContentAreaFilled(false);
+        Estadisticas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EstadisticasActionPerformed(evt);
+            }
+        });
         add(Estadisticas, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 330, 300, 60));
 
         Ayuda.setContentAreaFilled(false);
@@ -106,7 +115,8 @@ public class PanelIniciado extends javax.swing.JPanel {
                 SalirActionPerformed(evt);
             }
         });
-        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 200, 40));
+        add(Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 200, 40));
+        add(Avatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, 100, 100));
         add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1040, 560));
     }// </editor-fold>//GEN-END:initComponents
 
@@ -133,10 +143,16 @@ public class PanelIniciado extends javax.swing.JPanel {
 
     private void SalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirActionPerformed
         juego.cambiarPanel("Inicio");
+        juego.getPanelInicio().requestFocusInWindow();
     }//GEN-LAST:event_SalirActionPerformed
+
+    private void EstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EstadisticasActionPerformed
+        juego.cambiarPanel("Estadisticas");
+    }//GEN-LAST:event_EstadisticasActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Avatar;
     private javax.swing.JButton Ayuda;
     private javax.swing.JLabel Bienvenido;
     private javax.swing.JButton Estadisticas;

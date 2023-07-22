@@ -30,7 +30,7 @@ public class Jugando extends Estado implements MetodosDeEstados {
     // Manejar nivel
     private int xNivelDesfase;
     private int bordeIzquierdo = (int) (0.2 * Juego.JUEGO_ANCHO);
-    private int bordeDerecho = (int) (0.8 * Juego.JUEGO_ANCHO);
+    private int bordeDerecho = (int) (0.4 * Juego.JUEGO_ANCHO);
     private int casillasNivel = NivelConfig.obtenerDatos()[0].length;
     private int desfaseMaximoCasilla = casillasNivel - Juego.CASILLAS_HORIZONTAL;
     private int desfaseMaximoNivel = desfaseMaximoCasilla * Juego.TAMAÑO_REAL_CASILLAS;
@@ -259,6 +259,9 @@ public class Jugando extends Estado implements MetodosDeEstados {
                 case KeyEvent.VK_SPACE:
                     getJugador().setAtaque(true);
                     getJugador().setEstado(UtilsJugador.EstadoJugador.ATACANDO);
+                    break;
+                case KeyEvent.VK_M:
+                    juego.toggleMusica();
                     break;
             }
         }

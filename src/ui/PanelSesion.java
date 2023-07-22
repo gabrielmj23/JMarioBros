@@ -137,6 +137,7 @@ public class PanelSesion extends javax.swing.JPanel {
 
     private void SalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirActionPerformed
         juego.cambiarPanel("Inicio");
+        juego.getPanelInicio().requestFocusInWindow();
     }//GEN-LAST:event_SalirActionPerformed
 
 

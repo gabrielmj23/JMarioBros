@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import multijugador.PaqueteDesconectar;
 import ui.PanelAcerca;
 import ui.PanelAyuda;
+import ui.PanelEstadisticas;
 import ui.PanelIniciado;
 import ui.PanelInicio;
 import ui.PanelPartida;
@@ -25,7 +26,7 @@ public class VentanaJuego {
     private JFrame frame;
     private CardLayout layout;
 
-    public VentanaJuego(PanelInicio pInicio, PanelRegistro pRegistro, PanelSesion pSesion, PanelIniciado pIniciado, PanelPartida pPartida, PanelJuego pJuego, PanelAyuda pAyuda, PanelAcerca pAcerca) {
+    public VentanaJuego(PanelInicio pInicio, PanelRegistro pRegistro, PanelSesion pSesion, PanelIniciado pIniciado, PanelPartida pPartida, PanelJuego pJuego, PanelEstadisticas pEstad, PanelAyuda pAyuda, PanelAcerca pAcerca) {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container pane = frame.getContentPane();
@@ -37,6 +38,7 @@ public class VentanaJuego {
         pane.add("Iniciado", pIniciado);
         pane.add("Partida", pPartida);
         pane.add("Juego", pJuego);
+        pane.add("Estadisticas", pEstad);
         pane.add("Ayuda", pAyuda);
         pane.add("Acerca", pAcerca);
         frame.pack();

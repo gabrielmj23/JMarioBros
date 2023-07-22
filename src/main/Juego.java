@@ -1,7 +1,5 @@
 package main;
 
-import entidades.EnemigosConfig;
-import entidades.Jugador;
 import entidades.JugadorMulti;
 import estadojuego.EstadoJuego;
 import static estadojuego.EstadoJuego.JUGANDO;
@@ -9,10 +7,14 @@ import static estadojuego.EstadoJuego.MENU;
 import estadojuego.Jugando;
 import estadojuego.Menu;
 import java.awt.Graphics;
+import java.io.IOException;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import multijugador.Cliente;
 import multijugador.PaqueteUnir;
 import multijugador.Servidor;
-import niveles.NivelConfig;
 import ui.PanelAcerca;
 import ui.PanelAyuda;
 import ui.PanelIniciado;
@@ -20,7 +22,7 @@ import ui.PanelInicio;
 import ui.PanelPartida;
 import ui.PanelRegistro;
 import ui.PanelSesion;
-import objetos.ObjetosConfig;
+import ui.PanelEstadisticas;
 
 /**
  *
@@ -36,9 +38,13 @@ public class Juego implements Runnable {
     private PanelIniciado panelIniciado;
     private PanelPartida panelPartida;
     private PanelJuego panelJuego;
+    private PanelEstadisticas panelEstad;
     private PanelAyuda panelAyuda;
     private PanelAcerca panelAcerca;
     private Thread hiloJuego;
+
+    // Atributos de sonido
+    private Clip clip;
 
     // Atributos de multijugador
     private Servidor servidor;
@@ -49,9 +55,6 @@ public class Juego implements Runnable {
 
     private Jugando jugando;
     private Menu menu;
-    private NivelConfig nivelConfig;
-    private EnemigosConfig enemigosConfig;
-    private ObjetosConfig objetosConfig;
 
     public final static int TAMAÑO_GENERAL_CASILLAS = 32;
     public final static float ESCALA = 1.25f;
@@ -69,27 +72,17 @@ public class Juego implements Runnable {
         panelIniciado = new PanelIniciado(this);
         panelPartida = new PanelPartida(this);
         panelJuego = new PanelJuego(this);
+        panelEstad = new PanelEstadisticas(this);
         panelAyuda = new PanelAyuda(this);
         panelAcerca = new PanelAcerca(this);
         ventana = new VentanaJuego(
-                panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego, panelAyuda, panelAcerca
+                panelInicio, panelRegistro, panelSesion, panelIniciado, panelPartida, panelJuego, panelEstad, panelAyuda, panelAcerca
         );
         panelInicio.requestFocusInWindow();
+        iniciarMusica();
 
         // Iniciar ciclo de juego
         iniciarHilo();
-    }
-
-    public NivelConfig getNivelConfig() {
-        return nivelConfig;
-    }
-
-    public EnemigosConfig getEnemigosConfig() {
-        return enemigosConfig;
-    }
-
-    public ObjetosConfig getObjetosConfig() {
-        return objetosConfig;
     }
 
     /**
@@ -98,6 +91,29 @@ public class Juego implements Runnable {
     private void iniciarClases() {
         menu = new Menu(this);
         jugando = new Jugando(this);
+    }
+
+    private void iniciarMusica() {
+        try {
+            clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(getClass().getResource("/ui/musica.wav")));
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            System.out.println("Error iniciando");
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Activa o desactiva musica
+     */
+    public void toggleMusica() {
+        if (!clip.isActive()) {
+            clip.start();
+        } else {
+            clip.stop();
+        }
     }
 
     public void iniciarServidor() {
@@ -156,6 +172,10 @@ public class Juego implements Runnable {
 
     public PanelPartida getPanelPartida() {
         return panelPartida;
+    }
+
+    public PanelInicio getPanelInicio() {
+        return panelInicio;
     }
 
     public void setUps(float ups) {

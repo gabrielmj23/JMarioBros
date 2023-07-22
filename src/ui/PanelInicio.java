@@ -2,6 +2,8 @@ package ui;
 
 import estadojuego.Menu;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import main.Juego;
 import static main.Juego.JUEGO_ALTO;
 import static main.Juego.JUEGO_ANCHO;
@@ -22,6 +24,24 @@ public class PanelInicio extends javax.swing.JPanel {
      */
     public PanelInicio(Juego juego) {
         initComponents();
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_M) {
+                    juego.toggleMusica();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
         this.juego = juego;
         Titulo.setIcon(
                 new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/Titulo.png")).getImage().getScaledInstance(320, 120, java.awt.Image.SCALE_SMOOTH))

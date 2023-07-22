@@ -155,11 +155,14 @@
             <StringItem index="0" value="Default"/>
             <StringItem index="1" value="Mario"/>
             <StringItem index="2" value="Luigi"/>
-            <StringItem index="3" value="Toad"/>
+            <StringItem index="3" value="Plantita"/>
             <StringItem index="4" value="Toadette"/>
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AvatarBoxActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>

@@ -22,7 +22,7 @@ public class Usuario implements Serializable {
         this.correo = correo;
         this.login = login;
         this.contraseña = contraseña;
-        avatar = "media/misc/avatarDefecto.png";
+        avatar = "/ui/Caparazon.png";
     }
 
     public Usuario(String nombre, String correo, String login, String contraseña, String avatar) {
@@ -33,7 +33,7 @@ public class Usuario implements Serializable {
         this.correo = correo;
         this.login = login;
         this.contraseña = contraseña;
-        this.avatar = avatar;
+        this.avatar = "/ui/" + avatar;
     }
 
     public String getNombre() {

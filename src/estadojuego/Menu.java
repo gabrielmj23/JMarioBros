@@ -1,11 +1,8 @@
 package estadojuego;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import javax.swing.JPanel;
 import main.Juego;
-import ui.PanelInicio;
 
 /**
  *
@@ -30,9 +27,9 @@ public class Menu extends Estado implements MetodosDeEstados {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        //if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-          //  EstadoJuego.estado = EstadoJuego.JUGANDO;
-        //}
+        if (e.getKeyCode() == KeyEvent.VK_M) {
+            juego.toggleMusica();
+        }
     }
 
     @Override

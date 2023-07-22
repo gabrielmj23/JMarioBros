@@ -104,7 +104,12 @@ public class PanelRegistro extends javax.swing.JPanel {
         jLabel6.setText("Avatar");
         add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 360, -1, -1));
 
-        AvatarBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Mario", "Luigi", "Toad", "Toadette" }));
+        AvatarBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Mario", "Luigi", "Plantita", "Toadette" }));
+        AvatarBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AvatarBoxActionPerformed(evt);
+            }
+        });
         add(AvatarBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 380, 250, 30));
 
         Salir.setContentAreaFilled(false);
@@ -121,21 +126,21 @@ public class PanelRegistro extends javax.swing.JPanel {
         try {
             RegError.setVisible(false);
             String opcion = (String) AvatarBox.getSelectedItem();
-            String avatar = "avatarDefecto.png";
+            String avatar = "Caparazon.png";
             switch (opcion) {
                 case "Default":
                     break;
                 case "Mario":
-                    avatar = "avatarMario.png";
+                    avatar = "Mario.png";
                     break;
                 case "Luigi":
-                    avatar = "avatarLuigi.png";
+                    avatar = "Luigi.png";
                     break;
-                case "Toad":
-                    avatar = "avatarToad.png";
+                case "Plantita":
+                    avatar = "Plantita.png";
                     break;
                 case "Toadette":
-                    avatar = "avatarToadette.png";
+                    avatar = "Toadette.png";
                     break;
             }
             Usuario u = new Usuario(
@@ -167,7 +172,12 @@ public class PanelRegistro extends javax.swing.JPanel {
 
     private void SalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirActionPerformed
         juego.cambiarPanel("Inicio");
+        juego.getPanelInicio().requestFocusInWindow();
     }//GEN-LAST:event_SalirActionPerformed
+
+    private void AvatarBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AvatarBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AvatarBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

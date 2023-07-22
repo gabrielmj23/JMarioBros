@@ -38,6 +38,7 @@ public class Goomba extends Enemigo {
                 // Informar a los otros clientes del cambio
                 PaqueteEnemigo paquete = new PaqueteEnemigo(conf.getEnemigos());
                 paquete.escribirDatos(conf.getJuego().getCliente());
+                return;
             } else if (mario.hitbox.y + margen > hitbox.y - 24 + altura) { //Choque por arriba de mario
                 System.out.println("por abajo");
             }
